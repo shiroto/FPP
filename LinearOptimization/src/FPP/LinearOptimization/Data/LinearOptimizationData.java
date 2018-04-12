@@ -18,4 +18,5 @@ public class LinearOptimizationData {
 	public int GetCY() {
 		return coefficients.length - cx;
 	}
+	
 }
