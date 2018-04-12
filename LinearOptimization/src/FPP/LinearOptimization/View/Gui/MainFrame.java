@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JScrollBar;
+import javax.swing.JRadioButton;
 
 public class MainFrame {
 
@@ -82,7 +84,6 @@ public class MainFrame {
 		tabs.addTab("Input", bendersScreen);
 		
 
-		
 		//mainScreen.initializeScreen();
 		
 		
