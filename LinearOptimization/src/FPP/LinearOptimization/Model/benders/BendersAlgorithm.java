@@ -124,7 +124,7 @@ public class BendersAlgorithm implements ILinearOptimization {
 		restrictions[0] = new Double[]{-1d, -1d, 0d, 0d, null};
 		restrictions[1] = new Double[]{-2d, 0d, 0d, -0d, null};
 		restrictions[2] = new Double[]{0d, 0d, -1d, -3d, null};
-		restrictions[3] = new Double[]{0d, 0d, 0d, -1d, null};
+		restrictions[3] = new Double[]{0d, 0d, 0d, -10d, null};
 		
 		//calculate values for b
 		for (int i = 0; i < numOfRestrictions; i++) {
