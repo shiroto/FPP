@@ -26,11 +26,14 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JScrollBar;
 import javax.swing.JRadioButton;
+import javax.swing.JComboBox;
 
 public class MainFrame {
 
 	private JFrame frame;
 	private JTabbedPane tabs;
+	private JPanel panel;
+	private InputScreenMain inputScreen;
 
 
 	/**
@@ -68,7 +71,8 @@ public class MainFrame {
 		tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		//MainScreen mainScreen = new MainScreen();
-		InputScreenMain inputScreen = new InputScreenMain();
+		inputScreen = new InputScreenMain(this);
+		
 		/*
 		mainScreen.setMainFrame(this);
 		
@@ -82,7 +86,14 @@ public class MainFrame {
 		inputScreen.setVisible(true);
 		inputScreen.setLayout(null);
 		
+
+		
+		
 		tabs.addTab("Input", inputScreen);
+		
+
+
+	
 		
 
 		//mainScreen.initializeScreen();
@@ -95,6 +106,23 @@ public class MainFrame {
 
 	public void setTab(int i) {
 		this.tabs.setSelectedIndex(i);
-		
 	}
+
+	public InputScreenMain getInputScreen() {
+		return inputScreen;
+	}
+
+	public void setInputScreen(InputScreenMain inputScreen) {
+		this.inputScreen = inputScreen;
+	}
+
+	public JTabbedPane getTabs() {
+		return tabs;
+	}
+
+	public void setTabs(JTabbedPane tabs) {
+		this.tabs = tabs;
+	}
+	
+	
 }

@@ -20,6 +20,7 @@ import javax.swing.table.TableColumnModel;
 import FPP.LinearOptimization.Data.Comparator;
 import FPP.LinearOptimization.Data.LinearOptimizationData;
 import FPP.LinearOptimization.Data.Restrictions;
+import FPP.LinearOptimization.Data.Algorithm;
 
 public class InputScreenMain extends JPanel {
 
@@ -32,14 +33,18 @@ public class InputScreenMain extends JPanel {
 	private LinearOptimizationData inputObject;
 	private int countX;
 	private ButtonGroup bg;
-
-	public InputScreenMain() {
+	private JPanel panel_combo;
+	private MainFrame mainFrame;
+	private InputScreenBenders inputBenders;
+	
+	public InputScreenMain(MainFrame mainFrame) {
+		this.mainFrame=mainFrame;
 		initializeScreen();
 	}
 
 	public void initializeScreen() {
 		JPanel jp_xVariables = new JPanel();
-		jp_xVariables.setBounds(59, 61, 325, 102);
+		jp_xVariables.setBounds(50, 50, 250, 50);
 		this.add(jp_xVariables);
 
 		JLabel lb_xVariables = new JLabel("Anzahl Variablen");
@@ -49,22 +54,8 @@ public class InputScreenMain extends JPanel {
 		jp_xVariables.add(tf_xVariables);
 		tf_xVariables.setColumns(10);
 		
-		/*
-		JPanel jp_yVariables = new JPanel();
-		jp_yVariables.setBounds(59, 179, 325, 90);
-		this.add(jp_yVariables);
-		
-
-		JLabel lbl_yVariables = new JLabel("Anzahl Y Variablen");
-		jp_yVariables.add(lbl_yVariables);
-
-		tf_yVariables = new JTextField();
-		jp_yVariables.add(tf_yVariables);
-		tf_yVariables.setColumns(10);
-		*/
-		
 		JPanel jp_restrictions = new JPanel();
-		jp_restrictions.setBounds(59, 294, 325, 95);
+		jp_restrictions.setBounds(50, 150, 250, 50);
 		this.add(jp_restrictions);
 
 		JLabel lb_restrictions = new JLabel("Anzahl Restriktionen");
@@ -126,6 +117,7 @@ public class InputScreenMain extends JPanel {
 				
 				loadFunctionTable();
 				loadRadioBtn();
+				loadCombo();
 
 			}
 
@@ -143,11 +135,35 @@ public class InputScreenMain extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				validateInput();
 				createDataObject();
-
+				inputBenders = new InputScreenBenders();
+				inputBenders.setVisible(true);
+				inputBenders.setLayout(null);
+				inputBenders.setFunctionTable(functionTable);
+				inputBenders.setInputObject(inputObject);
+				inputBenders.modifyFunctionTable();
+				mainFrame.getTabs().addTab("Benders Input", inputBenders);
+				mainFrame.setTab(1);
 			}
 		});
 		this.add(btnSubmit);
 
+	}
+
+	protected void loadCombo() {
+		panel_combo = new JPanel();
+		panel_combo.setBounds(50, 250, 250, 100);
+		
+		
+		JLabel lblAlgorithmus = new JLabel("Algorithmus");
+		panel_combo.add(lblAlgorithmus);
+		
+		JComboBox comboBox = new JComboBox();
+		panel_combo.add(comboBox);
+	
+		comboBox.addItem(Algorithm.BendersAlgorithm);
+		comboBox.addItem(Algorithm.DanzigAlgorithm);
+		this.add(panel_combo);
+		this.validate();
 	}
 
 	protected void loadRadioBtn() {
@@ -244,4 +260,14 @@ public class InputScreenMain extends JPanel {
 		restrictionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 	}
+
+	public LinearOptimizationData getInputObject() {
+		return inputObject;
+	}
+
+	public void setInputObject(LinearOptimizationData inputObject) {
+		this.inputObject = inputObject;
+	}
+	
+	
 }
