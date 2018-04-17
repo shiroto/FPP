@@ -1,69 +1,50 @@
 package FPP.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import FPP.LinearOptimization.Model.benders.MasterProblem;
-import FPP.LinearOptimization.Model.benders.SubProblem;
+import FPP.LinearOptimization.Model.benders.Problem;
 
-@SuppressWarnings("deprecation")
 class ProblemTest {
 
 	@Test
-	void test_NoRestriction() {
-		SubProblem problem = new SubProblem(new Double[] {-200d, -50d, -80d, -500d});
-		Double[][] resultRestrictions = problem.getRestrictions();
-		assertEquals(new Double[0][0], resultRestrictions);
-	}
-	
-	@Test
-	void test_WrongRestriction() {
-		SubProblem problem = new SubProblem(new Double[] {-200d, -50d, -80d, -500d});
-		Double[][] resultRestrictions = problem.getRestrictions();
-		assertEquals(new Double[0][0], resultRestrictions);
-	}
-	
-	@Test
-	void test_multipleRestrictions() {
-		Double[] function = new Double[] {-200d, -50d, -80d, -500d};
-		MasterProblem problem = new MasterProblem(function);
-		Double[][] restrictions = {
-				{-3d, 2d, 1d, 10d},
-				{-1d, 2d, 3d, 4d},
-				{4d, -3d, 2d, -1d}};
-		for (Double[] ds : restrictions) {
-			problem.addRestriction(ds);
-		}
+	void test() {
+		// prepare test data
+		Double[] function = {1d, 2d, 3d, 4d, 5d};
+		Double[][] coefficients = new Double[][]{
+			{1d, 2d, 0d, 0d},
+			{1d, 0d, 0d, 0d},
+			{0d, 0d, 1d, 0d},
+			{0d, 0d, 3d, 10d}};
+		Double[][] simplexTableau = new Double[][] {
+			{1d, 2d, 0d, 0d, 200d},
+			{1d, 0d, 0d, 0d, 50d},
+			{0d, 0d, 1d, 0d, 80d},
+			{0d, 0d, 3d, 10d, 500d},
+			function};
+			
+		// init problem
+		Problem problem = new Problem(simplexTableau);
 		
-		Double[] resultFunction = problem.getFunction();
-		Double[][] resultRestrictions = problem.getRestrictions();
-		assertEquals(function, resultFunction);
-		assertEquals(restrictions, resultRestrictions);
-		System.out.println(Arrays.toString(resultFunction));
-		System.out.println(Arrays.deepToString(resultRestrictions));
-	}
-	
-	@Test
-	void test_simplexArray() {
-		Double[] function = new Double[] {-200d, -50d, -80d, -500d};
-		MasterProblem problem = new MasterProblem(function);
-		Double[][] restrictions = {
-				{-3d, 2d, 1d, 10d},
-				{-1d, 2d, 3d, 4d},
-				{4d, -3d, 2d, -1d}};
-		for (Double[] ds : restrictions) {
-			problem.addRestriction(ds);
+		// check if everything is handeled right
+		assertArrayEquals(function, problem.getFunction());
+		System.out.println(Arrays.toString(problem.getFunction()));
+		assertArrayEquals(new Double[] {200d, 50d, 80d, 500d}, problem.getB());
+		System.out.println(Arrays.toString(problem.getB()));
+		int i = 0;
+		for (Double[] coefficient : problem.getCoefficients()) {
+			assertArrayEquals(coefficients[i], coefficient);
+			i++;
 		}
-		
-		Double[][] simplexArray = problem.getSimplexArray();
-		assertEquals(new Double[][] {
-				{-3d, 2d, 1d, 10d},
-				{-1d, 2d, 3d, 4d},
-				{4d, -3d, 2d, -1d},
-				{-200d, -50d, -80d, -500d}}, simplexArray);
-		System.out.println(Arrays.deepToString(simplexArray));
+		System.out.println(Arrays.deepToString(problem.getCoefficients()));
+		i = 0;
+		for (Double[] simplex : problem.getSimplexTableau()) {
+			assertArrayEquals(simplexTableau[i], simplex);
+			i++;
+		}
+		System.out.println(Arrays.deepToString(problem.getSimplexTableau()));
 	}
 }

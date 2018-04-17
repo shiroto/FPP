@@ -14,15 +14,15 @@ public class BendersAlgorithm implements ILinearOptimization {
 	@Override
 	public ILinearOptimizationSolutionData solve(LinearOptimizationData linearOptimizationData) {
 		// TODO convert linearOptimizationData to master and dual sub problem
-		MasterProblem mProblem = new MasterProblem(new Double[] {180d, 1d, 0d});
+		MasterProblem mProblem = new MasterProblem(new Double[][] {{180d, 1d, 0d}});
 //		mProblem.addRestriction(new Double[]{-1d, 0d, 0d}); // add y >= 0 condition
 
 		// dual subproblem
-		SubProblem sProblem = new SubProblem(new Double[] {0d, 0d, 0d, 0d, 0d});
-		sProblem.addRestriction(new Double[]{1d, 2d, 0d, 0d, 200d});
-		sProblem.addRestriction(new Double[]{1d, 0d, 0d, 0d, 50d});
-		sProblem.addRestriction(new Double[]{0d, 0d, 1d, 0d, 80d});
-		sProblem.addRestriction(new Double[]{0d, 0d, 3d, 10d, 500d});
+		Problem sProblem = new Problem(new Double[][] {{0d, 0d, 0d, 0d, 0d}});
+		sProblem.addRestriction(new Double[]{1d, 2d, 0d, 0d}, 200d);
+		sProblem.addRestriction(new Double[]{1d, 0d, 0d, 0d}, 50d);
+		sProblem.addRestriction(new Double[]{0d, 0d, 1d, 0d}, 80d);
+		sProblem.addRestriction(new Double[]{0d, 0d, 3d, 10d}, 500d);
 		
 		// step 0
 		int r = 1;
@@ -45,7 +45,7 @@ public class BendersAlgorithm implements ILinearOptimization {
 		while (true) {
 
 			// step 1
-			Simplex step1 = new Simplex(mProblem.getSimplexArray(), false);
+			Simplex step1 = new Simplex(mProblem.getSimplexTableau(), false);
 			simplexSolution = step1.loese();
 			
 			//check for valid solution
@@ -68,7 +68,7 @@ public class BendersAlgorithm implements ILinearOptimization {
 			
 			// step 2
 			updateSubproblem(sProblem, y);
-			simplexSolution = new Simplex(sProblem.getSimplexArray(), false).loese();
+			simplexSolution = new Simplex(sProblem.getSimplexTableau(), false).loese();
 		
 			u = extractSolutionCoefficients(simplexSolution);
 			
@@ -85,14 +85,14 @@ public class BendersAlgorithm implements ILinearOptimization {
 			
 			cut = calculateCut(sProblem, u);
 			System.out.println("Add Cut " + Arrays.toString(cut) + "\n\n");
-			mProblem.addRestriction(cut);
+			mProblem.addRestriction(cut, 0d); // TODO Martin: brauchen den Zielfunktionswert hier extra
 			
 			r++;
 		}
 		
 		if (optimalY != null ) {
 			Problem originSubWithY = getOriginSubWithY(sProblem, optimalY);
-			simplexSolution = new Simplex(originSubWithY.getSimplexArray(), false).loese();
+			simplexSolution = new Simplex(originSubWithY.getSimplexTableau(), false).loese();
 			
 			u = extractSolutionCoefficients(simplexSolution);
 			
@@ -113,9 +113,9 @@ public class BendersAlgorithm implements ILinearOptimization {
 		return new BendersSolutionData();
 	}
 
-	private Problem getOriginSubWithY(SubProblem sProblem, Double[] optimalY) {
+	private Problem getOriginSubWithY(Problem sProblem, Double[] optimalY) {
 		//TODO implement origin sub should already be accessible..
-		Problem originSubWithY = new SubProblem(new Double[] {200d, 50d, 80d, 500d, 0d});
+		Problem originSubWithY = new Problem(new Double[][] {{200d, 50d, 80d, 500d, 0d}});
 		final int numOfRestrictions = 4;
 		
 		Double[][] restrictions = new Double[numOfRestrictions][];
@@ -128,9 +128,9 @@ public class BendersAlgorithm implements ILinearOptimization {
 		
 		//calculate values for b
 		for (int i = 0; i < numOfRestrictions; i++) {
-			double result = sProblem.getb()[i];
-			for (int j = 0; j < sProblem.getA()[i].length; j++) {
-				result -= sProblem.getA()[i][j] * optimalY[j];
+			double result = sProblem.getB()[i];
+			for (int j = 0; j < sProblem.getCoefficients()[i].length; j++) {
+				result -= sProblem.getCoefficients()[i][j] * optimalY[j];
 			}
 			
 			if (Math.abs(result) < DOUBLE_CORRECTION) {
@@ -140,7 +140,7 @@ public class BendersAlgorithm implements ILinearOptimization {
 		}
 		
 		for (Double[] restriction : restrictions) {
-			originSubWithY.addRestriction(restriction);
+			originSubWithY.addRestriction(restriction, 0d); // TODO Martin: Zielfunktionswert b wegspeichern 
 		}
 		
 		return originSubWithY;
@@ -161,18 +161,18 @@ public class BendersAlgorithm implements ILinearOptimization {
 		return lowerBound;
 	}
 
-	private Double[] calculateCut(SubProblem sProblem, Double[] u) {
+	private Double[] calculateCut(Problem sProblem, Double[] u) {
 		//TODO clarification: is it possible to use double instead of Double??
-		Double[] cut = new Double[sProblem.getA()[0].length + 2];
+		Double[] cut = new Double[sProblem.getCoefficients()[0].length + 2];
 		for (int i = 0; i < cut.length; i++) {
 			cut[i] = 0d;
 		}
 		
 		for (int i = 0; i < u.length; i++) {
-			for (int j = 0; j < sProblem.getA()[i].length; j++) {
-				cut[j] += sProblem.getA()[i][j] * u[i]; //convert >= to <=
+			for (int j = 0; j < sProblem.getCoefficients()[i].length; j++) {
+				cut[j] += sProblem.getCoefficients()[i][j] * u[i]; //convert >= to <=
 			}
-			cut[sProblem.getA()[i].length + 1] += sProblem.getb()[i] * u[i];
+			cut[sProblem.getCoefficients()[i].length + 1] += sProblem.getB()[i] * u[i];
 		}
 		
 		cut[cut.length - 2] = -1d; //coefficient for theta
@@ -180,15 +180,15 @@ public class BendersAlgorithm implements ILinearOptimization {
 		return cut;
 	}
 
-	private void updateSubproblem(SubProblem sProblem, Double[] y) {
+	private void updateSubproblem(Problem sProblem, Double[] y) {
 		Double[] function = new Double[sProblem.getFunction().length];
 		
 		for (int i = 0; i < function.length - 1; i++) {
 			double ayMult = 0d;
-			for (int j = 0; j < sProblem.getA()[i].length; j++) {
-				ayMult = sProblem.getA()[i][j] * y[j];
+			for (int j = 0; j < sProblem.getCoefficients()[i].length; j++) {
+				ayMult = sProblem.getCoefficients()[i][j] * y[j];
 			}
-			function[i] = sProblem.getb()[i] - ayMult;
+			function[i] = sProblem.getB()[i] - ayMult;
 		}
 		
 		function[function.length - 1] = sProblem.getFunction()[function.length - 1]; //set constant to function
