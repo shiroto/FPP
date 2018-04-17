@@ -67,9 +67,9 @@ public class MainFrame {
 		frame.getContentPane().setLayout(new GridLayout(1, 1));
 		tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 		
-		MainScreen mainScreen = new MainScreen();
-		InputScreenBenders bendersScreen = new InputScreenBenders();
-		
+		//MainScreen mainScreen = new MainScreen();
+		InputScreenMain inputScreen = new InputScreenMain();
+		/*
 		mainScreen.setMainFrame(this);
 		
 		tabs.addTab("Main", mainScreen);
@@ -78,10 +78,11 @@ public class MainFrame {
 		mainScreen.setSize(400, 600);
 		mainScreen.setLayout(new GridLayout(0, 1, 50, 50));
 		mainScreen.setBorder(new EmptyBorder(50, 50, 50, 50));
-		bendersScreen.setVisible(true);
-		bendersScreen.setLayout(null);
+		*/
+		inputScreen.setVisible(true);
+		inputScreen.setLayout(null);
 		
-		tabs.addTab("Input", bendersScreen);
+		tabs.addTab("Input", inputScreen);
 		
 
 		//mainScreen.initializeScreen();
