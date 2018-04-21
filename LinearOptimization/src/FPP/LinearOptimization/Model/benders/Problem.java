@@ -3,6 +3,8 @@ package FPP.LinearOptimization.Model.benders;
 import java.util.ArrayList;
 import java.util.List;
 
+import FPP.LinearOptimization.Data.LinearOptimizationDataUtility;
+
 /**
  * This represents the problem in form of a simplex tableau.<br>
  * Functions, coefficients and the objective function values are saved separately,<br>
@@ -34,12 +36,7 @@ public class Problem {
 		int coefficientLength = simplexTableau[0].length-1;
 		int functionLength = simplexTableau[0].length;
 		
-		// extract function of simplex tableau (last line)
-		Double[] function = new Double[functionLength];
-		for (int i = 0; i < functionLength; i++) {
-			function[i] = simplexTableau[restrictionCNT][i];
-		}
-		this.function = function;
+		this.function = LinearOptimizationDataUtility.extractFunction(simplexTableau);
 		
 		if (restrictionCNT > 0) {
 			/*
