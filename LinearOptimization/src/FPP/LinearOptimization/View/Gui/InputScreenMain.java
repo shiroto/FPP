@@ -24,8 +24,9 @@ import FPP.LinearOptimization.Data.Algorithm;
 
 public class InputScreenMain extends JPanel {
 
+	private Double[][] simplexTableau;
 	private JTextField tf_xVariables;
-	//private JTextField tf_yVariables;
+	// private JTextField tf_yVariables;
 	private JTextField tf_restrictions;
 	private JTable restrictionTable;
 	private JTable functionTable;
@@ -36,9 +37,11 @@ public class InputScreenMain extends JPanel {
 	private JPanel panel_combo;
 	private MainFrame mainFrame;
 	private InputScreenBenders inputBenders;
-	
+	private int xVariables;
+	int restrictions;
+
 	public InputScreenMain(MainFrame mainFrame) {
-		this.mainFrame=mainFrame;
+		this.mainFrame = mainFrame;
 		initializeScreen();
 	}
 
@@ -53,7 +56,7 @@ public class InputScreenMain extends JPanel {
 		tf_xVariables = new JTextField();
 		jp_xVariables.add(tf_xVariables);
 		tf_xVariables.setColumns(10);
-		
+
 		JPanel jp_restrictions = new JPanel();
 		jp_restrictions.setBounds(50, 150, 250, 50);
 		this.add(jp_restrictions);
@@ -70,10 +73,10 @@ public class InputScreenMain extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 
 				// TODO: Eingaben prüfen
-				int xVariables = Integer.parseInt(tf_xVariables.getText());
+				xVariables = Integer.parseInt(tf_xVariables.getText());
 				countX = xVariables;
-				//int yVariables = Integer.parseInt(tf_yVariables.getText());
-				int restrictions = Integer.parseInt(tf_restrictions.getText());
+				// int yVariables = Integer.parseInt(tf_yVariables.getText());
+				restrictions = Integer.parseInt(tf_restrictions.getText());
 				restrictionTable = new JTable(restrictions, xVariables + 2);
 				restrictionTable.setBounds(446, 74, 435, 225);
 				restrictionTable.setVisible(true);
@@ -81,10 +84,10 @@ public class InputScreenMain extends JPanel {
 				functionTable = new JTable(1, xVariables);
 				functionTable.setBounds(446, 374, 435, 225);
 				functionTable.setVisible(true);
-				
+
 				restrictionTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 				functionTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
-				
+
 				JTableHeader restTh = restrictionTable.getTableHeader();
 				TableColumnModel restTcm = restTh.getColumnModel();
 				// restriction
@@ -92,7 +95,7 @@ public class InputScreenMain extends JPanel {
 					TableColumn tc = restTcm.getColumn(i - 1);
 					tc.setHeaderValue("x" + i);
 				}
-				TableColumn tc = restTcm.getColumn(xVariables );
+				TableColumn tc = restTcm.getColumn(xVariables);
 				tc.setHeaderValue("OP");
 				tc = restTcm.getColumn(xVariables + 1);
 				tc.setHeaderValue("b");
@@ -113,8 +116,7 @@ public class InputScreenMain extends JPanel {
 					TableColumn funcTc = funcTcm.getColumn(i - 1);
 					funcTc.setHeaderValue("x" + i);
 				}
-				
-				
+
 				loadFunctionTable();
 				loadRadioBtn();
 				loadCombo();
@@ -134,7 +136,7 @@ public class InputScreenMain extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				validateInput();
-				createDataObject();
+				createimplexTableau();
 				inputBenders = new InputScreenBenders();
 				inputBenders.setVisible(true);
 				inputBenders.setLayout(null);
@@ -152,14 +154,13 @@ public class InputScreenMain extends JPanel {
 	protected void loadCombo() {
 		panel_combo = new JPanel();
 		panel_combo.setBounds(50, 250, 250, 100);
-		
-		
+
 		JLabel lblAlgorithmus = new JLabel("Algorithmus");
 		panel_combo.add(lblAlgorithmus);
-		
+
 		JComboBox comboBox = new JComboBox();
 		panel_combo.add(comboBox);
-	
+
 		comboBox.addItem(Algorithm.BendersAlgorithm);
 		comboBox.addItem(Algorithm.DanzigAlgorithm);
 		this.add(panel_combo);
@@ -171,13 +172,12 @@ public class InputScreenMain extends JPanel {
 		bg = new ButtonGroup();
 		panel.setBounds(446, 28, 153, 68);
 
-		
 		JRadioButton rdbtnMin = new JRadioButton("Min");
 		rdbtnMin.setActionCommand("min");
 		rdbtnMin.setSelected(true);
 		JRadioButton rdbtnMax = new JRadioButton("Max");
 		rdbtnMax.setActionCommand("max");
-		
+
 		bg.add(rdbtnMax);
 		bg.add(rdbtnMin);
 		panel.add(rdbtnMin);
@@ -187,28 +187,26 @@ public class InputScreenMain extends JPanel {
 		this.revalidate();
 	}
 
-	protected void createDataObject() {
-		inputObject = new LinearOptimizationData();
-		inputObject.restriction = new Restrictions();
-		inputObject.restriction.coefficients = new double[restrictionTable.getRowCount()][restrictionTable
-				.getColumnCount()-2];
-		inputObject.coefficients = new double[functionTable.getColumnCount()];
-		inputObject.restriction.results = new double[restrictionTable.getRowCount()];
-		inputObject.restriction.comparators = new Comparator[restrictionTable.getRowCount()];
-
+	protected void createimplexTableau() {
+		simplexTableau = new Double[restrictions + 1][xVariables + 1];
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
-			for (int columnId = 0; columnId < restrictionTable.getColumnCount() - 2; columnId++) {
-				inputObject.restriction.coefficients[rowId][columnId] = Double
-						.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId)));
+			for (int columnId = 0; columnId < restrictionTable.getColumnCount()-1; columnId++) {
+				if (columnId != xVariables) {
+					simplexTableau[rowId][columnId] = Double
+							.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId)));
+				} else {
+					simplexTableau[rowId][columnId] = Double
+							.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId+1)));
+				}
 			}
 		}
 		for (int columnId = 0; columnId < functionTable.getColumnCount(); columnId++) {
-			inputObject.coefficients[columnId] = Double.parseDouble(String.valueOf(functionTable.getValueAt(0, columnId)));
+			simplexTableau[restrictions][columnId] = Double
+					.parseDouble(String.valueOf(functionTable.getValueAt(0, columnId)));
 		}
-		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
-			inputObject.restriction.results[rowId] = Double.parseDouble(
-					String.valueOf(restrictionTable.getValueAt(rowId, restrictionTable.getColumnCount() - 1)));
-		}
+		
+		simplexTableau[restrictions][xVariables] = 0.;
+		
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
 			String compAsString = String
 					.valueOf(restrictionTable.getValueAt(rowId, restrictionTable.getColumnCount() - 2));
@@ -223,22 +221,21 @@ public class InputScreenMain extends JPanel {
 			default:
 				comp = Comparator.LESS_OR_EQUAL;
 			}
-			inputObject.restriction.comparators[rowId] = comp;
+			// inputObject.restriction.comparators[rowId] = comp;
 		}
-		inputObject.cx = countX;
-		String selection = bg.getSelection().getActionCommand();
-		switch(selection) {
-		case "min": inputObject.maximize=false; break;
-		case "max": inputObject.maximize=true; break;
-
-		}
+		/*
+		 * inputObject.cx = countX; String selection =
+		 * bg.getSelection().getActionCommand(); switch(selection) { case "min":
+		 * inputObject.maximize=false; break; case "max": inputObject.maximize=true;
+		 * break;
+		 * 
+		 * }
+		 */
 		System.out.println("");
-		
 
 	}
 
 	protected void validateInput() {
-
 
 	}
 
@@ -268,6 +265,5 @@ public class InputScreenMain extends JPanel {
 	public void setInputObject(LinearOptimizationData inputObject) {
 		this.inputObject = inputObject;
 	}
-	
-	
+
 }
