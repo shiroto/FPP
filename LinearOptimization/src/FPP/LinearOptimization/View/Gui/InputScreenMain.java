@@ -136,12 +136,12 @@ public class InputScreenMain extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				validateInput();
-				createimplexTableau();
+				createSimplexTableau();
 				inputBenders = new InputScreenBenders();
 				inputBenders.setVisible(true);
 				inputBenders.setLayout(null);
 				inputBenders.setFunctionTable(functionTable);
-				inputBenders.setInputObject(inputObject);
+				inputBenders.setSimplexTableau(simplexTableau);
 				inputBenders.modifyFunctionTable();
 				mainFrame.getTabs().addTab("Benders Input", inputBenders);
 				mainFrame.setTab(1);
@@ -187,7 +187,7 @@ public class InputScreenMain extends JPanel {
 		this.revalidate();
 	}
 
-	protected void createimplexTableau() {
+	protected void createSimplexTableau() {
 		simplexTableau = new Double[restrictions + 1][xVariables + 1];
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
 			for (int columnId = 0; columnId < restrictionTable.getColumnCount()-1; columnId++) {
