@@ -93,7 +93,7 @@ public class InputScreenBenders extends JPanel {
 				bendersMasterCoefficientType[i] = BendersMasterCoefficientType.Integer;
 				break;
 			case "B":
-				bendersMasterCoefficientType[i] = BendersMasterCoefficientType.Binaer;
+				bendersMasterCoefficientType[i] = BendersMasterCoefficientType.Binary;
 				break;
 			}
 		}

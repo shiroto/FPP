@@ -22,17 +22,6 @@ public class MasterProblem extends Problem {
 	
 	@Override
 	public boolean isSolvableWithBAndB() {
-		/*for (Double f : getFunction()) {
-			// we check if we have floats or ints 
-			int sqrt = (int) Math.round(Math.sqrt(f));
-			if ((sqrt*sqrt) != f) {
-				// one is a float number, so no branch and bound allowed
-				return false;
-			}
-		}
-		// only integers, so branch and bound is allowed here 
-		return true;*/
-		//TODO??
 		for (BendersMasterCoefficientType type : types) {
 			if (type == BendersMasterCoefficientType.Float) return false;
 		}

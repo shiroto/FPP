@@ -308,7 +308,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 				{0d, 0d, -1d, -3d, -0.5d, -2d},
 				{0d, 0d, 0d, -10d, -1d, -6d},
 				{200d, 50d, 80d, 500d, 180d, 0d},};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binaer};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary};
 		// TODO variable index starting from 0 to length-1
 		int[] yVariableIndices = {4};
 		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, yVariableIndices , yTypes);
