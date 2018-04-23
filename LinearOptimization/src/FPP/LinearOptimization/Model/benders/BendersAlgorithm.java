@@ -8,6 +8,8 @@ import FPP.LinearOptimization.Data.BendersOptimizationData;
 import FPP.LinearOptimization.Data.IBendersOptimizationSolutionData;
 import FPP.LinearOptimization.Data.LinearOptimizationDataUtility;
 import FPP.LinearOptimization.Model.IBendersOptimization;
+import de.bb.labor.BranchAndBound;
+import de.bb.labor.Tableau;
 import de.lip.bb.Simplex;
 
 public class BendersAlgorithm implements IBendersOptimization {
@@ -35,35 +37,34 @@ public class BendersAlgorithm implements IBendersOptimization {
 			u[i] = 0d;
 		}
 		Double[] cut = calculateCut(subProblem, u);
-		masterProblem.addRestriction(Arrays.copyOf(cut, cut.length - 1), cut[cut.length - 1]);
+		addCut(masterProblem, cut);
 		
-		Double[] simplexSolution;
+		Double[] solution;
 		Double[] optimalY = null;
 		while (true) {
 
 			// step 1
-			Simplex step1 = new Simplex(masterProblem.getSimplexTableau(), false);
-			simplexSolution = step1.loese();
+			solution = solveProblem(masterProblem, true);
 			
 			//check for valid solution
-			if (simplexSolution[simplexSolution.length - 1] == 0) {
+			if (solution[solution.length - 1] == 0) {
 				//TODO what should happen here?
 				//no solution existing
 				break;
 			}
 		
-			UB = simplexSolution[simplexSolution.length - 2] * (-1);
+			UB = solution[solution.length - 2];
 			
-			Double[] y = extractSolutionCoefficients(simplexSolution);
+			Double[] y = extractSolutionCoefficients(solution);
 			
 			// step 2
 			updateSubproblem(subProblem, dualProblem, y);
-			simplexSolution = new Simplex(dualProblem.getSimplexTableau(), false).loese();
+			solution = solveProblem(dualProblem, false);
 		
-			u = extractSolutionCoefficients(simplexSolution);
+			u = extractSolutionCoefficients(solution);
 			
 			// step 3 
-			LB = calculateLowerBound(masterProblem, y, simplexSolution[simplexSolution.length - 2]);
+			LB = calculateLowerBound(masterProblem, y, solution[solution.length - 2]);
 
 			//add output
 			System.out.println("r = " + r + "\t LB = " + LB + "\t UB = " + UB);
@@ -75,19 +76,18 @@ public class BendersAlgorithm implements IBendersOptimization {
 			
 			cut = calculateCut(subProblem, u);
 			System.out.println("Add Cut " + Arrays.toString(cut) + "\n\n");
-//			masterProblem.addRestriction(cut, 0d); // TODO Martin: brauchen den Zielfunktionswert hier extra
-			masterProblem.addRestriction(Arrays.copyOf(cut, cut.length - 1), cut[cut.length - 1]);
+			addCut(masterProblem, cut);
 			
 			r++;
 		}
 		
 		if (optimalY != null ) {
 			Problem originSubWithY = getOriginSubWithY(subProblem, optimalY);
-			simplexSolution = new Simplex(originSubWithY.getSimplexTableau(), false).loese();
+			solution = new Simplex(originSubWithY.getSimplexTableau(), false).loese();
 			
-			u = extractSolutionCoefficients(simplexSolution);
+			u = extractSolutionCoefficients(solution);
 			
-			System.out.println("\n\nOptimal Solution = " + simplexSolution[simplexSolution.length - 2] * (-1));
+			System.out.println("\n\nOptimal Solution = " + solution[solution.length - 2] * (-1));
 			System.out.print("Coefficients = [");
 			String coefficients = "";
 			for (int i = 0; i < u.length; i++) {
@@ -102,6 +102,24 @@ public class BendersAlgorithm implements IBendersOptimization {
 		}
 		
 		return new BendersSolutionData();
+	}
+	
+	private Double[] solveProblem(Problem problem, boolean max) {
+		if (problem.isSolvableWithBAndB()) {
+			Tableau tableau = new Tableau(problem.getSimplexTableau());
+			
+			//TODO if no solution -> index out of bound!
+			return new BranchAndBound(tableau, max).getLoesungsListe().get(0);
+		} else {
+			return new Simplex(problem.getSimplexTableau(), max).loese();
+		}
+	}
+	
+	private void addCut(MasterProblem masterProblem, Double[] cut) {
+		Double[] coefficients = Arrays.copyOf(cut, cut.length - 1);
+		Double functionValue = cut[cut.length - 1];
+		
+		masterProblem.addRestriction(coefficients, functionValue);
 	}
 
 	private MasterProblem createMasterProblem(BendersOptimizationData bendersOptimizationData) {
@@ -233,7 +251,6 @@ public class BendersAlgorithm implements IBendersOptimization {
 	}
 
 	private Double[] calculateCut(SubProblem sProblem, Double[] u) {
-		//TODO clarification: is it possible to use double instead of Double??
 		Double[] cut = new Double[sProblem.getCoefficientsY()[0].length + 2];
 		for (int i = 0; i < cut.length; i++) {
 			cut[i] = 0d;
@@ -274,7 +291,8 @@ public class BendersAlgorithm implements IBendersOptimization {
 				{0d, 0d, -1d, -3d, -0.5d, -2d},
 				{0d, 0d, 0d, -10d, -1d, -6d},
 				{200d, 50d, 80d, 500d, 180d, 0d},};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binaer};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Float};
+		
 		// TODO variable index starting from 0 to length-1
 		int[] yVariableIndices = {4};
 		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, yVariableIndices , yTypes);
