@@ -13,10 +13,10 @@ import FPP.LinearOptimization.Data.IBendersOptimizationSolutionData;
  */
 public class BendersSolutionData implements IBendersOptimizationSolutionData {
 
-	public BendersOptimizationData bendersOptimizationData;
-	public List<BendersStepData> steps = new LinkedList<BendersStepData>();
-	public Double[] optSolution;
-	public String addInfo;
+	private BendersOptimizationData bendersOptimizationData;
+	private List<BendersStepData> steps = new LinkedList<BendersStepData>();
+	private Double[] optSolution;
+	private String addInfo;
 	
 	public BendersSolutionData(BendersOptimizationData bendersOptimizationData) {
 		this.bendersOptimizationData = bendersOptimizationData;
