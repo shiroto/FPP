@@ -9,6 +9,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -17,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
 import FPP.LinearOptimization.Data.Comparator;
 import FPP.LinearOptimization.Data.LinearOptimizationData;
 import FPP.LinearOptimization.Data.Restrictions;
@@ -73,6 +75,8 @@ public class InputScreenMain extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 
 				// TODO: Eingaben prüfen
+				if (!validateInput())
+					return;
 				xVariables = Integer.parseInt(tf_xVariables.getText());
 				countX = xVariables;
 				// int yVariables = Integer.parseInt(tf_yVariables.getText());
@@ -135,7 +139,8 @@ public class InputScreenMain extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				validateInput();
+				if(!validateTableInput())
+					return;
 				createSimplexTableau();
 				inputBenders = new InputScreenBenders();
 				inputBenders.setVisible(true);
@@ -146,9 +151,31 @@ public class InputScreenMain extends JPanel {
 				mainFrame.getTabs().addTab("Benders Input", inputBenders);
 				mainFrame.setTab(1);
 			}
+
 		});
 		this.add(btnSubmit);
 
+	}
+
+	protected boolean validateTableInput() {
+		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
+			for (int columnId = 0; columnId < restrictionTable.getColumnCount() - 1; columnId++) {
+				if (columnId != xVariables) {
+					if (Helper.isNumeric(String.valueOf(restrictionTable.getValueAt(rowId, columnId)))) {
+						JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
+						return false;
+					}
+
+				}
+			}
+		}
+		for (int columnId = 0; columnId < functionTable.getColumnCount(); columnId++) {
+			if (Helper.isNumeric(String.valueOf(functionTable.getValueAt(0, columnId)))) {
+				JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	protected void loadCombo() {
@@ -190,13 +217,13 @@ public class InputScreenMain extends JPanel {
 	protected void createSimplexTableau() {
 		simplexTableau = new Double[restrictions + 1][xVariables + 1];
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
-			for (int columnId = 0; columnId < restrictionTable.getColumnCount()-1; columnId++) {
+			for (int columnId = 0; columnId < restrictionTable.getColumnCount() - 1; columnId++) {
 				if (columnId != xVariables) {
 					simplexTableau[rowId][columnId] = Double
 							.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId)));
 				} else {
 					simplexTableau[rowId][columnId] = Double
-							.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId+1)));
+							.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId + 1)));
 				}
 			}
 		}
@@ -204,9 +231,9 @@ public class InputScreenMain extends JPanel {
 			simplexTableau[restrictions][columnId] = Double
 					.parseDouble(String.valueOf(functionTable.getValueAt(0, columnId)));
 		}
-		
+
 		simplexTableau[restrictions][xVariables] = 0.;
-		
+
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
 			String compAsString = String
 					.valueOf(restrictionTable.getValueAt(rowId, restrictionTable.getColumnCount() - 2));
@@ -235,8 +262,12 @@ public class InputScreenMain extends JPanel {
 
 	}
 
-	protected void validateInput() {
-
+	protected boolean validateInput() {
+		if (!Helper.isInteger(tf_restrictions.getText()) || !Helper.isNumeric(tf_xVariables.getText())) {
+			JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
+			return false;
+		} else
+			return true;
 	}
 
 	protected void loadFunctionTable() {
