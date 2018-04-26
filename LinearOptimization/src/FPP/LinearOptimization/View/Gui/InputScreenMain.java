@@ -3,6 +3,7 @@ package FPP.LinearOptimization.View.Gui;
 import java.awt.AWTException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
@@ -41,6 +42,8 @@ public class InputScreenMain extends JPanel {
 	private InputScreenBenders inputBenders;
 	private int xVariables;
 	int restrictions;
+	private JRadioButton rdbtnMin = new JRadioButton("Min");
+	private JRadioButton rdbtnMax = new JRadioButton("Max");
 
 	public InputScreenMain(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -161,7 +164,7 @@ public class InputScreenMain extends JPanel {
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
 			for (int columnId = 0; columnId < restrictionTable.getColumnCount() - 1; columnId++) {
 				if (columnId != xVariables) {
-					if (Helper.isNumeric(String.valueOf(restrictionTable.getValueAt(rowId, columnId)))) {
+					if (!Helper.isNumeric(String.valueOf(restrictionTable.getValueAt(rowId, columnId)))) {
 						JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
 						return false;
 					}
@@ -170,7 +173,7 @@ public class InputScreenMain extends JPanel {
 			}
 		}
 		for (int columnId = 0; columnId < functionTable.getColumnCount(); columnId++) {
-			if (Helper.isNumeric(String.valueOf(functionTable.getValueAt(0, columnId)))) {
+			if (!Helper.isNumeric(String.valueOf(functionTable.getValueAt(0, columnId)))) {
 				JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
 				return false;
 			}
@@ -199,11 +202,9 @@ public class InputScreenMain extends JPanel {
 		bg = new ButtonGroup();
 		panel.setBounds(446, 28, 153, 68);
 
-		JRadioButton rdbtnMin = new JRadioButton("Min");
 		rdbtnMin.setActionCommand("min");
-		rdbtnMin.setSelected(true);
-		JRadioButton rdbtnMax = new JRadioButton("Max");
 		rdbtnMax.setActionCommand("max");
+		rdbtnMax.setSelected(true);
 
 		bg.add(rdbtnMax);
 		bg.add(rdbtnMin);
@@ -231,7 +232,9 @@ public class InputScreenMain extends JPanel {
 			simplexTableau[restrictions][columnId] = Double
 					.parseDouble(String.valueOf(functionTable.getValueAt(0, columnId)));
 		}
-
+		
+		//ToDo: Schlupfvariable hinzufügen in tabelle?
+		
 		simplexTableau[restrictions][xVariables] = 0.;
 
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
@@ -240,16 +243,24 @@ public class InputScreenMain extends JPanel {
 			Comparator comp;
 			switch (compAsString) {
 			case "<=":
-				comp = Comparator.LESS_OR_EQUAL;
 				break;
 			case ">=":
-				comp = Comparator.MORE_OR_EQUAL;
+				//Umformung in Standardform falls größer gleich
+				for (int entry = 0; entry < xVariables + 1; entry++) {
+					simplexTableau[rowId][entry] = simplexTableau[rowId][entry] * (-1);
+				}
 				break;
-			default:
-				comp = Comparator.LESS_OR_EQUAL;
 			}
-			// inputObject.restriction.comparators[rowId] = comp;
 		}
+		//Umformung der Zielfunktion, falls Minimierungsproblem ausgewählt wurde
+		if(rdbtnMin.isSelected()) {
+			for (int entry = 0; entry < xVariables; entry++) {
+				simplexTableau[restrictions][entry] = simplexTableau[restrictions][entry] * (-1);
+			}
+		}
+		System.out.println("SimplexTableau fertiggestellt");
+		System.out.println(Arrays.deepToString(simplexTableau));
+		
 		/*
 		 * inputObject.cx = countX; String selection =
 		 * bg.getSelection().getActionCommand(); switch(selection) { case "min":
