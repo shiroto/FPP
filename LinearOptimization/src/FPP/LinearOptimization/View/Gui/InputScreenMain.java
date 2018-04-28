@@ -33,9 +33,14 @@ public class InputScreenMain extends JPanel {
 	private JTextField tf_restrictions;
 	private JTable restrictionTable;
 	private JTable functionTable;
+	private JScrollPane scrollPaneRestrictions;
+	private JScrollPane scrollPaneFunction;
 	private JButton btnSubmit;
 	private LinearOptimizationData inputObject;
+	private JTextField tf_functionConstant;
+	private JLabel lb_functionConstant;
 	private int countX;
+	private JPanel panel;
 	private ButtonGroup bg;
 	private JPanel panel_combo;
 	private MainFrame mainFrame;
@@ -76,10 +81,10 @@ public class InputScreenMain extends JPanel {
 		JButton btnInput = new JButton("Input");
 		btnInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				// TODO: Eingaben prüfen
 				if (!validateInput())
 					return;
+				reset();
 				xVariables = Integer.parseInt(tf_xVariables.getText());
 				countX = xVariables;
 				// int yVariables = Integer.parseInt(tf_yVariables.getText());
@@ -91,6 +96,15 @@ public class InputScreenMain extends JPanel {
 				functionTable = new JTable(1, xVariables);
 				functionTable.setBounds(446, 374, 435, 225);
 				functionTable.setVisible(true);
+
+				tf_functionConstant = new JTextField();
+				tf_functionConstant.setBounds(1020, 145, 45, 25);
+				tf_functionConstant.setText("0");
+
+				lb_functionConstant = new JLabel();
+				lb_functionConstant.setLocation(922, 140);
+				lb_functionConstant.setBounds(950, 130, 250, 50);
+				lb_functionConstant.setText("Konstante: ");
 
 				restrictionTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 				functionTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -127,6 +141,8 @@ public class InputScreenMain extends JPanel {
 				loadFunctionTable();
 				loadRadioBtn();
 				loadCombo();
+				revalidate();
+				repaint();
 
 			}
 
@@ -142,7 +158,7 @@ public class InputScreenMain extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!validateTableInput())
+				if (!validateTableInput())
 					return;
 				createSimplexTableau();
 				inputBenders = new InputScreenBenders();
@@ -158,6 +174,20 @@ public class InputScreenMain extends JPanel {
 		});
 		this.add(btnSubmit);
 
+	}
+
+	private void reset() {
+		if (panel_combo != null) {
+			this.remove(panel_combo);
+			scrollPaneFunction.removeAll();
+			scrollPaneRestrictions.removeAll();
+			this.remove(scrollPaneFunction);
+			this.remove(scrollPaneRestrictions);
+			this.remove(panel);
+			this.remove(restrictionTable);
+			this.revalidate();
+			this.repaint();
+		}
 	}
 
 	protected boolean validateTableInput() {
@@ -198,7 +228,7 @@ public class InputScreenMain extends JPanel {
 	}
 
 	protected void loadRadioBtn() {
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		bg = new ButtonGroup();
 		panel.setBounds(446, 28, 153, 68);
 
@@ -232,10 +262,9 @@ public class InputScreenMain extends JPanel {
 			simplexTableau[restrictions][columnId] = Double
 					.parseDouble(String.valueOf(functionTable.getValueAt(0, columnId)));
 		}
-		
-		//ToDo: Schlupfvariable hinzufügen in tabelle?
-		
-		simplexTableau[restrictions][xVariables] = 0.;
+
+		//Tom Edit 28.04: Letze Zelle = Schlupfvariable
+		simplexTableau[restrictions][xVariables] = Double.parseDouble(tf_functionConstant.getText());
 
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
 			String compAsString = String
@@ -245,22 +274,22 @@ public class InputScreenMain extends JPanel {
 			case "<=":
 				break;
 			case ">=":
-				//Umformung in Standardform falls größer gleich
+				// Umformung in Standardform falls größer gleich
 				for (int entry = 0; entry < xVariables + 1; entry++) {
 					simplexTableau[rowId][entry] = simplexTableau[rowId][entry] * (-1);
 				}
 				break;
 			}
 		}
-		//Umformung der Zielfunktion, falls Minimierungsproblem ausgewählt wurde
-		if(rdbtnMin.isSelected()) {
+		// Umformung der Zielfunktion, falls Minimierungsproblem ausgewählt wurde
+		if (rdbtnMin.isSelected()) {
 			for (int entry = 0; entry < xVariables; entry++) {
 				simplexTableau[restrictions][entry] = simplexTableau[restrictions][entry] * (-1);
 			}
 		}
 		System.out.println("SimplexTableau fertiggestellt");
 		System.out.println(Arrays.deepToString(simplexTableau));
-		
+
 		/*
 		 * inputObject.cx = countX; String selection =
 		 * bg.getSelection().getActionCommand(); switch(selection) { case "min":
@@ -282,21 +311,23 @@ public class InputScreenMain extends JPanel {
 	}
 
 	protected void loadFunctionTable() {
-		JScrollPane scrollPane = new JScrollPane(functionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		scrollPaneFunction = new JScrollPane(functionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setBounds(399, 128, 523, 50);
-		this.add(scrollPane);
+		scrollPaneFunction.setBounds(399, 128, 523, 60);
+		this.add(scrollPaneFunction);
 		functionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		scrollPane.setBorder(null);
-		scrollPane.repaint();
+		scrollPaneFunction.setBorder(null);
+		scrollPaneFunction.repaint();
+		this.add(tf_functionConstant);
+		this.add(lb_functionConstant);
 
 	}
 
 	protected void loadProblemTable() {
-		JScrollPane scrollPane = new JScrollPane(restrictionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		scrollPaneRestrictions = new JScrollPane(restrictionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setBounds(399, 200, 523, 325);
-		this.add(scrollPane);
+		scrollPaneRestrictions.setBounds(399, 200, 523, 325);
+		this.add(scrollPaneRestrictions);
 		restrictionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 	}
