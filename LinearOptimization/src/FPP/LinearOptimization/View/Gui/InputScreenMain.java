@@ -162,7 +162,7 @@ public class InputScreenMain extends JPanel {
 
 	protected boolean validateTableInput() {
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
-			for (int columnId = 0; columnId < restrictionTable.getColumnCount() - 1; columnId++) {
+			for (int columnId = 0; columnId < restrictionTable.getColumnCount(); columnId++) {
 				if (columnId != xVariables) {
 					if (!Helper.isNumeric(String.valueOf(restrictionTable.getValueAt(rowId, columnId)))) {
 						JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
@@ -288,6 +288,7 @@ public class InputScreenMain extends JPanel {
 		this.add(scrollPane);
 		functionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollPane.setBorder(null);
+		scrollPane.repaint();
 
 	}
 
