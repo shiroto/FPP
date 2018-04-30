@@ -311,6 +311,13 @@ public class InputScreenMain extends JPanel {
 	}
 
 	protected void loadFunctionTable() {
+		JPanel functionPanel = new JPanel();
+		functionPanel.setBounds(310, 100, 250, 20);
+		this.add(functionPanel);
+
+		JLabel functionLabel = new JLabel("Zielfunktion");
+		functionPanel.add(functionLabel);
+		
 		scrollPaneFunction = new JScrollPane(functionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneFunction.setBounds(399, 128, 523, 60);
@@ -324,9 +331,16 @@ public class InputScreenMain extends JPanel {
 	}
 
 	protected void loadProblemTable() {
+		JPanel problemPanel = new JPanel();
+		problemPanel.setBounds(310, 210, 250, 20);
+		this.add(problemPanel);
+
+		JLabel problemLabel = new JLabel("Restriktionen");
+		problemPanel.add(problemLabel);
+		
 		scrollPaneRestrictions = new JScrollPane(restrictionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneRestrictions.setBounds(399, 200, 523, 325);
+		scrollPaneRestrictions.setBounds(399, 250, 523, 325);
 		this.add(scrollPaneRestrictions);
 		restrictionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
