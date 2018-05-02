@@ -40,12 +40,12 @@ public class InputScreenBenders extends JPanel {
 	}
 
 	private void initializeScreen() {
-		JPanel problemPanel = new JPanel();
-		problemPanel.setBounds(-120, 40, 600, 20);
-		this.add(problemPanel);
+		JPanel bendersPanel = new JPanel();
+		bendersPanel.setBounds(-120, 40, 600, 20);
+		this.add(bendersPanel);
 
-		JLabel problemLabel = new JLabel("Definition von x, y-Variablen und deren Werten:");
-		problemPanel.add(problemLabel);
+		JLabel bendersLabel = new JLabel("Definition von x, y-Variablen und deren Werten:");
+		bendersPanel.add(bendersLabel);
 		
 		panel_defTable = new JPanel();
 		panel_defTable.setLayout(new BorderLayout());
