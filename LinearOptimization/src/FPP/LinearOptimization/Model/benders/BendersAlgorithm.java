@@ -296,8 +296,11 @@ public class BendersAlgorithm implements IBendersOptimization {
 		
 		// TODO variable index starting from 0 to length-1
 		int[] yVariableIndices = {4};
-		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, yVariableIndices , yTypes);
-		
+		// TODO Dominik: specify paramaterNegativeIndices
+		int[] paramaterNegativeIndices = {};
+		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, 
+				paramaterNegativeIndices, yVariableIndices, yTypes);
+		//
 		new BendersAlgorithm().solve(testBenders);
 //		new BendersAlgorithm().testMasterSubSplit();
 	}
@@ -312,8 +315,11 @@ public class BendersAlgorithm implements IBendersOptimization {
 		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary};
 		// TODO variable index starting from 0 to length-1
 		int[] yVariableIndices = {4};
-		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, yVariableIndices , yTypes);
-		
+		int[] paramaterNegativeIndices = {};
+		// TODO Dominik: specify paramaterNegativeIndices
+		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, 
+				paramaterNegativeIndices, yVariableIndices, yTypes);
+
 		System.out.println("Input SimplexTableau");
 		System.out.println(Arrays.deepToString(simplexTableau));
 		
