@@ -18,6 +18,9 @@ public class BendersAlgorithm implements IBendersOptimization {
 
 	@Override
 	public IBendersOptimizationSolutionData solve(BendersOptimizationData bendersOptimizationData) {
+		// initialize the solution object
+		BendersSolutionData bendersSolution = new BendersSolutionData(bendersOptimizationData);
+		
 		// TODO convert not-negativities, not possible to determine whether x is >= or <=
 //		bendersOptimizationData.setSimplexTableau(LinearOptimizationDataUtility.convertNotNegativity(bendersOptimizationData.getSimplexTableau()));
 		
@@ -42,7 +45,8 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Double[] solution;
 		Double[] optimalY = null;
 		while (true) {
-
+			BendersStepData stepData = new BendersStepData(r);
+			
 			// step 1
 			solution = solveProblem(masterProblem, true);
 			
@@ -52,15 +56,19 @@ public class BendersAlgorithm implements IBendersOptimization {
 				//no solution existing
 				break;
 			}
-		
+			stepData.setMasterSolution(solution);
+			
 			UB = solution[solution.length - 2];
 			
 			Double[] y = extractSolutionCoefficients(solution);
 			
 			// step 2
 			updateSubproblem(subProblem, dualProblem, y);
+			stepData.setSubProblem(subProblem.getSimplexTableau());
+			
 			solution = solveProblem(dualProblem, false);
-		
+			stepData.setSubSolution(solution);
+			
 			u = extractSolutionCoefficients(solution);
 			
 			// step 3 
@@ -68,6 +76,8 @@ public class BendersAlgorithm implements IBendersOptimization {
 
 			//add output
 			System.out.println("r = " + r + "\t LB = " + LB + "\t UB = " + UB);
+			stepData.setLowerBound(LB);
+			stepData.setUpperBound(UB);
 			
 			if (LB + DOUBLE_CORRECTION >= UB) {
 				optimalY = y;
@@ -78,13 +88,16 @@ public class BendersAlgorithm implements IBendersOptimization {
 			System.out.println("Add Cut " + Arrays.toString(cut) + "\n\n");
 			addCut(masterProblem, cut);
 			
+			stepData.setMasterProblem(masterProblem.getSimplexTableau());
+			bendersSolution.addStep(stepData);
 			r++;
 		}
 		
 		if (optimalY != null ) {
 			Problem originSubWithY = getOriginSubWithY(subProblem, optimalY);
 			solution = new Simplex(originSubWithY.getSimplexTableau(), false).loese();
-			
+			bendersSolution.setOptSolution(solution);
+
 			u = extractSolutionCoefficients(solution);
 			
 			System.out.println("\n\nOptimal Solution = " + solution[solution.length - 2] * (-1));
@@ -100,8 +113,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			
 			System.out.print(coefficients.substring(0, coefficients.length() - 2) + "]");
 		}
-		
-		return new BendersSolutionData();
+		return bendersSolution;
 	}
 	
 	private Double[] solveProblem(Problem problem, boolean max) {

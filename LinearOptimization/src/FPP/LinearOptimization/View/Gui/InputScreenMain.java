@@ -3,12 +3,14 @@ package FPP.LinearOptimization.View.Gui;
 import java.awt.AWTException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -17,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
 import FPP.LinearOptimization.Data.Comparator;
 import FPP.LinearOptimization.Data.LinearOptimizationData;
 import FPP.LinearOptimization.Data.Restrictions;
@@ -30,15 +33,22 @@ public class InputScreenMain extends JPanel {
 	private JTextField tf_restrictions;
 	private JTable restrictionTable;
 	private JTable functionTable;
+	private JScrollPane scrollPaneRestrictions;
+	private JScrollPane scrollPaneFunction;
 	private JButton btnSubmit;
 	private LinearOptimizationData inputObject;
+	private JTextField tf_functionConstant;
+	private JLabel lb_functionConstant;
 	private int countX;
+	private JPanel panel;
 	private ButtonGroup bg;
 	private JPanel panel_combo;
 	private MainFrame mainFrame;
 	private InputScreenBenders inputBenders;
 	private int xVariables;
 	int restrictions;
+	private JRadioButton rdbtnMin = new JRadioButton("Min");
+	private JRadioButton rdbtnMax = new JRadioButton("Max");
 
 	public InputScreenMain(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -71,8 +81,10 @@ public class InputScreenMain extends JPanel {
 		JButton btnInput = new JButton("Input");
 		btnInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				// TODO: Eingaben prüfen
+				if (!validateInput())
+					return;
+				reset();
 				xVariables = Integer.parseInt(tf_xVariables.getText());
 				countX = xVariables;
 				// int yVariables = Integer.parseInt(tf_yVariables.getText());
@@ -84,6 +96,15 @@ public class InputScreenMain extends JPanel {
 				functionTable = new JTable(1, xVariables);
 				functionTable.setBounds(446, 374, 435, 225);
 				functionTable.setVisible(true);
+
+				tf_functionConstant = new JTextField();
+				tf_functionConstant.setBounds(1020, 145, 45, 25);
+				tf_functionConstant.setText("0");
+
+				lb_functionConstant = new JLabel();
+				lb_functionConstant.setLocation(922, 140);
+				lb_functionConstant.setBounds(950, 130, 250, 50);
+				lb_functionConstant.setText("Konstante: ");
 
 				restrictionTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 				functionTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -120,6 +141,8 @@ public class InputScreenMain extends JPanel {
 				loadFunctionTable();
 				loadRadioBtn();
 				loadCombo();
+				revalidate();
+				repaint();
 
 			}
 
@@ -135,7 +158,8 @@ public class InputScreenMain extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				validateInput();
+				if (!validateTableInput())
+					return;
 				createSimplexTableau();
 				inputBenders = new InputScreenBenders();
 				inputBenders.setVisible(true);
@@ -146,9 +170,45 @@ public class InputScreenMain extends JPanel {
 				mainFrame.getTabs().addTab("Benders Input", inputBenders);
 				mainFrame.setTab(1);
 			}
+
 		});
 		this.add(btnSubmit);
 
+	}
+
+	private void reset() {
+		if (panel_combo != null) {
+			this.remove(panel_combo);
+			scrollPaneFunction.removeAll();
+			scrollPaneRestrictions.removeAll();
+			this.remove(scrollPaneFunction);
+			this.remove(scrollPaneRestrictions);
+			this.remove(panel);
+			this.remove(restrictionTable);
+			this.revalidate();
+			this.repaint();
+		}
+	}
+
+	protected boolean validateTableInput() {
+		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
+			for (int columnId = 0; columnId < restrictionTable.getColumnCount(); columnId++) {
+				if (columnId != xVariables) {
+					if (!Helper.isNumeric(String.valueOf(restrictionTable.getValueAt(rowId, columnId)))) {
+						JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
+						return false;
+					}
+
+				}
+			}
+		}
+		for (int columnId = 0; columnId < functionTable.getColumnCount(); columnId++) {
+			if (!Helper.isNumeric(String.valueOf(functionTable.getValueAt(0, columnId)))) {
+				JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	protected void loadCombo() {
@@ -168,15 +228,13 @@ public class InputScreenMain extends JPanel {
 	}
 
 	protected void loadRadioBtn() {
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		bg = new ButtonGroup();
 		panel.setBounds(446, 28, 153, 68);
 
-		JRadioButton rdbtnMin = new JRadioButton("Min");
 		rdbtnMin.setActionCommand("min");
-		rdbtnMin.setSelected(true);
-		JRadioButton rdbtnMax = new JRadioButton("Max");
 		rdbtnMax.setActionCommand("max");
+		rdbtnMax.setSelected(true);
 
 		bg.add(rdbtnMax);
 		bg.add(rdbtnMin);
@@ -190,13 +248,13 @@ public class InputScreenMain extends JPanel {
 	protected void createSimplexTableau() {
 		simplexTableau = new Double[restrictions + 1][xVariables + 1];
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
-			for (int columnId = 0; columnId < restrictionTable.getColumnCount()-1; columnId++) {
+			for (int columnId = 0; columnId < restrictionTable.getColumnCount() - 1; columnId++) {
 				if (columnId != xVariables) {
 					simplexTableau[rowId][columnId] = Double
 							.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId)));
 				} else {
 					simplexTableau[rowId][columnId] = Double
-							.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId+1)));
+							.parseDouble(String.valueOf(restrictionTable.getValueAt(rowId, columnId + 1)));
 				}
 			}
 		}
@@ -204,25 +262,34 @@ public class InputScreenMain extends JPanel {
 			simplexTableau[restrictions][columnId] = Double
 					.parseDouble(String.valueOf(functionTable.getValueAt(0, columnId)));
 		}
-		
-		simplexTableau[restrictions][xVariables] = 0.;
-		
+
+		//Tom Edit 28.04: Letze Zelle = Schlupfvariable
+		simplexTableau[restrictions][xVariables] = Double.parseDouble(tf_functionConstant.getText());
+
 		for (int rowId = 0; rowId < restrictionTable.getRowCount(); rowId++) {
 			String compAsString = String
 					.valueOf(restrictionTable.getValueAt(rowId, restrictionTable.getColumnCount() - 2));
 			Comparator comp;
 			switch (compAsString) {
 			case "<=":
-				comp = Comparator.LESS_OR_EQUAL;
 				break;
 			case ">=":
-				comp = Comparator.MORE_OR_EQUAL;
+				// Umformung in Standardform falls größer gleich
+				for (int entry = 0; entry < xVariables + 1; entry++) {
+					simplexTableau[rowId][entry] = simplexTableau[rowId][entry] * (-1);
+				}
 				break;
-			default:
-				comp = Comparator.LESS_OR_EQUAL;
 			}
-			// inputObject.restriction.comparators[rowId] = comp;
 		}
+		// Umformung der Zielfunktion, falls Minimierungsproblem ausgewählt wurde
+		if (rdbtnMin.isSelected()) {
+			for (int entry = 0; entry < xVariables; entry++) {
+				simplexTableau[restrictions][entry] = simplexTableau[restrictions][entry] * (-1);
+			}
+		}
+		System.out.println("SimplexTableau fertiggestellt");
+		System.out.println(Arrays.deepToString(simplexTableau));
+
 		/*
 		 * inputObject.cx = countX; String selection =
 		 * bg.getSelection().getActionCommand(); switch(selection) { case "min":
@@ -235,25 +302,46 @@ public class InputScreenMain extends JPanel {
 
 	}
 
-	protected void validateInput() {
-
+	protected boolean validateInput() {
+		if (!Helper.isInteger(tf_restrictions.getText()) || !Helper.isNumeric(tf_xVariables.getText())) {
+			JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
+			return false;
+		} else
+			return true;
 	}
 
 	protected void loadFunctionTable() {
-		JScrollPane scrollPane = new JScrollPane(functionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JPanel functionPanel = new JPanel();
+		functionPanel.setBounds(310, 100, 250, 20);
+		this.add(functionPanel);
+
+		JLabel functionLabel = new JLabel("Zielfunktion");
+		functionPanel.add(functionLabel);
+		
+		scrollPaneFunction = new JScrollPane(functionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setBounds(399, 128, 523, 50);
-		this.add(scrollPane);
+		scrollPaneFunction.setBounds(399, 128, 523, 60);
+		this.add(scrollPaneFunction);
 		functionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		scrollPane.setBorder(null);
+		scrollPaneFunction.setBorder(null);
+		scrollPaneFunction.repaint();
+		this.add(tf_functionConstant);
+		this.add(lb_functionConstant);
 
 	}
 
 	protected void loadProblemTable() {
-		JScrollPane scrollPane = new JScrollPane(restrictionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JPanel problemPanel = new JPanel();
+		problemPanel.setBounds(310, 210, 250, 20);
+		this.add(problemPanel);
+
+		JLabel problemLabel = new JLabel("Restriktionen");
+		problemPanel.add(problemLabel);
+		
+		scrollPaneRestrictions = new JScrollPane(restrictionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setBounds(399, 200, 523, 325);
-		this.add(scrollPane);
+		scrollPaneRestrictions.setBounds(399, 250, 523, 325);
+		this.add(scrollPaneRestrictions);
 		restrictionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 	}

@@ -5,6 +5,7 @@ import FPP.LinearOptimization.Model.benders.BendersMasterCoefficientType;
 public class BendersOptimizationData extends LinearOptimizationData {
 	
 	private int[] yVariableIndices;
+	private int[] paramaterNegativeIndices;
 	private BendersMasterCoefficientType[] yTypes;
 	
 	/**
@@ -21,12 +22,14 @@ public class BendersOptimizationData extends LinearOptimizationData {
 	 * Function must be minimizer
 	 * 
 	 * @param simplexTableau
-	 * @param yVariables
+	 * @param paramaterNegativeIndices
+	 * @param yVariableIndices
 	 * @param yTypes
 	 */
-	public BendersOptimizationData(Double[][] simplexTableau, 
-			int[] yVariableIndices, BendersMasterCoefficientType[] yTypes) {
+	public BendersOptimizationData(Double[][] simplexTableau, int[] paramaterNegativeIndices, 
+			int[] yVariableIndices,  BendersMasterCoefficientType[] yTypes) {
 		super(simplexTableau);
+		this.paramaterNegativeIndices = paramaterNegativeIndices;
 		this.yVariableIndices = yVariableIndices;
 		this.yTypes = yTypes;
 	}
@@ -45,6 +48,14 @@ public class BendersOptimizationData extends LinearOptimizationData {
 
 	public void setYVariableIndices(int[] yVariableIndices) {
 		this.yVariableIndices = yVariableIndices;
+	}
+	
+	public int[] getParamaterNegativeIndices() {
+		return paramaterNegativeIndices;
+	}
+
+	public void setParamaterNegativeIndices(int[] paramaterNegativeIndices) {
+		this.paramaterNegativeIndices = paramaterNegativeIndices;
 	}
 
 }
