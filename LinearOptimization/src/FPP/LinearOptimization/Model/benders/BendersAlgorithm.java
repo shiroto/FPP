@@ -20,9 +20,11 @@ public class BendersAlgorithm implements IBendersOptimization {
 	public IBendersOptimizationSolutionData solve(BendersOptimizationData bendersOptimizationData) {
 		// initialize the solution object
 		BendersSolutionData bendersSolution = new BendersSolutionData(bendersOptimizationData);
-		
-		// TODO convert not-negativities, not possible to determine whether x is >= or <=
-//		bendersOptimizationData.setSimplexTableau(LinearOptimizationDataUtility.convertNotNegativity(bendersOptimizationData.getSimplexTableau()));
+
+		// convert to not-negatives
+		bendersOptimizationData.setSimplexTableau(LinearOptimizationDataUtility.convertNotNegatives(
+				bendersOptimizationData.getSimplexTableau(), 
+				bendersOptimizationData.getParamaterNegativeIndices()));
 		
 		MasterProblem masterProblem = createMasterProblem(bendersOptimizationData);
 		masterProblem.addRestriction(new Double[]{-1d, 0d}, 0d); // add y >= 0 condition
@@ -135,7 +137,6 @@ public class BendersAlgorithm implements IBendersOptimization {
 	}
 
 	private MasterProblem createMasterProblem(BendersOptimizationData bendersOptimizationData) {
-		//TODO test
 		int[] yIndices = bendersOptimizationData.getYVariableIndices();
 		int yCount = yIndices.length;
 		Double[] function = LinearOptimizationDataUtility.extractFunction(bendersOptimizationData.getSimplexTableau());
@@ -148,7 +149,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		// function y coefficients
 		int yColCount = 0;
 		for (int col = 0; col < function.length - 1; col++) {
-			if(arrayContains(yIndices, col)) {
+			if(LinearOptimizationDataUtility.arrayContains(yIndices, col)) {
 				masterTableau[0][yColCount] = function[col];
 				yColCount++;
 			}
@@ -160,11 +161,10 @@ public class BendersAlgorithm implements IBendersOptimization {
 	}
 	
 	private SubProblem createSubProblem(BendersOptimizationData bendersOptimizationData) {
-		//TODO test
 		Double[][] originTableau = bendersOptimizationData.getSimplexTableau();
 		int[] yIndices = bendersOptimizationData.getYVariableIndices();
 		int yCount = yIndices.length;
-		int restrictionCNT = originTableau.length-1;
+		int restrictionCNT = originTableau.length - 1;
 		
 		Double[][] subTableau = new Double[originTableau.length][originTableau[0].length - yCount];
 		List<Double[]> coefficientsY = new ArrayList<>();
@@ -185,7 +185,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 					for (int row = 0; row < restrictionCNT; row++) {
 						subTableau[row][subTableau[0].length-1] = originTableau[row][col];
 					}
-				} else if(arrayContains(yIndices, col)) {
+				} else if(LinearOptimizationDataUtility.arrayContains(yIndices, col)) {
 					// column is y coefficient
 					for (int row = 0; row < restrictionCNT; row++) {
 						coefficientsY.get(row)[yColCount] = -1 * originTableau[row][col];
@@ -205,7 +205,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Double[] function = LinearOptimizationDataUtility.extractFunction(bendersOptimizationData.getSimplexTableau());		// function y coefficients
 		int xColCount = 0;
 		for (int col = 0; col < function.length - 1; col++) {
-			if(!arrayContains(yIndices, col)) {
+			if(!LinearOptimizationDataUtility.arrayContains(yIndices, col)) {
 				subTableau[originTableau.length - 1][xColCount] = function[col];
 				xColCount++;
 			}
@@ -215,17 +215,6 @@ public class BendersAlgorithm implements IBendersOptimization {
 		subTableau[originTableau.length - 1][originTableau.length - yCount] = 0d;
 		
 		return new SubProblem(subTableau, coefficientsY);
-	}
-	
-	public static boolean arrayContains(final int[] array, final int v) {
-		boolean result = false;
-		for (int i : array) {
-			if (i == v) {
-				result = true;
-				break;
-			}
-		}
-		return result;
 	}
 
 	private Problem getOriginSubWithY(SubProblem sProblem, Double[] optimalY) {
