@@ -1,32 +1,11 @@
 package FPP.LinearOptimization.View.Gui;
 
 import java.awt.EventQueue;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
-import javax.swing.JScrollPane;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Font;
-import javax.swing.JList;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.JScrollBar;
-import javax.swing.JRadioButton;
-import javax.swing.JComboBox;
 
 public class MainFrame {
 
