@@ -27,10 +27,14 @@ public class BendersAlgorithm implements IBendersOptimization {
 				bendersOptimizationData.getParamaterNegativeIndices()));
 		
 		MasterProblem masterProblem = createMasterProblem(bendersOptimizationData);
-		masterProblem.addRestriction(new Double[]{-1d, 0d}, 0d); // add y >= 0 condition
+		// TODO Dominik: ???
+//		masterProblem.addRestriction(new Double[]{-1d, 0d}, 0d); // add y >= 0 condition
 
 		SubProblem subProblem = createSubProblem(bendersOptimizationData);
 		Problem dualProblem = new Problem(LinearOptimizationDataUtility.createDual(subProblem.getSimplexTableau()));
+		System.out.println("Master: " + Arrays.deepToString(masterProblem.getSimplexTableau()));
+		System.out.println("Sub:    " + Arrays.deepToString(subProblem.getSimplexTableau()));
+		System.out.println("Dual:   " + Arrays.deepToString(dualProblem.getSimplexTableau()));
 		
 		// step 0
 		int r = 1;
@@ -41,6 +45,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		for (int i = 0; i < u.length; i++) {
 			u[i] = 0d;
 		}
+		
 		Double[] cut = calculateCut(subProblem, u);
 		addCut(masterProblem, cut);
 		
@@ -49,8 +54,10 @@ public class BendersAlgorithm implements IBendersOptimization {
 		while (true) {
 			BendersStepData stepData = new BendersStepData(r);
 			
+			//TODO Dominik: simplextableau sind doch immer minimierer -> solveProblem(masterProblem, true); -> false?
+			
 			// step 1
-			solution = solveProblem(masterProblem, true);
+			solution = solveProblem(masterProblem, false);
 			
 			//check for valid solution
 			if (solution[solution.length - 1] == 0) {
@@ -146,6 +153,14 @@ public class BendersAlgorithm implements IBendersOptimization {
 		masterTableau[0][yCount] = 1d;
 		masterTableau[0][yCount + 1] = function[function.length - 1];
 		
+//		// TODO new try, constant not 1
+//		Double[][] masterTableau = new Double[1][yCount + 1];
+//		
+//		// constant of function
+//		masterTableau[0][yCount] = function[function.length - 1];
+		
+		
+		
 		// function y coefficients
 		int yColCount = 0;
 		for (int col = 0; col < function.length - 1; col++) {
@@ -212,7 +227,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		}
 		
 		// constant of function, always 0
-		subTableau[originTableau.length - 1][originTableau.length - yCount] = 0d;
+		subTableau[originTableau.length - 1][originTableau[0].length - yCount - 1] = 0d;
 		
 		return new SubProblem(subTableau, coefficientsY);
 	}
