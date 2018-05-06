@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -35,11 +37,12 @@ public class InputScreenBenders extends JPanel {
 	private JButton btnSubmit;
 	private int[] yVariables;
 	private BendersSolutionData bendersSolutionObject;
-	private int[] paramaterNegativeIndices;
+	private int[] parameterNegativeIndices;
 	private BendersMasterCoefficientType[] bendersMasterCoefficientType;
 	private BendersOptimizationData bendersInputObject;
 	private BendersSolutionScreen solutionBenders;
 	private MainFrame mainFrame;
+
 	public InputScreenBenders(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
 		initializeScreen();
@@ -53,7 +56,7 @@ public class InputScreenBenders extends JPanel {
 
 		JLabel bendersLabel = new JLabel("Definition von x, y-Variablen und deren Werten:");
 		bendersPanel.add(bendersLabel);
-		
+
 		panel_defTable = new JPanel();
 		panel_defTable.setLayout(new GridBagLayout());
 		panel_defTable.setBounds(50, 80, 455, 80);
@@ -81,45 +84,44 @@ public class InputScreenBenders extends JPanel {
 		solutionBenders.setLayout(null);
 		mainFrame.getTabs().addTab("Benders solution", solutionBenders);
 		mainFrame.setTab(2);
-		
+
 	}
 
 	private void createBendersProblem() {
 		loadYvariableIndices();
 		loadBendersMasterCoefficientTypes();
 		loadParamNegIndices();
-		bendersInputObject = new BendersOptimizationData(simplexTableau, paramaterNegativeIndices, yVariables,
+		bendersInputObject = new BendersOptimizationData(simplexTableau, parameterNegativeIndices, yVariables,
 				bendersMasterCoefficientType);
 		BendersAlgorithm benders = new BendersAlgorithm();
 		bendersSolutionObject = (BendersSolutionData) benders.solve(bendersInputObject);
+		System.out.println();
 	}
 
 	private void loadParamNegIndices() {
-		paramaterNegativeIndices = new int[paramNegIndicesTable.getColumnCount()];
+		List<Integer> paramaterNegativeIndicesList = new ArrayList<Integer>();
 		for (int i = 0; i < paramNegIndicesTable.getColumnCount(); i++) {
-			if (paramNegIndicesTable.getValueAt(0, i).toString().equals("> 0")) {
-				paramaterNegativeIndices[i] = 0;
-			} else
-				paramaterNegativeIndices[i] = 1;
+			if (paramNegIndicesTable.getValueAt(0, i).toString().equals("< 0")) {
+				paramaterNegativeIndicesList.add(i);
+			}
 		}
-		
+		parameterNegativeIndices = paramaterNegativeIndicesList.stream().mapToInt(i -> i).toArray();
 	}
 
 	private void loadYvariableIndices() {
-		yVariables = new int[variableDefTable.getColumnCount()];
+		List<Integer> yVariableIndiciesList = new ArrayList<Integer>();
 		for (int i = 0; i < variableDefTable.getColumnCount(); i++) {
-			if (variableDefTable.getValueAt(0, i).toString().equals("X")) {
-				yVariables[i] = 0;
-			} else
-				yVariables[i] = 1;
+			if (variableDefTable.getValueAt(0, i).toString().equals("Y")) {
+				yVariableIndiciesList.add(i);
+			}
 		}
-
+		yVariables = yVariableIndiciesList.stream().mapToInt(i -> i).toArray();
 	}
 
 	private void loadBendersMasterCoefficientTypes() {
-		bendersMasterCoefficientType = new BendersMasterCoefficientType[typeDefTable.getColumnCount()];
-		for (int i = 0; i < typeDefTable.getColumnCount(); i++) {
-			String type = typeDefTable.getValueAt(0, i).toString();
+		bendersMasterCoefficientType = new BendersMasterCoefficientType[yVariables.length];
+		for (int i = 0; i < yVariables.length; i++) {
+			String type = typeDefTable.getValueAt(0, yVariables[i]).toString();
 			switch (type) {
 			case "R":
 				bendersMasterCoefficientType[i] = BendersMasterCoefficientType.Float;
@@ -222,7 +224,7 @@ public class InputScreenBenders extends JPanel {
 	}
 
 	public void setFunctionTable(JTable functionTable) {
-		functionTable.removeColumn(functionTable.getColumnModel().getColumn(functionTable.getColumnCount()-1));
+		functionTable.removeColumn(functionTable.getColumnModel().getColumn(functionTable.getColumnCount() - 1));
 		this.functionTable = functionTable;
 
 	}
