@@ -42,7 +42,7 @@ public class BendersFullTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	@Test
+//	@Test
 	void test_example_01() {
 		System.out.println("test_example_01");
 		// prepare test data
@@ -69,7 +69,8 @@ public class BendersFullTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	@Test
+//	@Test
+	// TODO Martin 
 	void test_example_02() {
 		System.out.println("test_example_02");
 		// prepare test data
@@ -95,7 +96,7 @@ public class BendersFullTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	@Test
+//	@Test
 	void test_example_03() {
 		System.out.println("test_example_03");
 		// prepare test data
@@ -121,7 +122,7 @@ public class BendersFullTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	@Test
+//	@Test
 	void test_example_04() {
 		System.out.println("test_example_04");
 		// prepare test data
@@ -148,7 +149,7 @@ public class BendersFullTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	@Test
+//	@Test
 	void test_example_05() {
 		System.out.println("test_example_05");
 		// prepare test data
