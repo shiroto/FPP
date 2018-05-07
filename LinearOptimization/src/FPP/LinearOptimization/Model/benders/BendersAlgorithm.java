@@ -42,9 +42,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Double LB = Double.MIN_VALUE;
 
 		Double[] u = new Double[dualProblem.getFunction().length - 1];
-		for (int i = 0; i < u.length; i++) {
-			u[i] = 0d;
-		}
+		Arrays.fill(u, 0d);
 		
 		Double[] cut = calculateCut(subProblem, u);
 		addCut(masterProblem, cut);
@@ -109,7 +107,16 @@ public class BendersAlgorithm implements IBendersOptimization {
 		if (optimalY != null ) {
 			Problem originSubWithY = getOriginSubWithY(subProblem, optimalY);
 			solution = new Simplex(originSubWithY.getSimplexTableau(), false).loese();
-			bendersSolution.setOptSolution(solution);
+			
+			solution[solution.length - 1] = (-1) * solution[solution.length - 2];
+//			solution[solution.length - 2] = 
+			
+			Double[] optimalSolution = new Double[solution.length -1 + optimalY.length - 1];
+			System.arraycopy(solution, 0, optimalSolution, 0, optimalSolution.length - 2);
+			System.arraycopy(optimalY, 0, optimalSolution, optimalSolution.length - 2, optimalY.length - 1);
+			optimalSolution[optimalSolution.length - 1] = (-1) * solution[solution.length - 2];
+					
+			bendersSolution.setOptSolution(optimalSolution);
 
 			u = extractSolutionCoefficients(solution, originSubWithY.isSolvableWithBAndB());
 			
@@ -180,6 +187,17 @@ public class BendersAlgorithm implements IBendersOptimization {
 		
 		MasterProblem mp = new MasterProblem(masterTableau);
 		mp.setTypes(bendersOptimizationData.getYTypes());
+		
+		for (int i = 0; i < yIndices.length; i++) {
+			if (bendersOptimizationData.getYTypes()[i] == BendersMasterCoefficientType.Binary) {				
+				Double[] coefficients = new Double[yCount + 1];
+				Arrays.fill(coefficients, 0d);
+				coefficients[i] = 1d;
+				
+				mp.addRestriction(coefficients, 1d);
+			}
+		}
+		
 		return mp;
 	}
 	
