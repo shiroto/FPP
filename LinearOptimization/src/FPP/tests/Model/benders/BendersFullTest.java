@@ -42,6 +42,33 @@ public class BendersFullTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
+	@Test
+	void test_example_powerPoint_2() {
+		System.out.println("test_example_powerPoint");
+		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
+		Double[][] simplexTableau = {
+				{-1d, -1d, 0d, 0d, -2d, -10d},
+				{-2d, 0d, 0d, 0d, -2d, -10d},
+				{0d, 0d, -1d, -3d, -0.5d, -2d},
+				{0d, 0d, 0d, -10d, -1d, -6d},
+				function,};
+		int[] paramaterNegativeIndices = {};
+		int[] yVariableIndices = {4};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Float};
+		
+		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
+				paramaterNegativeIndices, yVariableIndices, yTypes);
+		
+		//TODO introduce a tolerance for double comparison
+//		double result = -50d;
+//		Double[] parameterResults = {0d, 0d, 0d, 0.1, 5d};
+		
+		double result = -50.00000000000004;
+		Double[] parameterResults = {0d, 0d, 0d, 0.10000000000000009, 4.999999999999999};
+		
+		testInput(inputData, result, parameterResults);
+	}
+	
 //	@Test
 	void test_example_01() {
 		System.out.println("test_example_01");
@@ -69,7 +96,7 @@ public class BendersFullTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-//	@Test
+	@Test
 	// TODO Martin 
 	void test_example_02() {
 		System.out.println("test_example_02");
@@ -78,14 +105,14 @@ public class BendersFullTest {
 		Double[][] simplexTableau = new Double[][] {
 			{2d, 1d, -1d, -10d, -8d, 0d, -4d},
 			{1d, 1d, 1d, -5d, 0d, -8d, -3d},
-			{0d, 0d, 0d, 1d, 0d, 0d, 1d},
-			{0d, 0d, 0d, 0d, 1d, 0d, 1d},
-			{ 0d, 0d, 0d, 0d, 0d, 1d, 1d}, 
+//			{0d, 0d, 0d, 1d, 0d, 0d, 1d},
+//			{0d, 0d, 0d, 0d, 1d, 0d, 1d},
+//			{ 0d, 0d, 0d, 0d, 0d, 1d, 1d}, 
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {3, 4, 5};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Integer,
-				BendersMasterCoefficientType.Integer, BendersMasterCoefficientType.Integer};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary,
+				BendersMasterCoefficientType.Binary, BendersMasterCoefficientType.Binary};
 		
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
