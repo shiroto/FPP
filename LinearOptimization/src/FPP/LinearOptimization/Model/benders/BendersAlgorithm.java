@@ -57,19 +57,23 @@ public class BendersAlgorithm implements IBendersOptimization {
 			//TODO Dominik: simplextableau sind doch immer minimierer -> solveProblem(masterProblem, true); -> false?
 			
 			// step 1
-			solution = solveProblem(masterProblem, false);
+			solution = solveProblem(masterProblem, true);
 			
 			//check for valid solution
-			if (solution[solution.length - 1] == 0) {
+			//if (solution[solution.length - 1] == 0) {
 				//TODO what should happen here?
 				//no solution existing
-				break;
-			}
+			//	break;
+			//}
 			stepData.setMasterSolution(solution);
 			
-			UB = solution[solution.length - 2];
+			if (masterProblem.isSolvableWithBAndB()) {
+				UB = solution[solution.length - 1];
+			} else {
+				UB = solution[solution.length - 2];
+			}
 			
-			Double[] y = extractSolutionCoefficients(solution);
+			Double[] y = extractSolutionCoefficients(solution, masterProblem.isSolvableWithBAndB());
 			
 			// step 2
 			updateSubproblem(subProblem, dualProblem, y);
@@ -78,7 +82,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			solution = solveProblem(dualProblem, false);
 			stepData.setSubSolution(solution);
 			
-			u = extractSolutionCoefficients(solution);
+			u = extractSolutionCoefficients(solution, dualProblem.isSolvableWithBAndB());
 			
 			// step 3 
 			LB = calculateLowerBound(masterProblem, y, solution[solution.length - 2]);
@@ -107,7 +111,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			solution = new Simplex(originSubWithY.getSimplexTableau(), false).loese();
 			bendersSolution.setOptSolution(solution);
 
-			u = extractSolutionCoefficients(solution);
+			u = extractSolutionCoefficients(solution, originSubWithY.isSolvableWithBAndB());
 			
 			System.out.println("\n\nOptimal Solution = " + solution[solution.length - 2] * (-1));
 			System.out.print("Coefficients = [");
@@ -129,8 +133,12 @@ public class BendersAlgorithm implements IBendersOptimization {
 		if (problem.isSolvableWithBAndB()) {
 			Tableau tableau = new Tableau(problem.getSimplexTableau());
 			
-			//TODO if no solution -> index out of bound!
-			return new BranchAndBound(tableau, max).getLoesungsListe().get(0);
+			List<Double[]> solution = new BranchAndBound(tableau, max).solve();
+			if (solution.size() > 0) {
+				return solution.get(0);
+			}
+			//TODO what happens if no solution can be found?
+			return new Double[0];
 		} else {
 			return new Simplex(problem.getSimplexTableau(), max).loese();
 		}
@@ -251,9 +259,15 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return new Problem(originSubWithY);
 	}
 
-	private Double[] extractSolutionCoefficients(Double[] simplexSolution) {
-		Double[] u = new Double[simplexSolution.length - 2]; //solution and solution type not needed
-		System.arraycopy(simplexSolution, 0, u, 0, simplexSolution.length - 2);
+	private Double[] extractSolutionCoefficients(Double[] simplexSolution, boolean bAndB) {
+		int length;
+		if (bAndB) {
+			length = simplexSolution.length - 1;
+		} else {
+			length = simplexSolution.length - 2;
+		}
+		Double[] u = new Double[length]; //solution and solution type not needed
+		System.arraycopy(simplexSolution, 0, u, 0, length);
 		return u;
 	}
 	
