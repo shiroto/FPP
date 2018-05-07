@@ -2,7 +2,6 @@ package FPP.LinearOptimization.View.Gui;
 
 import java.awt.EventQueue;
 import java.awt.GridLayout;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -64,20 +63,9 @@ public class MainFrame {
 		*/
 		inputScreen.setVisible(true);
 		inputScreen.setLayout(null);
-		
-
-		
-		
 		tabs.addTab("Input", inputScreen);
-		
-
-
-	
-		
-
 		//mainScreen.initializeScreen();
-		
-		
+
 		frame.getContentPane().add(tabs);
 		frame.setVisible(true);
 
