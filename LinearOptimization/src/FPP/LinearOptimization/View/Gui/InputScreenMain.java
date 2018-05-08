@@ -236,7 +236,7 @@ public class InputScreenMain extends JPanel {
 
 		rdbtnMin.setActionCommand("min");
 		rdbtnMax.setActionCommand("max");
-		rdbtnMax.setSelected(true);
+		rdbtnMin.setSelected(true);
 
 		bg.add(rdbtnMax);
 		bg.add(rdbtnMin);
@@ -281,8 +281,8 @@ public class InputScreenMain extends JPanel {
 				break;
 			}
 		}
-		// Umformung der Zielfunktion, falls Minimierungsproblem ausgewählt wurde
-		if (rdbtnMin.isSelected()) {
+		// Umformung der Zielfunktion, falls Maximierungsproblem ausgewählt wurde
+		if (rdbtnMax.isSelected()) {
 			for (int entry = 0; entry < xVariables; entry++) {
 				simplexTableau[restrictions][entry] = simplexTableau[restrictions][entry] * (-1);
 			}
