@@ -190,22 +190,17 @@ public class BendersAlgorithm implements IBendersOptimization {
 	}
 
 	private MasterProblem createMasterProblem(BendersOptimizationData bendersOptimizationData) {
+		Double[][] originTableau = bendersOptimizationData.getSimplexTableau();
 		int[] yIndices = bendersOptimizationData.getYVariableIndices();
 		int yCount = yIndices.length;
-		Double[] function = LinearOptimizationDataUtility.extractFunction(bendersOptimizationData.getSimplexTableau());
+		
+		Double[] function = LinearOptimizationDataUtility.extractFunction(originTableau);
 		Double[][] masterTableau = new Double[1][yCount + 2];
-		
-		// constant of function
+
+		// theta
 		masterTableau[0][yCount] = 1d;
+		// constant of function
 		masterTableau[0][yCount + 1] = function[function.length - 1];
-		
-//		// TODO new try, constant not 1
-//		Double[][] masterTableau = new Double[1][yCount + 1];
-//		
-//		// constant of function
-//		masterTableau[0][yCount] = function[function.length - 1];
-		
-		
 		
 		// function y coefficients
 		int yColCount = 0;
@@ -219,6 +214,8 @@ public class BendersAlgorithm implements IBendersOptimization {
 		MasterProblem mp = new MasterProblem(masterTableau);
 		mp.setTypes(bendersOptimizationData.getYTypes());
 		
+		// add restrictions for binary values
+		// e.g. 1 * y3 <= 1
 		for (int i = 0; i < yIndices.length; i++) {
 			if (bendersOptimizationData.getYTypes()[i] == BendersMasterCoefficientType.Binary) {				
 				Double[] coefficients = new Double[yCount + 1];
@@ -229,7 +226,35 @@ public class BendersAlgorithm implements IBendersOptimization {
 			}
 		}
 		
+		// add restrictions to master from original problem that only contain y coefficients
+		int restrictionCNT = originTableau.length - 1;
+		for (int restr = 0; restr < restrictionCNT; restr++) {
+			if(restrictionContainsOnlyY(originTableau[restr], yIndices)) {
+				Double[] coefficients = new Double[yCount + 1];
+				Arrays.fill(coefficients, 0d);
+				for (int yIndex = 0; yIndex < coefficients.length - 1; yIndex++) {
+					System.out.println("yIndex " + yIndex);
+					System.out.println("yIndices[yIndex] " + yIndices[yIndex]);
+					System.out.println("originTableau[restr][yIndices[yIndex]] " + originTableau[restr][yIndices[yIndex]]);
+					System.out.println("coefficients[yIndex] " + coefficients[yIndex]);
+					coefficients[yIndex] = originTableau[restr][yIndices[yIndex]];
+				}
+				mp.addRestriction(coefficients, originTableau[restr][originTableau[0].length - 1]);
+			}
+		}
+		
 		return mp;
+	}
+	
+	private boolean restrictionContainsOnlyY(Double[] restriction, int[] yIndices) {
+		for (int coefIndex = 0; coefIndex < restriction.length - 1; coefIndex++) {
+			if(!LinearOptimizationDataUtility.arrayContains(yIndices, coefIndex)) {
+				if(restriction[coefIndex] != 0d) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	private SubProblem createSubProblem(BendersOptimizationData bendersOptimizationData) {
