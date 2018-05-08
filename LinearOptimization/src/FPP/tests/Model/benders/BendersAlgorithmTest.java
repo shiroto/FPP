@@ -13,7 +13,7 @@ import FPP.LinearOptimization.Data.IBendersOptimizationSolutionData;
 import FPP.LinearOptimization.Model.benders.BendersAlgorithm;
 import FPP.LinearOptimization.Model.benders.BendersMasterCoefficientType;
 
-public class BendersFullTest {
+public class BendersAlgorithmTest {
 	
 	private static final double DELTA = 1e-12;
 	
