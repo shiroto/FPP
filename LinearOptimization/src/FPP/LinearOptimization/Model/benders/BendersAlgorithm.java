@@ -190,22 +190,17 @@ public class BendersAlgorithm implements IBendersOptimization {
 	}
 
 	private MasterProblem createMasterProblem(BendersOptimizationData bendersOptimizationData) {
+		Double[][] originTableau = bendersOptimizationData.getSimplexTableau();
 		int[] yIndices = bendersOptimizationData.getYVariableIndices();
 		int yCount = yIndices.length;
-		Double[] function = LinearOptimizationDataUtility.extractFunction(bendersOptimizationData.getSimplexTableau());
+		
+		Double[] function = LinearOptimizationDataUtility.extractFunction(originTableau);
 		Double[][] masterTableau = new Double[1][yCount + 2];
-		
-		// constant of function
+
+		// theta
 		masterTableau[0][yCount] = 1d;
+		// constant of function
 		masterTableau[0][yCount + 1] = function[function.length - 1];
-		
-//		// TODO new try, constant not 1
-//		Double[][] masterTableau = new Double[1][yCount + 1];
-//		
-//		// constant of function
-//		masterTableau[0][yCount] = function[function.length - 1];
-		
-		
 		
 		// function y coefficients
 		int yColCount = 0;
@@ -219,6 +214,8 @@ public class BendersAlgorithm implements IBendersOptimization {
 		MasterProblem mp = new MasterProblem(masterTableau);
 		mp.setTypes(bendersOptimizationData.getYTypes());
 		
+		// add restrictions for binary values
+		// e.g. 1 * y3 <= 1
 		for (int i = 0; i < yIndices.length; i++) {
 			if (bendersOptimizationData.getYTypes()[i] == BendersMasterCoefficientType.Binary) {				
 				Double[] coefficients = new Double[yCount + 1];
@@ -229,7 +226,35 @@ public class BendersAlgorithm implements IBendersOptimization {
 			}
 		}
 		
+		// add restrictions to master from original problem that only contain y coefficients
+		int restrictionCNT = originTableau.length - 1;
+		for (int restr = 0; restr < restrictionCNT; restr++) {
+			if(restrictionContainsOnlyY(originTableau[restr], yIndices)) {
+				Double[] coefficients = new Double[yCount + 1];
+				Arrays.fill(coefficients, 0d);
+				for (int yIndex = 0; yIndex < coefficients.length - 1; yIndex++) {
+					System.out.println("yIndex " + yIndex);
+					System.out.println("yIndices[yIndex] " + yIndices[yIndex]);
+					System.out.println("originTableau[restr][yIndices[yIndex]] " + originTableau[restr][yIndices[yIndex]]);
+					System.out.println("coefficients[yIndex] " + coefficients[yIndex]);
+					coefficients[yIndex] = originTableau[restr][yIndices[yIndex]];
+				}
+				mp.addRestriction(coefficients, originTableau[restr][originTableau[0].length - 1]);
+			}
+		}
+		
 		return mp;
+	}
+	
+	private boolean restrictionContainsOnlyY(Double[] restriction, int[] yIndices) {
+		for (int coefIndex = 0; coefIndex < restriction.length - 1; coefIndex++) {
+			if(!LinearOptimizationDataUtility.arrayContains(yIndices, coefIndex)) {
+				if(restriction[coefIndex] != 0d) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	private SubProblem createSubProblem(BendersOptimizationData bendersOptimizationData) {
@@ -361,61 +386,5 @@ public class BendersAlgorithm implements IBendersOptimization {
 		function[function.length - 1] = dualProblem.getFunction()[function.length - 1]; //set constant to function
 		
 		dualProblem.setFunction(function);
-	}
-	
-	public static void main(String[] args) {
-		Double[][] simplexTableau = {
-				{-1d, -1d, 0d, 0d, -2d, -10d},
-				{-2d, 0d, 0d, 0d, -2d, -10d},
-				{0d, 0d, -1d, -3d, -0.5d, -2d},
-				{0d, 0d, 0d, -10d, -1d, -6d},
-				{200d, 50d, 80d, 500d, 180d, 0d},};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Float};
-		
-		// TODO variable index starting from 0 to length-1
-		int[] yVariableIndices = {4};
-		// TODO Dominik: specify paramaterNegativeIndices
-		int[] paramaterNegativeIndices = {};
-		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, 
-				paramaterNegativeIndices, yVariableIndices, yTypes);
-		//
-		new BendersAlgorithm().solve(testBenders);
-//		new BendersAlgorithm().testMasterSubSplit();
-	}
-	
-	public void testMasterSubSplit() {
-		Double[][] simplexTableau = {
-				{-1d, -1d, 0d, 0d, -2d, -10d},
-				{-2d, 0d, 0d, 0d, -2d, -10d},
-				{0d, 0d, -1d, -3d, -0.5d, -2d},
-				{0d, 0d, 0d, -10d, -1d, -6d},
-				{200d, 50d, 80d, 500d, 180d, 0d},};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary};
-		// TODO variable index starting from 0 to length-1
-		int[] yVariableIndices = {4};
-		int[] paramaterNegativeIndices = {};
-		// TODO Dominik: specify paramaterNegativeIndices
-		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, 
-				paramaterNegativeIndices, yVariableIndices, yTypes);
-
-		System.out.println("Input SimplexTableau");
-		System.out.println(Arrays.deepToString(simplexTableau));
-		
-		System.out.println("\nMasterProblem");
-		MasterProblem mb = createMasterProblem(testBenders);
-		System.out.println("Tableau: " + Arrays.deepToString(mb.getSimplexTableau()));
-//		System.out.println("F: " + Arrays.toString(mb.getFunction()));
-		
-		SubProblem sb = createSubProblem(testBenders);
-		System.out.println("\nSubpProblem");
-		System.out.println("Tableau: " + Arrays.deepToString(sb.getSimplexTableau()));
-//		System.out.println("F: " + Arrays.toString(sb.getFunction()));
-//		System.out.println("X: " + Arrays.deepToString(sb.getCoefficients()));
-		System.out.println("Y: " + Arrays.deepToString(sb.getCoefficientsY()));
-//		System.out.println("b: " + Arrays.toString(sb.getB()));
-		
-		Problem dp = new Problem(LinearOptimizationDataUtility.createDual(sb.getSimplexTableau()));
-		System.out.println("\nDual Problem");
-		System.out.println("Tableau: " + Arrays.deepToString(dp.getSimplexTableau()));
 	}
 }
