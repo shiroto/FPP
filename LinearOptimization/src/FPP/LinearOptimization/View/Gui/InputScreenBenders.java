@@ -80,8 +80,10 @@ public class InputScreenBenders extends JPanel {
 
 	protected void loadScreen() {
 		solutionBenders = new BendersSolutionScreen(mainFrame, bendersSolutionObject);
+		solutionBenders.setFunctionTable(new JTable(functionTable.getModel()));
 		solutionBenders.setVisible(true);
 		solutionBenders.setLayout(null);
+		solutionBenders.initializeScreen();
 		mainFrame.getTabs().addTab("Benders solution", solutionBenders);
 		mainFrame.setTab(2);
 
