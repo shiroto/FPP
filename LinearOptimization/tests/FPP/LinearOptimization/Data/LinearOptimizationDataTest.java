@@ -1,4 +1,4 @@
-package FPP.tests.Data;
+package FPP.LinearOptimization.Data;
 
 public class LinearOptimizationDataTest {
 

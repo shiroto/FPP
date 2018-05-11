@@ -1,4 +1,4 @@
-package FPP.tests.Model.benders;
+package FPP.LinearOptimization.Model.benders;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
