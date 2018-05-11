@@ -6,10 +6,13 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -30,6 +33,8 @@ public class BendersSolutionScreen extends JPanel {
 	private Double[] solution;
 	private JScrollPane scrollPaneFunction;
 	private List<BendersStepData> steps;
+	private BendersSolutionStepScreen solutionStepBenders;
+	private JTextField stepsTextField;
 
 	public BendersSolutionScreen(MainFrame mainFrame, BendersSolutionData bendersSolutionObject) {
 		this.mainFrame = mainFrame;
@@ -79,23 +84,29 @@ public class BendersSolutionScreen extends JPanel {
 		// Steps
 		if (steps != null && steps.size() > 0) {
 			JPanel stepsPanel = new JPanel();
-			// stepsPanel.setLayout(new BorderLayout(10,10));
 			stepsPanel.setBounds(50, 330, 250, 100);
 			this.add(stepsPanel);
 			JLabel stepsLabel = new JLabel("" + steps.size() + " Steps");
-			//stepsPanel.add(stepsLabel);
-			JTextField stepsTextField = new JTextField();
+
+			stepsTextField = new JTextField();
 			stepsTextField.setSize(50, 50);
 			JButton stepsButton = new JButton("Gehe zu Step");
-			//stepsPanel.add(stepsButton);
-			//stepsPanel.add(stepsTextField);
-			
+			stepsButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (!validateInput())
+						return;
+					loadStepScreen();
+
+				}
+			});
 			GridBagLayout gbl = new GridBagLayout();
-		    stepsPanel.setLayout(gbl);
-		    
-		    addComponent(stepsPanel, gbl, stepsLabel, 0, 0, 2, 1, 1, 1);
-		    addComponent(stepsPanel, gbl, stepsTextField, 0, 1, 1, 1, 1, 1);
-		    addComponent(stepsPanel, gbl, stepsButton, 1, 1, 1, 1, 1, 1);
+			stepsPanel.setLayout(gbl);
+
+			Helper.addComponent(stepsPanel, gbl, stepsLabel, 0, 0, 2, 1, 1, 1);
+			Helper.addComponent(stepsPanel, gbl, stepsTextField, 0, 1, 1, 1, 1, 1);
+			Helper.addComponent(stepsPanel, gbl, stepsButton, 1, 1, 1, 1, 1, 1);
 
 		}
 		/*
@@ -118,18 +129,23 @@ public class BendersSolutionScreen extends JPanel {
 		 */
 	}
 
-	private void addComponent(Container cont, GridBagLayout gbl, Component c, int x, int y, int width, int height,
-			double weightx, double weighty) {
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridx = x;
-		gbc.gridy = y;
-		gbc.gridwidth = width;
-		gbc.gridheight = height;
-		gbc.weightx = weightx;
-		gbc.weighty = weighty;
-		gbl.setConstraints(c, gbc);
-		cont.add(c);
+	protected boolean validateInput() {
+		if (!Helper.isNumeric(String.valueOf(stepsTextField.getText()))) {
+			JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
+			return false;
+		} else
+			return true;
+	}
+
+	protected void loadStepScreen() {
+		int step = Integer.parseInt(String.valueOf(stepsTextField.getText()));
+		solutionStepBenders = new BendersSolutionStepScreen(mainFrame, bendersSolutionObject.getSteps());
+		solutionStepBenders.setVisible(true);
+		solutionStepBenders.setLayout(null);
+		solutionStepBenders.initializeScreen(step);
+		mainFrame.getTabs().addTab("Benders Step: "+step, solutionStepBenders);
+		mainFrame.setTab(3);
+
 	}
 
 	private void loadOptSolution() {
