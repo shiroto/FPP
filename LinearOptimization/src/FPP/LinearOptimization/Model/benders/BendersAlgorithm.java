@@ -356,9 +356,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 
 	private Double[] calculateCut(SubProblem sProblem, Double[] u) {
 		Double[] cut = new Double[sProblem.getCoefficientsY()[0].length + 2];
-		for (int i = 0; i < cut.length; i++) {
-			cut[i] = 0d;
-		}
+		Arrays.fill(cut, 0d);
 		
 		for (int i = 0; i < u.length; i++) {
 			for (int j = 0; j < sProblem.getCoefficientsY()[i].length; j++) {
@@ -378,7 +376,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		for (int i = 0; i < function.length - 1; i++) {
 			double ayMult = 0d;
 			for (int j = 0; j < subProblem.getCoefficientsY()[i].length; j++) {
-				ayMult = subProblem.getCoefficientsY()[i][j] * y[j];
+				ayMult += subProblem.getCoefficientsY()[i][j] * y[j];
 			}
 			function[i] = subProblem.getB()[i] + ayMult;
 		}
