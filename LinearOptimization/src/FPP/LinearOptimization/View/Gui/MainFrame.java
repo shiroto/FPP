@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
@@ -83,7 +84,9 @@ public class MainFrame {
 		btnZoomIn.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				zoomIn();
+				//zoomIn();
+				for(Component c : getTabs().getComponents())
+					zoomIn(c);
 			}
 		});
 
@@ -97,11 +100,51 @@ public class MainFrame {
 		btnZoomOut.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				zoomOut();
+				//zoomOut();
+				for(Component c : getTabs().getComponents())
+					zoomOut(c);
 			}
 		});
 
 		frame.add(buttonPanel, BorderLayout.SOUTH);
+	}
+
+	protected void zoomIn(Component c) {
+		if(c instanceof JPanel) {
+			c = (JPanel)c;
+			for (Component comp : ((JPanel) c).getComponents())
+				zoomIn(comp);
+		} 
+		if(c instanceof JScrollPane) {
+			for (Component comp : ((JScrollPane) c).getViewport().getComponents())
+				zoomIn(comp);
+		}
+		c.setSize(c.getWidth()+1, c.getHeight()+1);
+		Font f = c.getFont();
+		c.setFont(new Font(f.getName(), f.getStyle(), f.getSize()+1));
+		if (c instanceof JTable) {
+			updateRowHeights((JTable)c);
+		}
+	
+		
+	}
+
+	protected void zoomOut(Component c) {
+		if(c instanceof JPanel) {
+			c = (JPanel)c;
+			for (Component comp : ((JPanel) c).getComponents())
+				zoomOut(comp);
+		} 
+		if(c instanceof JScrollPane) {
+			for (Component comp : ((JScrollPane) c).getViewport().getComponents())
+				zoomOut(comp);
+		}
+		c.setSize(c.getWidth()-1, c.getHeight()-1);
+		Font f = c.getFont();
+		c.setFont(new Font(f.getName(), f.getStyle(), f.getSize()-1));
+		if (c instanceof JTable) {
+			updateRowHeights((JTable)c);
+		}	
 	}
 
 	//Not working yet

@@ -119,6 +119,7 @@ public class InputScreenBenders extends JPanel {
 		}
 		yVariables = yVariableIndiciesList.stream().mapToInt(i -> i).toArray();
 	}
+	
 
 	private void loadBendersMasterCoefficientTypes() {
 		bendersMasterCoefficientType = new BendersMasterCoefficientType[yVariables.length];

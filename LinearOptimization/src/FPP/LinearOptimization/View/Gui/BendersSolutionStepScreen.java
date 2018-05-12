@@ -1,6 +1,7 @@
 package FPP.LinearOptimization.View.Gui;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -109,7 +110,39 @@ public class BendersSolutionStepScreen  extends JPanel{
 		this.stepLabel = new JLabel("Step: " + stepIndex);
 		//Buttons
 		masterRoundButton = new JButton("Runden");
+		masterRoundButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (Component c : ((JPanel)mainFrame.getTabs().getSelectedComponent()).getComponents()) {
+					c.setSize(c.getWidth()+1, c.getHeight()+1);
+					Font f = c.getFont();
+					c.setFont(new Font(f.getName(), f.getStyle(), f.getSize()+1));
+					updateRowHeights(masterSolutionTable);
+					updateRowHeights(subSolutionTable);
+					updateRowHeights(masterTable);
+					updateRowHeights(subTable);
+				}
+				
+			}
+		});
 		subRoundButton = new JButton("Runden");
+		subRoundButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (Component c : ((JPanel)mainFrame.getTabs().getSelectedComponent()).getComponents()) {
+					c.setSize(c.getWidth()-1, c.getHeight()-1);
+					Font f = c.getFont();
+					c.setFont(new Font(f.getName(), f.getStyle(), f.getSize()-1));
+					updateRowHeights(masterSolutionTable);
+					updateRowHeights(subSolutionTable);
+					updateRowHeights(masterTable);
+					updateRowHeights(subTable);
+				}
+				
+			}
+		});
 		stepButton = new JButton("Gehe zu Step");
 		stepButton.addActionListener(new ActionListener() {
 			
@@ -125,6 +158,22 @@ public class BendersSolutionStepScreen  extends JPanel{
 		this.stepTextField = new JTextField();
 		
 		
+	}
+	
+	private void updateRowHeights(JTable table)
+	{
+	    for (int row = 0; row < table.getRowCount(); row++)
+	    {
+	        int rowHeight = table.getRowHeight();
+
+	        for (int column = 0; column < table.getColumnCount(); column++)
+	        {
+	            Component comp = table.prepareRenderer(table.getCellRenderer(row, column), row, column);
+	            rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
+	        }
+
+	        table.setRowHeight(row, rowHeight);
+	    }
 	}
 	
 	protected boolean validateInput() {
