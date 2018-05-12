@@ -1,5 +1,7 @@
 package FPP.LinearOptimization.View.Gui;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -341,7 +343,6 @@ public class InputScreenMain extends JPanel {
 		scrollPaneRestrictions.setBounds(399, 250, 523, 325);
 		this.add(scrollPaneRestrictions);
 		restrictionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
 	}
 
 	public LinearOptimizationData getInputObject() {
