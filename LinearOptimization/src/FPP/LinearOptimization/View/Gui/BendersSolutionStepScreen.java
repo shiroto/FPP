@@ -1,10 +1,14 @@
 package FPP.LinearOptimization.View.Gui;
 
+import java.awt.Component;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -15,7 +19,7 @@ import FPP.LinearOptimization.Model.benders.BendersStepData;
 
 public class BendersSolutionStepScreen  extends JPanel{
 
-	private Object mainframe;
+	private MainFrame mainFrame;
 	private List<BendersStepData> stepsList;
 	private int stepIndex;
 	private BendersStepData step;
@@ -42,11 +46,12 @@ public class BendersSolutionStepScreen  extends JPanel{
 	private JTextField stepTextField;
 
 	public BendersSolutionStepScreen(MainFrame mainFrame, List<BendersStepData> stepsList) {
-		this.mainframe = mainframe;
+		this.mainFrame = mainFrame;
 		this.stepsList = stepsList;
 	}
 
 	public void initializeScreen(int stepIndex) {
+
 		this.stepIndex = stepIndex;
 		this.step = stepsList.get(stepIndex);
 		this.master = step.getMasterProblem();
@@ -57,14 +62,33 @@ public class BendersSolutionStepScreen  extends JPanel{
 		this.lb = step.getLowerBound();
 		GridBagLayout gbl = new GridBagLayout();
 		this.setLayout(gbl);
-		
+		loadComponents();
 		loadTable(masterTable, master);
 		loadTable(subTable, sub);
 		
 		loadSolutionTable(masterSolutionTable, masterSolution);
 		loadSolutionTable(subSolutionTable, subSolution);
-		
+
 		//TODO: Find right spots in layout for Components
+		Helper.addComponent(this, gbl, masterLabel, 0, 0, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, masterTable, 0, 1, 3, 3, 1, 1);
+		Helper.addComponent(this, gbl, masterSolutionLabel, 0, 4, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, masterSolutionTable, 0, 5, 3, 3, 1, 1);
+		Helper.addComponent(this, gbl, masterRoundButton, 3, 1, 1, 1, 1, 1);
+		
+		Helper.addComponent(this, gbl, subLabel, 4, 0, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, subTable, 4, 1, 3, 3, 1, 1);
+		Helper.addComponent(this, gbl, subSolutionLabel, 4, 4, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, subSolutionTable, 4, 5, 3, 3, 1, 1);
+		Helper.addComponent(this, gbl, subRoundButton, 7, 1, 1, 1, 1, 1);
+		
+		Helper.addComponent(this, gbl, ubLabel, 0, 8, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, lbLabel, 0, 9, 3, 1, 1, 1);
+		
+		Helper.addComponent(this, gbl, stepLabel, 0, 11, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, stepTextField, 0, 12, 1, 1, 1, 1);
+		Helper.addComponent(this, gbl, stepButton, 1, 12, 2, 1, 1, 1);
+
 		
 		
 	}
@@ -87,9 +111,42 @@ public class BendersSolutionStepScreen  extends JPanel{
 		masterRoundButton = new JButton("Runden");
 		subRoundButton = new JButton("Runden");
 		stepButton = new JButton("Gehe zu Step");
+		stepButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!validateInput())
+					return;
+				loadNewStep();
+				
+			}
+		});
 		//Textfield
 		this.stepTextField = new JTextField();
 		
+		
+	}
+	
+	protected boolean validateInput() {
+		if (!Helper.isNumeric(String.valueOf(stepTextField.getText()))) {
+			JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
+			return false;
+		} else
+			return true;
+	}
+
+	protected void loadNewStep() {
+		int step = Integer.valueOf(stepTextField.getText());
+		reset();
+		initializeScreen(step);
+		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: "+step);
+		
+	}
+
+	private void reset() {
+		for(Component c : this.getComponents()) {
+			this.remove(c);
+		}
 		
 	}
 

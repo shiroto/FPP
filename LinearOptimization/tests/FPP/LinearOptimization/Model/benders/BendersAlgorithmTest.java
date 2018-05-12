@@ -373,6 +373,7 @@ public class BendersAlgorithmTest {
 		
 		testInput(inputData, result, parameterResults);
 	}
+	
 	/*
 	 * https://members.loria.fr/CRingeissen/files/master2/solving-lp-ip.pdf
 	 */
@@ -398,6 +399,165 @@ public class BendersAlgorithmTest {
 			
 			double result = 0d;
 			double[] parameterResults = {0d, 0d, 0d, 0d, 0d, 0d};
+			
+			testInput(inputData, result, parameterResults);
+	}
+	
+	/*
+	 * ganzzahliges problem 
+		Double [][] array= {
+				{2d,3d,0d,0d,0d,5d},				
+				{0d,0d,3d,4d,0d,7d},
+				{-2d,0d,-2d,0d,-2d,-7d},
+				{7d,-3d,5d,-4d, 2d,0d},
+		};
+	 *http://www.hs-augsburg.de/informatik/projekte/mebib/emiel/entw_inf/or_verf/ganzopt_bab.html
+	 */
+//	@Test
+	void test_example_11() {
+		System.out.println("test_example_11");
+		// prepare test data
+		Double[] function = {7d,-3d,5d,-4d, 2d,0d};
+		Double[][] simplexTableau = new Double[][] {
+			{2d,3d,0d,0d,0d,5d},				
+			{0d,0d,3d,4d,0d,7d},
+			{-2d,0d,-2d,0d,-2d,-7d},
+			function};
+			int[] paramaterNegativeIndices = {};
+			int[] yVariableIndices = {2};
+			BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Integer};
+			
+			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
+					paramaterNegativeIndices, yVariableIndices, yTypes);
+			new BendersAlgorithm().solve(inputData);
+			double result = -1d;
+			double[] parameterResults = {0d, 1d, 0d, 1d, 4d};
+			
+			testInput(inputData, result, parameterResults);
+	}
+	/*
+Double [][] array= {											     6 ebenen baum
+			{6d,4d,15d},
+			{-21d,-11d,0d}
+		};
+	 * -> 1 2 43
+	 * https://www.wiwi.uni-frankfurt.de/profs/ohse/lehre/downloads/qmbwl_folien/Microsoft%2BWord%2B-%2BKapitel5OR3.pdf
+	 */
+//	@Test
+	void test_example_12() {
+		System.out.println("test_example_12");
+		// prepare test data
+		Double[] function = {-21d,-11d,0d};
+		Double[][] simplexTableau = new Double[][] {
+			{6d,4d,15d},
+			function};
+			int[] paramaterNegativeIndices = {};
+			int[] yVariableIndices = {0};
+			BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Integer};
+			
+			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
+					paramaterNegativeIndices, yVariableIndices, yTypes);
+			new BendersAlgorithm().solve(inputData);
+			double result = 43d;
+			double[] parameterResults = {1d, 2d};
+			
+			testInput(inputData, result, parameterResults);
+	}
+	
+	/*
+	Beispiel  max, x1 = 12 x2 = 24   zf= 28000, Baum mit 4 ebenen
+	{100d,50d,2425d},
+			{0d, 20d, 510d},
+			{-1000d,-700d,0d}
+		};
+	 * https://kops.uni-konstanz.de/bitstream/handle/123456789/40602/Jaekle_2--19g2w6rkcqybq4.pdf?sequence=5
+	 */
+//	@Test
+	void test_example_13() {
+		System.out.println("test_example_13");
+		// prepare test data
+		Double[] function = {-1000d,-700d,0d};
+		Double[][] simplexTableau = new Double[][] {
+			{100d,50d,2425d},
+			{0d, 20d, 510d},
+			function};
+			int[] paramaterNegativeIndices = {};
+			int[] yVariableIndices = {1};
+			BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Integer};
+			
+			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
+					paramaterNegativeIndices, yVariableIndices, yTypes);
+			new BendersAlgorithm().solve(inputData);
+			double result = 29250d;
+			double[] parameterResults = {11.75d, 25d};
+			
+			testInput(inputData, result, parameterResults);
+	}
+	
+	/*
+	 * max problem
+		Double [][] array= {
+						{3d,2d,6d},
+						{5d,2d,8d},
+						{-2d,-1d,0d}
+		};
+	 * 	[1.0, 1.0, 3.0]
+	 *	Alternative Lösungen:
+	 *	[0.0, 3.0, 3.0]
+	 * https://www.ingenieurkurse.de/operations-research-2/ganzzahlige-optimierung/branch-and-bound-verfahren/maximierungsprobleme/branch-and-bound-am-maximierungsproblem-optimale-loesung/beispiel-branch-and-bound-am-maximierungsproblem-optimale-loesung.html
+	 */
+//	@Test
+	void test_example_14() {
+		System.out.println("test_example_14");
+		// prepare test data
+		Double[] function = {-2d,-1d,0d};
+		Double[][] simplexTableau = new Double[][] {
+			{3d,2d,6d},
+			{5d,2d,8d},
+			function};
+			int[] paramaterNegativeIndices = {};
+			int[] yVariableIndices = {1};
+			BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Float};
+			
+			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
+					paramaterNegativeIndices, yVariableIndices, yTypes);
+			new BendersAlgorithm().solve(inputData);
+			double result = 3d;
+			double[] parameterResults = {1d, 1d};
+			
+			testInput(inputData, result, parameterResults);
+	}
+	
+/*
+ *   2, 2, ZF= 6; 
+		Double [][] array= {					
+				
+				{-10d,20d,22d},
+				{5d,10d,49d},
+				{1d,0d,5d},
+				
+				{1d,-4d,0d}
+	https://www.ie.bilkent.edu.tr/~mustafap/courses/bb.pdf
+ */
+//	@Test
+	void test_example_15() {
+		System.out.println("test_example_15");
+		// prepare test data
+		Double[] function = {1d,-4d,0d};
+		Double[][] simplexTableau = new Double[][] {
+			{-10d,20d,22d},
+			{5d,10d,49d},
+			{1d,0d,5d},
+			function};
+			int[] paramaterNegativeIndices = {};
+			int[] yVariableIndices = {0};
+			BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Integer};
+			
+			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
+					paramaterNegativeIndices, yVariableIndices, yTypes);
+			new BendersAlgorithm().solve(inputData);
+			double result = 6d;
+			double[] parameterResults = {2d, 2d};
 			
 			testInput(inputData, result, parameterResults);
 	}
