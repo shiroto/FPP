@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import FPP.LinearOptimization.Data.BendersOptimizationData;
 import FPP.LinearOptimization.Model.benders.BendersSolutionData;
 import FPP.LinearOptimization.Model.benders.BendersStepData;
 
@@ -145,7 +146,6 @@ public class BendersSolutionScreen extends JPanel {
 		solutionStepBenders.initializeScreen(step);
 		mainFrame.getTabs().addTab("Benders Step: "+step, solutionStepBenders);
 		mainFrame.setTab(3);
-
 	}
 
 	private void loadOptSolution() {
