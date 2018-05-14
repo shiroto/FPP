@@ -46,4 +46,19 @@ public class Helper {
 		gbl.setConstraints(c, gbc);
 		cont.add(c);
 	}
+	
+	public static Double[][] roundStepData(Double[][] array) {
+		Double[][] roundArray = array.clone();
+		for(int i = 0; i < roundArray.length;i++) {
+			for(int y = 0; y < roundArray[i].length; y++) {
+				Double temp = roundArray[i][y];
+				temp = temp * 100;
+				temp = (double) Math.round(temp);
+				temp = temp / 100;
+				roundArray[i][y] = temp;
+			}
+		}
+		return roundArray;
+		
+	}
 }

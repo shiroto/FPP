@@ -52,7 +52,7 @@ public class BendersSolutionStepScreen  extends JPanel{
 	}
 
 	public void initializeScreen(int stepIndex) {
-
+		
 		this.stepIndex = stepIndex;
 		this.step = stepsList.get(stepIndex);
 		this.master = step.getMasterProblem();
@@ -114,15 +114,20 @@ public class BendersSolutionStepScreen  extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for (Component c : ((JPanel)mainFrame.getTabs().getSelectedComponent()).getComponents()) {
-					c.setSize(c.getWidth()+1, c.getHeight()+1);
-					Font f = c.getFont();
-					c.setFont(new Font(f.getName(), f.getStyle(), f.getSize()+1));
-					updateRowHeights(masterSolutionTable);
-					updateRowHeights(subSolutionTable);
-					updateRowHeights(masterTable);
-					updateRowHeights(subTable);
-				}
+					Double[][] roundMaster;
+					roundMaster = Helper.roundStepData(master);
+					/*DefaultTableModel model = new DefaultTableModel(roundMaster, 0);
+					for(int i = 0; i < roundMaster.length; i++) {
+						model.addRow(roundMaster[i]);
+					}
+					masterTable.setModel(model);
+					masterTable.setTableHeader(null);
+					for (int i = 0; i < roundMaster.length - 1; i++) {
+						DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+						centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+						masterTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+					} */
+					loadTable(masterTable, roundMaster);
 				
 			}
 		});
@@ -131,15 +136,20 @@ public class BendersSolutionStepScreen  extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for (Component c : ((JPanel)mainFrame.getTabs().getSelectedComponent()).getComponents()) {
-					c.setSize(c.getWidth()-1, c.getHeight()-1);
-					Font f = c.getFont();
-					c.setFont(new Font(f.getName(), f.getStyle(), f.getSize()-1));
-					updateRowHeights(masterSolutionTable);
-					updateRowHeights(subSolutionTable);
-					updateRowHeights(masterTable);
-					updateRowHeights(subTable);
+				Double[][] roundSub;
+				roundSub = Helper.roundStepData(master);
+			/*	DefaultTableModel model = new DefaultTableModel(roundSub, 0);
+				for(int i = 0; i < roundSub.length; i++) {
+					model.addRow(roundSub[i]);
 				}
+				subTable.setModel(model);
+				subTable.setTableHeader(null);
+				for (int i = 0; i < roundSub.length - 1; i++) {
+					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+					subTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+				} */
+				loadTable(subTable,roundSub);
 				
 			}
 		});
