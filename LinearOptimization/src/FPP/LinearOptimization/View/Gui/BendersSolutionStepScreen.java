@@ -115,7 +115,7 @@ public class BendersSolutionStepScreen  extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 					Double[][] roundMaster;
-					roundMaster = Helper.roundStepData(master);
+					roundMaster = Helper.roundStepData(master,1);
 					/*DefaultTableModel model = new DefaultTableModel(roundMaster, 0);
 					for(int i = 0; i < roundMaster.length; i++) {
 						model.addRow(roundMaster[i]);
@@ -137,7 +137,7 @@ public class BendersSolutionStepScreen  extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Double[][] roundSub;
-				roundSub = Helper.roundStepData(master);
+				roundSub = Helper.roundStepData(sub,1);
 			/*	DefaultTableModel model = new DefaultTableModel(roundSub, 0);
 				for(int i = 0; i < roundSub.length; i++) {
 					model.addRow(roundSub[i]);

@@ -47,14 +47,14 @@ public class Helper {
 		cont.add(c);
 	}
 	
-	public static Double[][] roundStepData(Double[][] array) {
+	public static Double[][] roundStepData(Double[][] array, int dec) {
 		Double[][] roundArray = array.clone();
 		for(int i = 0; i < roundArray.length;i++) {
 			for(int y = 0; y < roundArray[i].length; y++) {
 				Double temp = roundArray[i][y];
-				temp = temp * 100;
+				temp = temp * Math.pow(10, dec);
 				temp = (double) Math.round(temp);
-				temp = temp / 100;
+				temp = temp / Math.pow(10, dec);
 				roundArray[i][y] = temp;
 			}
 		}
