@@ -15,20 +15,27 @@ import de.lip.bb.Simplex;
 public class BendersAlgorithm implements IBendersOptimization {
 
 	private static final Double DOUBLE_CORRECTION = 0.000001d;
-
+	private static final Double ADDITIONAL_CUT_MIN_CORRECTION = 9999d;
+	
 	@Override
 	public IBendersOptimizationSolutionData solve(BendersOptimizationData bendersOptimizationData) {
 		// initialize the solution object
 		BendersSolutionData bendersSolution = new BendersSolutionData(bendersOptimizationData);
-		
-		// TODO convert not-negativities, not possible to determine whether x is >= or <=
-//		bendersOptimizationData.setSimplexTableau(LinearOptimizationDataUtility.convertNotNegativity(bendersOptimizationData.getSimplexTableau()));
+
+		// convert to not-negatives
+		bendersOptimizationData.setSimplexTableau(LinearOptimizationDataUtility.convertNotNegatives(
+				bendersOptimizationData.getSimplexTableau(), 
+				bendersOptimizationData.getParamaterNegativeIndices()));
 		
 		MasterProblem masterProblem = createMasterProblem(bendersOptimizationData);
-		masterProblem.addRestriction(new Double[]{-1d, 0d}, 0d); // add y >= 0 condition
+		// TODO Dominik: ???
+//		masterProblem.addRestriction(new Double[]{-1d, 0d}, 0d); // add y >= 0 condition
 
 		SubProblem subProblem = createSubProblem(bendersOptimizationData);
 		Problem dualProblem = new Problem(LinearOptimizationDataUtility.createDual(subProblem.getSimplexTableau()));
+		System.out.println("Master: " + Arrays.deepToString(masterProblem.getSimplexTableau()));
+		System.out.println("Sub:    " + Arrays.deepToString(subProblem.getSimplexTableau()));
+		System.out.println("Dual:   " + Arrays.deepToString(dualProblem.getSimplexTableau()));
 		
 		// step 0
 		int r = 1;
@@ -36,9 +43,8 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Double LB = Double.MIN_VALUE;
 
 		Double[] u = new Double[dualProblem.getFunction().length - 1];
-		for (int i = 0; i < u.length; i++) {
-			u[i] = 0d;
-		}
+		Arrays.fill(u, 0d);
+		
 		Double[] cut = calculateCut(subProblem, u);
 		addCut(masterProblem, cut);
 		
@@ -47,20 +53,26 @@ public class BendersAlgorithm implements IBendersOptimization {
 		while (true) {
 			BendersStepData stepData = new BendersStepData(r);
 			
+			//TODO Dominik: simplextableau sind doch immer minimierer -> solveProblem(masterProblem, true); -> false?
+			
 			// step 1
 			solution = solveProblem(masterProblem, true);
 			
 			//check for valid solution
-			if (solution[solution.length - 1] == 0) {
+			//if (solution[solution.length - 1] == 0) {
 				//TODO what should happen here?
 				//no solution existing
-				break;
-			}
+			//	break;
+			//}
 			stepData.setMasterSolution(solution);
 			
-			UB = solution[solution.length - 2];
+			if (masterProblem.isSolvableWithBAndB()) {
+				UB = solution[solution.length - 1];
+			} else {
+				UB = solution[solution.length - 2];
+			}
 			
-			Double[] y = extractSolutionCoefficients(solution);
+			Double[] y = extractSolutionCoefficients(solution, masterProblem.isSolvableWithBAndB());
 			
 			// step 2
 			updateSubproblem(subProblem, dualProblem, y);
@@ -69,7 +81,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			solution = solveProblem(dualProblem, false);
 			stepData.setSubSolution(solution);
 			
-			u = extractSolutionCoefficients(solution);
+			u = extractSolutionCoefficients(solution, dualProblem.isSolvableWithBAndB());
 			
 			// step 3 
 			LB = calculateLowerBound(masterProblem, y, solution[solution.length - 2]);
@@ -84,9 +96,16 @@ public class BendersAlgorithm implements IBendersOptimization {
 				break;
 			}
 			
-			cut = calculateCut(subProblem, u);
-			System.out.println("Add Cut " + Arrays.toString(cut) + "\n\n");
-			addCut(masterProblem, cut);
+			if (solution[solution.length - 2].equals(Double.NaN)) {
+				cut = calculateAdditionalCut(dualProblem);
+				System.out.println("not solvable");
+				addCut(dualProblem, cut);
+			} else {
+				cut = calculateCut(subProblem, u);
+				System.out.println("Add Cut " + Arrays.toString(cut) + "\n\n");
+				addCut(masterProblem, cut);
+			}
+			
 			
 			stepData.setMasterProblem(masterProblem.getSimplexTableau());
 			bendersSolution.addStep(stepData);
@@ -96,9 +115,11 @@ public class BendersAlgorithm implements IBendersOptimization {
 		if (optimalY != null ) {
 			Problem originSubWithY = getOriginSubWithY(subProblem, optimalY);
 			solution = new Simplex(originSubWithY.getSimplexTableau(), false).loese();
-			bendersSolution.setOptSolution(solution);
+			
+			Double[] optimalSolution = buildOptimalSolution(bendersOptimizationData, solution, optimalY);
+			bendersSolution.setOptSolution(optimalSolution);
 
-			u = extractSolutionCoefficients(solution);
+			u = extractSolutionCoefficients(solution, originSubWithY.isSolvableWithBAndB());
 			
 			System.out.println("\n\nOptimal Solution = " + solution[solution.length - 2] * (-1));
 			System.out.print("Coefficients = [");
@@ -115,40 +136,76 @@ public class BendersAlgorithm implements IBendersOptimization {
 		}
 		return bendersSolution;
 	}
+
+	private Double[] buildOptimalSolution(BendersOptimizationData bendersOptimizationData, Double[] solution,
+			Double[] optimalY) {
+		Double[] optimalSolution = new Double[solution.length -1 + optimalY.length - 1];
+		for (int i = 0; i < optimalY.length - 1; i++) {
+			optimalSolution[bendersOptimizationData.getYVariableIndices()[i]] = optimalY[i];
+		}
+		
+		for (int i = 0, j = 0; i < solution.length - 2; j++) {
+			if (optimalSolution[j] == null) {
+				optimalSolution[j] = solution[i];
+				i++;
+			}
+		}
+		optimalSolution[optimalSolution.length - 1] = (-1) * solution[solution.length - 2];
+		return optimalSolution;
+	}
 	
+	private Double[] calculateAdditionalCut(Problem problem) {
+		double functionValue = Math.abs(problem.getFunction()[0]);
+		for (int i = 1; i < problem.getFunction().length - 1; i++) {
+			functionValue *= Math.abs(problem.getFunction()[i]);
+		}
+
+		Double[] cut = new Double[problem.getCoefficients()[0].length + 1];
+		Arrays.fill(cut, 1d);
+//		cut[cut.length - 1] = functionValue + ADDITIONAL_CUT_MIN_CORRECTION;
+		cut[cut.length - 1] = ADDITIONAL_CUT_MIN_CORRECTION;
+		return cut;
+	}
+
 	private Double[] solveProblem(Problem problem, boolean max) {
 		if (problem.isSolvableWithBAndB()) {
 			Tableau tableau = new Tableau(problem.getSimplexTableau());
 			
-			//TODO if no solution -> index out of bound!
-			return new BranchAndBound(tableau, max).getLoesungsListe().get(0);
+			List<Double[]> solution = new BranchAndBound(tableau, max).solve();
+			if (solution.size() > 0) {
+				return solution.get(0);
+			}
+			//TODO what happens if no solution can be found?
+			return new Double[0];
 		} else {
 			return new Simplex(problem.getSimplexTableau(), max).loese();
 		}
 	}
 	
-	private void addCut(MasterProblem masterProblem, Double[] cut) {
+	private void addCut(Problem problem, Double[] cut) {
 		Double[] coefficients = Arrays.copyOf(cut, cut.length - 1);
 		Double functionValue = cut[cut.length - 1];
 		
-		masterProblem.addRestriction(coefficients, functionValue);
+		problem.addRestriction(coefficients, functionValue);
 	}
 
 	private MasterProblem createMasterProblem(BendersOptimizationData bendersOptimizationData) {
-		//TODO test
+		Double[][] originTableau = bendersOptimizationData.getSimplexTableau();
 		int[] yIndices = bendersOptimizationData.getYVariableIndices();
 		int yCount = yIndices.length;
-		Double[] function = LinearOptimizationDataUtility.extractFunction(bendersOptimizationData.getSimplexTableau());
-		Double[][] masterTableau = new Double[1][yCount + 2];
 		
-		// constant of function
+		Double[] function = LinearOptimizationDataUtility.extractFunction(originTableau);
+		Double[][] masterTableau = new Double[1][yCount + 2];
+
+		// theta
 		masterTableau[0][yCount] = 1d;
+		// constant of function
 		masterTableau[0][yCount + 1] = function[function.length - 1];
 		
 		// function y coefficients
 		int yColCount = 0;
 		for (int col = 0; col < function.length - 1; col++) {
-			if(arrayContains(yIndices, col)) {
+			if(LinearOptimizationDataUtility.arrayContains(yIndices, col)) {
 				masterTableau[0][yColCount] = function[col];
 				yColCount++;
 			}
@@ -156,15 +213,55 @@ public class BendersAlgorithm implements IBendersOptimization {
 		
 		MasterProblem mp = new MasterProblem(masterTableau);
 		mp.setTypes(bendersOptimizationData.getYTypes());
+		
+		// add restrictions for binary values
+		// e.g. 1 * y3 <= 1
+		for (int i = 0; i < yIndices.length; i++) {
+			if (bendersOptimizationData.getYTypes()[i] == BendersMasterCoefficientType.Binary) {				
+				Double[] coefficients = new Double[yCount + 1];
+				Arrays.fill(coefficients, 0d);
+				coefficients[i] = 1d;
+				
+				mp.addRestriction(coefficients, 1d);
+			}
+		}
+		
+		// add restrictions to master from original problem that only contain y coefficients
+		int restrictionCNT = originTableau.length - 1;
+		for (int restr = 0; restr < restrictionCNT; restr++) {
+			if(restrictionContainsOnlyY(originTableau[restr], yIndices)) {
+				Double[] coefficients = new Double[yCount + 1];
+				Arrays.fill(coefficients, 0d);
+				for (int yIndex = 0; yIndex < coefficients.length - 1; yIndex++) {
+					System.out.println("yIndex " + yIndex);
+					System.out.println("yIndices[yIndex] " + yIndices[yIndex]);
+					System.out.println("originTableau[restr][yIndices[yIndex]] " + originTableau[restr][yIndices[yIndex]]);
+					System.out.println("coefficients[yIndex] " + coefficients[yIndex]);
+					coefficients[yIndex] = originTableau[restr][yIndices[yIndex]];
+				}
+				mp.addRestriction(coefficients, originTableau[restr][originTableau[0].length - 1]);
+			}
+		}
+		
 		return mp;
 	}
 	
+	private boolean restrictionContainsOnlyY(Double[] restriction, int[] yIndices) {
+		for (int coefIndex = 0; coefIndex < restriction.length - 1; coefIndex++) {
+			if(!LinearOptimizationDataUtility.arrayContains(yIndices, coefIndex)) {
+				if(restriction[coefIndex] != 0d) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	private SubProblem createSubProblem(BendersOptimizationData bendersOptimizationData) {
-		//TODO test
 		Double[][] originTableau = bendersOptimizationData.getSimplexTableau();
 		int[] yIndices = bendersOptimizationData.getYVariableIndices();
 		int yCount = yIndices.length;
-		int restrictionCNT = originTableau.length-1;
+		int restrictionCNT = originTableau.length - 1;
 		
 		Double[][] subTableau = new Double[originTableau.length][originTableau[0].length - yCount];
 		List<Double[]> coefficientsY = new ArrayList<>();
@@ -185,7 +282,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 					for (int row = 0; row < restrictionCNT; row++) {
 						subTableau[row][subTableau[0].length-1] = originTableau[row][col];
 					}
-				} else if(arrayContains(yIndices, col)) {
+				} else if(LinearOptimizationDataUtility.arrayContains(yIndices, col)) {
 					// column is y coefficient
 					for (int row = 0; row < restrictionCNT; row++) {
 						coefficientsY.get(row)[yColCount] = -1 * originTableau[row][col];
@@ -205,27 +302,16 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Double[] function = LinearOptimizationDataUtility.extractFunction(bendersOptimizationData.getSimplexTableau());		// function y coefficients
 		int xColCount = 0;
 		for (int col = 0; col < function.length - 1; col++) {
-			if(!arrayContains(yIndices, col)) {
+			if(!LinearOptimizationDataUtility.arrayContains(yIndices, col)) {
 				subTableau[originTableau.length - 1][xColCount] = function[col];
 				xColCount++;
 			}
 		}
 		
 		// constant of function, always 0
-		subTableau[originTableau.length - 1][originTableau.length - yCount] = 0d;
+		subTableau[originTableau.length - 1][originTableau[0].length - yCount - 1] = 0d;
 		
 		return new SubProblem(subTableau, coefficientsY);
-	}
-	
-	public static boolean arrayContains(final int[] array, final int v) {
-		boolean result = false;
-		for (int i : array) {
-			if (i == v) {
-				result = true;
-				break;
-			}
-		}
-		return result;
 	}
 
 	private Problem getOriginSubWithY(SubProblem sProblem, Double[] optimalY) {
@@ -247,9 +333,15 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return new Problem(originSubWithY);
 	}
 
-	private Double[] extractSolutionCoefficients(Double[] simplexSolution) {
-		Double[] u = new Double[simplexSolution.length - 2]; //solution and solution type not needed
-		System.arraycopy(simplexSolution, 0, u, 0, simplexSolution.length - 2);
+	private Double[] extractSolutionCoefficients(Double[] simplexSolution, boolean bAndB) {
+		int length;
+		if (bAndB) {
+			length = simplexSolution.length - 1;
+		} else {
+			length = simplexSolution.length - 2;
+		}
+		Double[] u = new Double[length]; //solution and solution type not needed
+		System.arraycopy(simplexSolution, 0, u, 0, length);
 		return u;
 	}
 	
@@ -264,9 +356,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 
 	private Double[] calculateCut(SubProblem sProblem, Double[] u) {
 		Double[] cut = new Double[sProblem.getCoefficientsY()[0].length + 2];
-		for (int i = 0; i < cut.length; i++) {
-			cut[i] = 0d;
-		}
+		Arrays.fill(cut, 0d);
 		
 		for (int i = 0; i < u.length; i++) {
 			for (int j = 0; j < sProblem.getCoefficientsY()[i].length; j++) {
@@ -286,7 +376,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		for (int i = 0; i < function.length - 1; i++) {
 			double ayMult = 0d;
 			for (int j = 0; j < subProblem.getCoefficientsY()[i].length; j++) {
-				ayMult = subProblem.getCoefficientsY()[i][j] * y[j];
+				ayMult += subProblem.getCoefficientsY()[i][j] * y[j];
 			}
 			function[i] = subProblem.getB()[i] + ayMult;
 		}
@@ -294,55 +384,5 @@ public class BendersAlgorithm implements IBendersOptimization {
 		function[function.length - 1] = dualProblem.getFunction()[function.length - 1]; //set constant to function
 		
 		dualProblem.setFunction(function);
-	}
-	
-	public static void main(String[] args) {
-		Double[][] simplexTableau = {
-				{-1d, -1d, 0d, 0d, -2d, -10d},
-				{-2d, 0d, 0d, 0d, -2d, -10d},
-				{0d, 0d, -1d, -3d, -0.5d, -2d},
-				{0d, 0d, 0d, -10d, -1d, -6d},
-				{200d, 50d, 80d, 500d, 180d, 0d},};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Float};
-		
-		// TODO variable index starting from 0 to length-1
-		int[] yVariableIndices = {4};
-		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, yVariableIndices , yTypes);
-		
-		new BendersAlgorithm().solve(testBenders);
-//		new BendersAlgorithm().testMasterSubSplit();
-	}
-	
-	public void testMasterSubSplit() {
-		Double[][] simplexTableau = {
-				{-1d, -1d, 0d, 0d, -2d, -10d},
-				{-2d, 0d, 0d, 0d, -2d, -10d},
-				{0d, 0d, -1d, -3d, -0.5d, -2d},
-				{0d, 0d, 0d, -10d, -1d, -6d},
-				{200d, 50d, 80d, 500d, 180d, 0d},};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary};
-		// TODO variable index starting from 0 to length-1
-		int[] yVariableIndices = {4};
-		BendersOptimizationData testBenders = new BendersOptimizationData(simplexTableau, yVariableIndices , yTypes);
-		
-		System.out.println("Input SimplexTableau");
-		System.out.println(Arrays.deepToString(simplexTableau));
-		
-		System.out.println("\nMasterProblem");
-		MasterProblem mb = createMasterProblem(testBenders);
-		System.out.println("Tableau: " + Arrays.deepToString(mb.getSimplexTableau()));
-//		System.out.println("F: " + Arrays.toString(mb.getFunction()));
-		
-		SubProblem sb = createSubProblem(testBenders);
-		System.out.println("\nSubpProblem");
-		System.out.println("Tableau: " + Arrays.deepToString(sb.getSimplexTableau()));
-//		System.out.println("F: " + Arrays.toString(sb.getFunction()));
-//		System.out.println("X: " + Arrays.deepToString(sb.getCoefficients()));
-		System.out.println("Y: " + Arrays.deepToString(sb.getCoefficientsY()));
-//		System.out.println("b: " + Arrays.toString(sb.getB()));
-		
-		Problem dp = new Problem(LinearOptimizationDataUtility.createDual(sb.getSimplexTableau()));
-		System.out.println("\nDual Problem");
-		System.out.println("Tableau: " + Arrays.deepToString(dp.getSimplexTableau()));
 	}
 }
