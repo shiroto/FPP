@@ -109,13 +109,22 @@ public class BendersSolutionStepScreen  extends JPanel{
 		this.lbLabel = new JLabel("Lower Bound = "+ lb);
 		this.stepLabel = new JLabel("Step: " + stepIndex);
 		//Buttons
-		masterRoundButton = new JButton("Runden");
+		masterRoundButton = new JButton("Gerundet");
 		masterRoundButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					Double[][] roundMaster;
-					roundMaster = Helper.roundStepData(master,1);
+					if(masterRoundButton.getText()=="Gerundet") {
+						Double[][] roundMaster;
+						roundMaster = Helper.roundStepData(master,1);
+						loadTable(masterTable, roundMaster);
+						masterRoundButton.setText("Ungerundet");
+					}
+					else {
+						loadTable(masterTable,master);
+						masterRoundButton.setText("Gerundet");
+					}
+					
 					/*DefaultTableModel model = new DefaultTableModel(roundMaster, 0);
 					for(int i = 0; i < roundMaster.length; i++) {
 						model.addRow(roundMaster[i]);
@@ -127,17 +136,26 @@ public class BendersSolutionStepScreen  extends JPanel{
 						centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 						masterTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 					} */
-					loadTable(masterTable, roundMaster);
+					
 				
 			}
 		});
-		subRoundButton = new JButton("Runden");
+		subRoundButton = new JButton("Gerundet");
 		subRoundButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Double[][] roundSub;
-				roundSub = Helper.roundStepData(sub,1);
+				
+				if(subRoundButton.getText()=="Gerundet") {
+					Double[][] roundSub;
+					roundSub = Helper.roundStepData(sub,1);
+					loadTable(subTable, roundSub);
+					subRoundButton.setText("Ungerundet");
+				}
+				else {
+					loadTable(subTable,sub);
+					subRoundButton.setText("Gerundet");
+				}
 			/*	DefaultTableModel model = new DefaultTableModel(roundSub, 0);
 				for(int i = 0; i < roundSub.length; i++) {
 					model.addRow(roundSub[i]);
@@ -149,7 +167,6 @@ public class BendersSolutionStepScreen  extends JPanel{
 					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 					subTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 				} */
-				loadTable(subTable,roundSub);
 				
 			}
 		});
