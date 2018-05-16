@@ -55,7 +55,7 @@ public class Helper {
 				temp = temp * Math.pow(10, dec);
 				temp = (double) Math.round(temp);
 				temp = temp / Math.pow(10, dec);
-				roundArray[i][y] = 1.0;
+				roundArray[i][y] = temp;
 			}
 		}
 		return roundArray;

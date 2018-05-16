@@ -132,19 +132,7 @@ public class BendersSolutionStepScreen  extends JPanel{
 						loadTable(masterTable,master);
 						masterRoundButton.setText("Gerundet");
 					}
-					
-					/*DefaultTableModel model = new DefaultTableModel(roundMaster, 0);
-					for(int i = 0; i < roundMaster.length; i++) {
-						model.addRow(roundMaster[i]);
-					}
-					masterTable.setModel(model);
-					masterTable.setTableHeader(null);
-					for (int i = 0; i < roundMaster.length - 1; i++) {
-						DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-						centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-						masterTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-					} */
-					
+								
 				
 			}
 		});
@@ -164,17 +152,7 @@ public class BendersSolutionStepScreen  extends JPanel{
 					loadTable(subTable,sub);
 					subRoundButton.setText("Gerundet");
 				}
-			/*	DefaultTableModel model = new DefaultTableModel(roundSub, 0);
-				for(int i = 0; i < roundSub.length; i++) {
-					model.addRow(roundSub[i]);
-				}
-				subTable.setModel(model);
-				subTable.setTableHeader(null);
-				for (int i = 0; i < roundSub.length - 1; i++) {
-					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-					subTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-				} */
+		
 				
 			}
 		});
