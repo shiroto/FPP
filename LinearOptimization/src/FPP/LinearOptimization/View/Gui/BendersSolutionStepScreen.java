@@ -45,6 +45,10 @@ public class BendersSolutionStepScreen  extends JPanel{
 	private JButton subRoundButton;
 	private JButton stepButton;
 	private JTextField stepTextField;
+	private JButton nextStepButton;
+	private JButton prevStepButton;
+	private JButton finalStepButton;
+	private JLabel roundingHint;
 
 	public BendersSolutionStepScreen(MainFrame mainFrame, List<BendersStepData> stepsList) {
 		this.mainFrame = mainFrame;
@@ -87,10 +91,14 @@ public class BendersSolutionStepScreen  extends JPanel{
 		Helper.addComponent(this, gbl, lbLabel, 0, 9, 3, 1, 1, 1);
 		
 		Helper.addComponent(this, gbl, stepLabel, 0, 11, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, roundingHint, 5, 11, 2, 1, 1, 1);
 		Helper.addComponent(this, gbl, stepTextField, 0, 12, 1, 1, 1, 1);
 		Helper.addComponent(this, gbl, stepButton, 1, 12, 2, 1, 1, 1);
-
+		Helper.addComponent(this, gbl, prevStepButton, 3, 12, 2, 1, 1, 1);
+		Helper.addComponent(this, gbl, nextStepButton, 4, 12, 2, 1, 1, 1);
+		Helper.addComponent(this, gbl, finalStepButton, 6, 12, 2, 1, 1, 1);
 		
+
 		
 	}
 
@@ -107,7 +115,7 @@ public class BendersSolutionStepScreen  extends JPanel{
 		this.subLabel = new JLabel("Subproblem");
 		this.ubLabel = new JLabel("Upper Bound = " + ub);
 		this.lbLabel = new JLabel("Lower Bound = "+ lb);
-		this.stepLabel = new JLabel("Step: " + stepIndex);
+		this.stepLabel = new JLabel("Step: " + stepIndex + " von " + (stepsList.size() - 1));
 		//Buttons
 		masterRoundButton = new JButton("Gerundet");
 		masterRoundButton.addActionListener(new ActionListener() {
@@ -183,6 +191,41 @@ public class BendersSolutionStepScreen  extends JPanel{
 		});
 		//Textfield
 		this.stepTextField = new JTextField();
+		prevStepButton = new JButton("<");
+		prevStepButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if((stepIndex - 1) >= 0 ) {
+					decreaseStep();
+				} else {
+					return;
+				}
+				
+			}
+		});
+		nextStepButton = new JButton(">");
+		nextStepButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if((stepIndex + 1) < stepsList.size() ) {
+					increaseStep();
+				} else {
+					return;
+				}
+				
+			}
+		});
+		finalStepButton = new JButton("Final Step");
+		finalStepButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				goToLastStep();
+			}
+		});
+		roundingHint = new JLabel("<html><body>Alle Berechnungen wurden mit<br> ungerundeten Werten durchgeführt.</body></html>");
 		
 		
 	}
@@ -217,6 +260,24 @@ public class BendersSolutionStepScreen  extends JPanel{
 		initializeScreen(step);
 		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: "+step);
 		
+	}
+	
+	protected void increaseStep() {
+		reset();
+		initializeScreen(stepIndex + 1);
+		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex));
+	}
+	
+	protected void decreaseStep() {
+		reset();
+		initializeScreen(stepIndex - 1);
+		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex));
+	}
+	
+	protected void goToLastStep() {
+		reset();
+		initializeScreen(stepsList.size() - 1);
+		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex));
 	}
 
 	private void reset() {
