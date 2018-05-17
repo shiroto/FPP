@@ -28,6 +28,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 				bendersOptimizationData.getParamaterNegativeIndices()));
 		
 		MasterProblem masterProblem = createMasterProblem(bendersOptimizationData);
+		
 		// TODO Dominik: ???
 //		masterProblem.addRestriction(new Double[]{-1d, 0d}, 0d); // add y >= 0 condition
 
@@ -56,7 +57,9 @@ public class BendersAlgorithm implements IBendersOptimization {
 			//TODO Dominik: simplextableau sind doch immer minimierer -> solveProblem(masterProblem, true); -> false?
 			
 			// step 1
-			solution = solveProblem(masterProblem, true);
+			Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
+			solution = solveProblem(masterTableau, masterProblem.isSolvableWithBAndB(), true);
+			solution = LinearOptimizationDataUtility.normalizeTheta(solution);
 			
 			//check for valid solution
 			//if (solution[solution.length - 1] == 0) {
@@ -78,7 +81,8 @@ public class BendersAlgorithm implements IBendersOptimization {
 			updateSubproblem(subProblem, dualProblem, y);
 			stepData.setSubProblem(subProblem.getSimplexTableau());
 			
-			solution = solveProblem(dualProblem, false);
+			solution = solveProblem(dualProblem.getSimplexTableau(),
+					dualProblem.isSolvableWithBAndB(), false);
 			stepData.setSubSolution(solution);
 			
 			u = extractSolutionCoefficients(solution, dualProblem.isSolvableWithBAndB());
@@ -167,9 +171,10 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return cut;
 	}
 
-	private Double[] solveProblem(Problem problem, boolean max) {
-		if (problem.isSolvableWithBAndB()) {
-			Tableau tableau = new Tableau(problem.getSimplexTableau());
+	private Double[] solveProblem(Double[][] simplexTableau,
+			boolean solveAbleWithBAndB, boolean max) {
+		if (solveAbleWithBAndB) {
+			Tableau tableau = new Tableau(simplexTableau);
 			
 			List<Double[]> solution = new BranchAndBound(tableau, max).solve();
 			if (solution.size() > 0) {
@@ -178,7 +183,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			//TODO what happens if no solution can be found?
 			return new Double[0];
 		} else {
-			return new Simplex(problem.getSimplexTableau(), max).loese();
+			return new Simplex(simplexTableau, max).loese();
 		}
 	}
 	

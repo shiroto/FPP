@@ -45,7 +45,7 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	@Test
+//	@Test
 	void test_example_powerPoint_2() {
 		System.out.println("test_example_powerPoint_F");
 		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
@@ -95,8 +95,8 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-//	@Test
 	// TODO Martin 
+//	@Test
 	void test_example_02() {
 		System.out.println("test_example_02");
 		// prepare test data
@@ -377,7 +377,7 @@ public class BendersAlgorithmTest {
 	/*
 	 * https://members.loria.fr/CRingeissen/files/master2/solving-lp-ip.pdf
 	 */
-	@Test
+//	@Test
 	void test_example_10() {
 		System.out.println("test_example_10");
 		// prepare test data
