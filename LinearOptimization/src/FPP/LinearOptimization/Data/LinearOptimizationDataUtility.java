@@ -62,4 +62,97 @@ public class LinearOptimizationDataUtility {
 		return result;
 	}
 
+	/**
+	 * This method normalizes a solution array which contains
+	 * a substitution for theta.<br>
+	 * 
+	 * <b>example:</b><br>
+	 * <i>[0.0, 0.0, 1.0, <b>8192.0, 8192.0</b>, -33.00000000002339]</i> contains <b>theta1, theta2</b><br>
+	 * will be replaced by:<br>
+	 * <i>[0.0, 0.0, 1.0, <b>0.0</b>, -33.00000000002339]</i> contains <b>theta</b><br>
+	 * because theta can be substituted by following:<br>
+	 * <b>theta = theta1 - theta2</b>
+	 * 
+	 * @param solution
+	 * @return
+	 */
+	public static Double[] normalizeTheta(Double[] solution) {
+		// init return solution
+		Double[] newSolution = new Double[solution.length-1];
+		System.arraycopy(solution, 0, newSolution, 0, newSolution.length-2);
+		
+		// determine theta1 & theta2
+		Double theta1 = solution[solution.length-3];
+		Double theta2 = solution[solution.length-2];
+		
+		// resubstitute theta
+		newSolution[newSolution.length-2] = theta1 - theta2;
+		
+		// copy "zielfunktionswert"
+		System.arraycopy(solution, newSolution.length, newSolution, newSolution.length-1, 1);
+		solution = newSolution;
+		return solution;
+	}
+
+	/**
+	 * This method substitutes theta in an simplex tableau.<br>
+	 * <b>Starting tableau:</b><br>
+	 * <i>{{1.0d, 0.0d, 0.0d, <b>0.0d</b>, 1.0d},</i><br>
+	 * <i>{0.0d, 1.0d, 0.0d, <b>0.0d</b>, 1.0d},</i><br>
+	 * <i>{0.0d, 0.0d, 1.0d, <b>0.0d</b>, 1.0d},</i><br>
+	 * <i>{0.0d, 0.0d, 0.0d, <b>-1.0d</b>, 0.0d},</i><br>
+	 * <i>{-74997.5d, -40004.0d, -39988.0d, <b>-1.0d</b>, -34997.5d},</i><br>
+	 * <i>{-49995.0d, 0.0d, -79992.0d, <b>-1.0d</b>, -29997.0d},</i><br>
+	 * <i>{42.0d, 18.0d, 33.0d, <b>1.0d</b>, 0.0d}}</i><br><br>
+	 * 
+	 *  will <b>theta</b> will be substituted by following tableau:<br><br>
+	 *  
+	 * <i>{1.0d, 0.0d, 0.0d, <b>0.0d, 0.0d</b>, 1.0d}, </i><br>
+	 * <i>{0.0d, 1.0d, 0.0d, <b>0.0d, 0.0d</b>, 1.0d},</i><br>
+	 * <i>{0.0d, 0.0d, 1.0d, <b>0.0d, 0.0d</b>, 1.0d},</i><br>
+	 * <i>{0.0d, 0.0d, 0.0d, <b>-1.0d, 1.0d</b>, 0.0d},</i><br>
+	 * <i>{-74997.5d, -40004.0d, -39988.0d, <b>-1.0d, 1.0d</b>, -34997.5d},</i><br>
+	 * <i>{-49995.0d, 0.0d, -79992.0d, <b>-1.0d, 1.0d</b>,-29997.0d},</i><br>
+	 * <i>{42.0d, 18.0d, 33.0d, <b>1.0d, -1.0d</b>, 0.0d}}</i><br>
+	 * so theta will be replaced by <b>theta1</b> and <b>theta2</b>:<br>
+	 * <b>theta = theta1 - theta2</b>
+	 * 
+	 * @param simplexTableau
+	 * @return
+	 */
+	public static Double[][] splitTheta(Double[][] simplexTableau) {
+		// init calculation variables
+		int tableauLength = simplexTableau.length;
+		int tableauWidth = simplexTableau[0].length;
+		Double[][] thetaTableau = new Double[tableauLength][tableauWidth+1];
+		
+		// determine theta
+		Double[] function = LinearOptimizationDataUtility.extractFunction(simplexTableau);
+
+		// substitute restrictions
+		for (int i = 0; i < tableauLength-1; i++) {
+			double theta = simplexTableau[i][tableauWidth-2];
+			Double[] restriction = simplexTableau[i];
+			thetaTableau[i] = substituteTheta(restriction, -theta);
+		}
+		// substitute function
+		double theta = function[tableauWidth-2];
+		thetaTableau[tableauLength-1] = substituteTheta(function, -theta);
+//		System.out.println("Theta: ");
+//		for (Double[] line : thetaTableau) {
+//			System.out.println(Arrays.deepToString(line));
+//		}
+		return thetaTableau;
+	}
+	
+	private static Double[] substituteTheta(Double[] restriction, Double theta) {
+		int restrictionLength = restriction.length;
+		Double[] result = new Double[restrictionLength+1];
+		System.arraycopy(restriction, 0,
+				result, 0, restrictionLength-1);
+		result[restrictionLength-1] = theta;
+		System.arraycopy(restriction, restrictionLength-1,
+				result, restrictionLength, 1);
+		return result;
+	}
 }
