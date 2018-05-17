@@ -29,7 +29,6 @@ public class InputScreenMain extends JPanel {
 
 	private Double[][] simplexTableau;
 	private JTextField tf_xVariables;
-	// private JTextField tf_yVariables;
 	private JTextField tf_restrictions;
 	private JTable restrictionTable;
 	private JTable functionTable;
@@ -110,7 +109,7 @@ public class InputScreenMain extends JPanel {
 		// restriction
 		for (int i = 1; i <= xVariables; i++) {
 			TableColumn tc = restTcm.getColumn(i - 1);
-			tc.setHeaderValue("x" + i);
+			tc.setHeaderValue("<html>x<sub>"+i+"</sub></html>");
 		}
 		TableColumn tc = restTcm.getColumn(xVariables);
 		tc.setHeaderValue("OP");
@@ -131,14 +130,14 @@ public class InputScreenMain extends JPanel {
 		TableColumnModel funcTcm = funcTh.getColumnModel();
 		for (int i = 1; i <= xVariables; i++) {
 			TableColumn funcTc = funcTcm.getColumn(i - 1);
-			funcTc.setHeaderValue("x" + i);
+			funcTc.setHeaderValue("<html>x<sub>"+i+"</sub></html>");
 		}
 		TableColumn funcTc = funcTcm.getColumn(xVariables);
 		funcTc.setHeaderValue("Schlupfvariable");
 		//Zelle für Schlupfvariable initial 0
 		functionTable.setValueAt(0, 0, functionTable.getColumnCount()-1);
 		// Load Submit btn
-		btnSubmit = new JButton("Submit");
+		btnSubmit = new JButton("Weiter");
 		btnSubmit.setBounds(1033, 527, 171, 41);
 		btnSubmit.addActionListener(new ActionListener() {
 

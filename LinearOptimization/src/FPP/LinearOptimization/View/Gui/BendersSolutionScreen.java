@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -19,6 +20,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import FPP.LinearOptimization.Data.BendersOptimizationData;
@@ -65,13 +69,16 @@ public class BendersSolutionScreen extends JPanel {
 		functionPanel.add(functionLabel);
 		// Add Tables
 		functionTable.setBounds(60, 90, 523, 60);
-		solutionTable.setBounds(60, 250, 523, 60);
+	//	solutionTable.setBounds(60, 250, 523, 60);
 		solutionTable.setOpaque(false);
 		((DefaultTableCellRenderer) solutionTable.getDefaultRenderer(Object.class)).setOpaque(false);
 		functionTable.setOpaque(false);
 		((DefaultTableCellRenderer) functionTable.getDefaultRenderer(Object.class)).setOpaque(false);
+		JScrollPane scrollPane= new  JScrollPane(solutionTable);
+		scrollPane.setBounds(60, 250, 523, 60);
+		this.add(scrollPane);
 		this.add(functionTable);
-		this.add(solutionTable);
+
 
 		// Addditional Info
 		if (bendersSolutionObject.getAddInfo() != null && bendersSolutionObject.getAddInfo().isEmpty()) {
@@ -140,7 +147,7 @@ public class BendersSolutionScreen extends JPanel {
 
 	protected void loadStepScreen() {
 		int step = Integer.parseInt(String.valueOf(stepsTextField.getText()));
-		solutionStepBenders = new BendersSolutionStepScreen(mainFrame, bendersSolutionObject.getSteps());
+		solutionStepBenders = new BendersSolutionStepScreen(mainFrame,bendersSolutionObject);
 		solutionStepBenders.setVisible(true);
 		solutionStepBenders.setLayout(null);
 		solutionStepBenders.initializeScreen(step);
@@ -152,8 +159,9 @@ public class BendersSolutionScreen extends JPanel {
 		DefaultTableModel model = new DefaultTableModel(bendersSolutionObject.getOptSolution(), 0);
 		model.addRow(bendersSolutionObject.getOptSolution());
 		solutionTable.setModel(model);
-		solutionTable.setTableHeader(null);
-
+		//solutionTable.setTableHeader(null);
+		loadTableHeader(solutionTable);
+		
 		// Align
 		for (int i = 0; i < solution.length - 1; i++) {
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -162,8 +170,35 @@ public class BendersSolutionScreen extends JPanel {
 		}
 	}
 
+	private void loadTableHeader(JTable table) {
+		int [] yIndices = bendersSolutionObject.getBendersOptimizationData().getYVariableIndices();
+		int xIndicesCount = table.getColumnCount()-1-yIndices.length;
+		Arrays.sort(yIndices);
+		JTableHeader th = table.getTableHeader();
+		TableColumnModel tcm = th.getColumnModel();
+		int yCount = 0;
+		//x indices
+		for (int i = 1; i <= xIndicesCount+ yIndices.length; i++) {
+			for(int j = 1; j <= yIndices.length; j++) {
+				if(yIndices[j-1] == i-1) {
+					TableColumn tc = tcm.getColumn(i - 1);
+					tc.setHeaderValue("<html>y<sub>"+j+"</sub></html>");
+					yCount++;
+					break;
+				} else {
+					TableColumn tc = tcm.getColumn(i - 1);
+					tc.setHeaderValue("<html>x<sub>"+(i-yCount)+"</sub></html>");
+				}
+			}
+			
+		}
+		TableColumn tc = tcm.getColumn(table.getColumnCount()-1);
+		tc.setHeaderValue("Lösung");
+	}
+
 	public void setFunctionTable(JTable functionTable) {
 		this.functionTable = functionTable;
 	}
-
+	
+	
 }
