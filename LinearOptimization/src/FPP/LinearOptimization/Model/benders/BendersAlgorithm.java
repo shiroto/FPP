@@ -57,9 +57,13 @@ public class BendersAlgorithm implements IBendersOptimization {
 			//TODO Dominik: simplextableau sind doch immer minimierer -> solveProblem(masterProblem, true); -> false?
 			
 			// step 1
-			Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
-			solution = solveProblem(masterTableau, masterProblem.isSolvableWithBAndB(), true);
-			solution = LinearOptimizationDataUtility.normalizeTheta(solution);
+			if (masterProblem.isSolvableWithBAndB()) {
+				Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
+				solution = solveProblem(masterTableau, masterProblem.isSolvableWithBAndB(), true);
+				solution = LinearOptimizationDataUtility.normalizeTheta(solution);			
+			} else {
+				solution = solveProblem(masterProblem.getSimplexTableau(), false, true);
+			}
 			
 			//check for valid solution
 			//if (solution[solution.length - 1] == 0) {
