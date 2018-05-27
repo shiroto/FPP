@@ -51,33 +51,23 @@ public class BendersSolutionScreen extends JPanel {
 
 	public void initializeScreen() {
 		solutionTable = new JTable(1, bendersSolutionObject.getOptSolution().length);
-		// solutionTable.setBounds(446, 374, 435, 225);
 		solutionTable.setVisible(true);
 
 		// Tables
 		JPanel solutionPanel = new JPanel();
-		solutionPanel.setBounds(50, 200, 250, 20);
+		solutionPanel.setBounds(50, 50, 250, 20);
 		this.add(solutionPanel);
 		loadOptSolution();
 		JLabel solutionLabel = new JLabel("Optimale Lösung");
 		solutionPanel.add(solutionLabel);
-
-		JPanel functionPanel = new JPanel();
-		functionPanel.setBounds(50, 50, 250, 20);
-		this.add(functionPanel);
-		JLabel functionLabel = new JLabel("Funktion");
-		functionPanel.add(functionLabel);
+		
 		// Add Tables
-		functionTable.setBounds(60, 90, 523, 60);
 	//	solutionTable.setBounds(60, 250, 523, 60);
 		solutionTable.setOpaque(false);
 		((DefaultTableCellRenderer) solutionTable.getDefaultRenderer(Object.class)).setOpaque(false);
-		functionTable.setOpaque(false);
-		((DefaultTableCellRenderer) functionTable.getDefaultRenderer(Object.class)).setOpaque(false);
 		JScrollPane scrollPane= new  JScrollPane(solutionTable);
-		scrollPane.setBounds(60, 250, 523, 60);
+		scrollPane.setBounds(60, 90, 523, 60);
 		this.add(scrollPane);
-		this.add(functionTable);
 
 
 		// Addditional Info
@@ -156,7 +146,13 @@ public class BendersSolutionScreen extends JPanel {
 	}
 
 	private void loadOptSolution() {
-		DefaultTableModel model = new DefaultTableModel(bendersSolutionObject.getOptSolution(), 0);
+		DefaultTableModel model = new DefaultTableModel(bendersSolutionObject.getOptSolution(), 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
+		};
 		model.addRow(bendersSolutionObject.getOptSolution());
 		solutionTable.setModel(model);
 		//solutionTable.setTableHeader(null);

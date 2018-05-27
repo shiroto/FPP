@@ -99,13 +99,13 @@ public class BendersSolutionStepScreen extends JPanel {
 		Helper.addComponent(this, gbl, scrollPaneMaster, 0, 1, 3, 3, 1, 1);
 		Helper.addComponent(this, gbl, masterSolutionLabel, 0, 4, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, scrollPaneMasterSol, 0, 5, 3, 3, 1, 1);
-		Helper.addComponent(this, gbl, masterRoundButton, 3, 1, 1, 1, 1, 1);
+		Helper.addComponent(this, gbl, masterRoundButton, 3, 1, 1, 1, 0, 0);
 
 		Helper.addComponent(this, gbl, subLabel, 4, 0, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, scrollPaneSub, 4, 1, 3, 3, 1, 1);
 		Helper.addComponent(this, gbl, subSolutionLabel, 4, 4, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, scrollPaneSubSol, 4, 5, 3, 3, 1, 1);
-		Helper.addComponent(this, gbl, subRoundButton, 7, 1, 1, 1, 1, 1);
+		Helper.addComponent(this, gbl, subRoundButton, 7, 1, 1, 1, 0, 0);
 
 		Helper.addComponent(this, gbl, ubLabel, 0, 8, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, lbLabel, 0, 9, 3, 1, 1, 1);
@@ -113,10 +113,10 @@ public class BendersSolutionStepScreen extends JPanel {
 		Helper.addComponent(this, gbl, stepLabel, 0, 11, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, roundingHint, 5, 11, 2, 1, 1, 1);
 		Helper.addComponent(this, gbl, stepTextField, 0, 12, 1, 1, 1, 1);
-		Helper.addComponent(this, gbl, stepButton, 1, 12, 2, 1, 1, 1);
-		Helper.addComponent(this, gbl, prevStepButton, 3, 12, 2, 1, 1, 1);
-		Helper.addComponent(this, gbl, nextStepButton, 4, 12, 2, 1, 1, 1);
-		Helper.addComponent(this, gbl, finalStepButton, 6, 12, 2, 1, 1, 1);
+		Helper.addComponent(this, gbl, stepButton, 1, 12, 2, 1, 1, 0.5);
+		Helper.addComponent(this, gbl, prevStepButton, 3, 12, 2, 1, 1, 0.5);
+		Helper.addComponent(this, gbl, nextStepButton, 5, 12, 2, 1, 1, 0.5);
+		Helper.addComponent(this, gbl, finalStepButton, 7, 12, 2, 1, 1, 0.5);
 
 	}
 
@@ -303,7 +303,13 @@ public class BendersSolutionStepScreen extends JPanel {
 	}
 
 	private void loadSolutionTable(JTable table, Double[] array) {
-		DefaultTableModel model = new DefaultTableModel(array, 0);
+		DefaultTableModel model = new DefaultTableModel(array, 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells not editable
+				return false;
+			}
+		};
 		model.addRow(array);
 		table.setModel(model);
 		//table.setTableHeader(null);
@@ -318,7 +324,13 @@ public class BendersSolutionStepScreen extends JPanel {
 	}
 
 	private void loadTable(JTable table, Double[][] array) {
-		DefaultTableModel model = new DefaultTableModel(array, 0);
+		DefaultTableModel model = new DefaultTableModel(array, 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// TODO Auto-generated method stub
+				return super.isCellEditable(row, column);
+			}
+		};
 		for (int i = 0; i < array.length; i++) {
 			model.addRow(array[i]);
 		}

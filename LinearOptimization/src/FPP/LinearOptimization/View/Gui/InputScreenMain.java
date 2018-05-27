@@ -156,7 +156,7 @@ public class InputScreenMain extends JPanel {
 
 	private void initializeComponents() {
 		JPanel jp_xVariables = new JPanel();
-		jp_xVariables.setBounds(50, 50, 250, 50);
+		jp_xVariables.setBounds(50, 50, 250, 70);
 		this.add(jp_xVariables);
 
 		JLabel lb_xVariables = new JLabel("Anzahl Variablen");
@@ -167,7 +167,7 @@ public class InputScreenMain extends JPanel {
 		tf_xVariables.setColumns(10);
 
 		JPanel jp_restrictions = new JPanel();
-		jp_restrictions.setBounds(50, 150, 250, 50);
+		jp_restrictions.setBounds(50, 150, 250, 70);
 		this.add(jp_restrictions);
 
 		JLabel lb_restrictions = new JLabel("Anzahl Restriktionen");
