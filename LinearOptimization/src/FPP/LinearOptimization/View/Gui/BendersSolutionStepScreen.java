@@ -170,9 +170,11 @@ public class BendersSolutionStepScreen extends JPanel {
 					Double[][] roundMaster;
 					roundMaster = Helper.roundStepData(master, 1);
 					loadTable(masterTable, roundMaster);
+					loadTableHeader(masterTable);
 					masterRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(masterTable, master);
+					loadTableHeader(masterTable);
 					masterRoundButton.setText("Gerundet");
 				}
 
@@ -188,9 +190,11 @@ public class BendersSolutionStepScreen extends JPanel {
 					Double[][] roundSub;
 					roundSub = Helper.roundStepData(sub, 1);
 					loadTable(subTable, roundSub);
+					loadTableHeader(subTable);
 					subRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(subTable, sub);
+					loadTableHeader(subTable);
 					subRoundButton.setText("Gerundet");
 				}
 
