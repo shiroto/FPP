@@ -58,5 +58,4 @@ public class LinearOptimizationDataUtilityTest {
 			i++;
 		}
 	}
-	
 }
