@@ -104,9 +104,9 @@ public class BendersAlgorithmTest {
 		Double[][] simplexTableau = new Double[][] {
 			{2d, 1d, -1d, -10d, -8d, 0d, -4d},
 			{1d, 1d, 1d, -5d, 0d, -8d, -3d},
-//			{0d, 0d, 0d, 1d, 0d, 0d, 1d},
-//			{0d, 0d, 0d, 0d, 1d, 0d, 1d},
-//			{ 0d, 0d, 0d, 0d, 0d, 1d, 1d}, 
+			{0d, 0d, 0d, 1d, 0d, 0d, 1d},
+			{0d, 0d, 0d, 0d, 1d, 0d, 1d},
+			{ 0d, 0d, 0d, 0d, 0d, 1d, 1d}, 
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {3, 4, 5};
