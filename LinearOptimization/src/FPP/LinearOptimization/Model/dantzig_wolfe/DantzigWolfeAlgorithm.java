@@ -1,4 +1,4 @@
-package FPP.LinearOptimization.Model.DantzigWolfe;
+package FPP.LinearOptimization.Model.dantzig_wolfe;
 
 import java.util.ArrayList;
 

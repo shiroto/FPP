@@ -1,4 +1,4 @@
-package FPP.LinearOptimization.Model.DantzigWolfe;
+package FPP.LinearOptimization.Model.dantzig_wolfe;
 public class Line {
 
 	// double a, b, c;

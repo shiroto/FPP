@@ -1,4 +1,4 @@
-package FPP.LinearOptimization.Model.DantzigWolfe;
+package FPP.LinearOptimization.Model.dantzig_wolfe;
 public class Point {
 	double x, y;
 
@@ -10,5 +10,13 @@ public class Point {
 	@Override
 	public String toString() {
 		return String.format("{%f, %f}", x, y);
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
 	}
 }
