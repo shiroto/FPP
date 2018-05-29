@@ -41,7 +41,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		// step 0
 		int r = 1;
 		Double UB = Double.MAX_VALUE;
-		Double LB = Double.MIN_VALUE;
+		Double LB = -Double.MAX_VALUE;
 
 		Double[] u = new Double[dualProblem.getFunction().length - 1];
 		Arrays.fill(u, 0d);
@@ -73,10 +73,17 @@ public class BendersAlgorithm implements IBendersOptimization {
 			//}
 			stepData.setMasterSolution(solution);
 			
+			Double newUB;
 			if (masterProblem.isSolvableWithBAndB()) {
-				UB = solution[solution.length - 1];
+				newUB = solution[solution.length - 1];
 			} else {
-				UB = solution[solution.length - 2];
+				newUB = solution[solution.length - 2];
+			}
+			
+			if (newUB.isNaN()) {
+				UB = Double.MAX_VALUE;
+			} else if (newUB < UB){
+				UB = newUB;
 			}
 			
 			Double[] y = extractSolutionCoefficients(solution, masterProblem.isSolvableWithBAndB());
@@ -92,8 +99,11 @@ public class BendersAlgorithm implements IBendersOptimization {
 			u = extractSolutionCoefficients(solution, dualProblem.isSolvableWithBAndB());
 			
 			// step 3 
-			LB = calculateLowerBound(masterProblem, y, solution[solution.length - 2]);
-
+			Double newLB = calculateLowerBound(masterProblem, y, solution[solution.length - 2]);
+			if (newLB >= LB || LB.isNaN()) {
+				LB = newLB;
+			}
+			
 			//add output
 			System.out.println("r = " + r + "\t LB = " + LB + "\t UB = " + UB);
 			stepData.setLowerBound(LB);
@@ -207,7 +217,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Double[][] masterTableau = new Double[1][yCount + 2];
 
 		// theta
-		masterTableau[0][yCount] = 1d;
+		masterTableau[0][yCount] = -1d;
 		// constant of function
 		masterTableau[0][yCount + 1] = function[function.length - 1];
 		
@@ -374,7 +384,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			cut[sProblem.getCoefficientsY()[i].length + 1] += sProblem.getB()[i] * u[i];
 		}
 		
-		cut[cut.length - 2] = -1d; //coefficient for theta
+		cut[cut.length - 2] = 1d; //coefficient for theta
 		
 		return cut;
 	}

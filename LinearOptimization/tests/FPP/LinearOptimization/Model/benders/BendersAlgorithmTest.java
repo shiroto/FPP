@@ -22,7 +22,7 @@ public class BendersAlgorithmTest {
 	 * Function must be minimizer
 	 */
 	
-	@Test
+//	@Test
 	void test_example_powerPoint() {
 		System.out.println("test_example_powerPoint_B");
 		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
@@ -45,7 +45,7 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	@Test
+//	@Test
 	void test_example_powerPoint_2() {
 		System.out.println("test_example_powerPoint_F");
 		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
@@ -96,7 +96,7 @@ public class BendersAlgorithmTest {
 	}
 	
 	// TODO Martin 
-//	@Test
+	@Test
 	void test_example_02() {
 		System.out.println("test_example_02");
 		// prepare test data
@@ -104,9 +104,9 @@ public class BendersAlgorithmTest {
 		Double[][] simplexTableau = new Double[][] {
 			{2d, 1d, -1d, -10d, -8d, 0d, -4d},
 			{1d, 1d, 1d, -5d, 0d, -8d, -3d},
-//			{0d, 0d, 0d, 1d, 0d, 0d, 1d},
-//			{0d, 0d, 0d, 0d, 1d, 0d, 1d},
-//			{ 0d, 0d, 0d, 0d, 0d, 1d, 1d}, 
+			{0d, 0d, 0d, 1d, 0d, 0d, 1d},
+			{0d, 0d, 0d, 0d, 1d, 0d, 1d},
+			{ 0d, 0d, 0d, 0d, 0d, 1d, 1d}, 
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {3, 4, 5};
