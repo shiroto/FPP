@@ -12,6 +12,65 @@ public class LinearOptimizationDataUtilityTest {
 	private static final double DELTA = 1e-12;
 	
 	@Test
+	public void test_createDual() {
+		Double[][] inputTableau = { 
+				{ -1d, -1d, 0d, 0d, -10d }, 
+				{ -2d, 0d, 0d, 0d, -10d },
+				{ 0d, 0d, -1d, -3d, -2d }, 
+				{ 0d, 0d, 0d, -10d, -6d }, 
+				{ 200d, 50d, 80d, 500d, 0d }};
+		
+		double[][] expectedDualTableau = { 
+				{ 1d, 2d, 0d, 0d, 200d }, 
+				{ 1d, 0d, 0d, 0d, 50d }, 
+				{ 0d, 0d, 1d, -0d, 80d },
+				{ 0d, 0d, 3d, 10d, 500d }, 
+				{ -10d, -10d, -2d, -6d, 0d }};
+		
+		Double[][] resultTableau = LinearOptimizationDataUtility.createDual(inputTableau);
+		testInput(expectedDualTableau, resultTableau);
+	}
+	
+	@Test
+	public void test_convertNotNegatives() {
+		Double[][] inputTableau = { 
+				{ -1d, -1d, 0d, 0d, -10d }, 
+				{ -2d, 0d, 0d, 0d, -10d },
+				{ 0d, 0d, -1d, -3d, -2d }, 
+				{ 0d, 0d, 0d, -10d, -6d }, 
+				{ 200d, 50d, 80d, 500d, 0d }};
+		
+		int[] paramaterNegativeIndices = {1, 2, 3};
+		
+		double[][] expectedTableau = { 
+				{ -1d, 1d, 0d, 0d, -10d }, 
+				{ -2d, 0d, 0d, 0d, -10d },
+				{ 0d, 0d, 1d, 3d, -2d }, 
+				{ 0d, 0d, 0d, 10d, -6d }, 
+				{ 200d, -50d, -80d, -500d, 0d }};
+		
+		Double[][] resultTableau = LinearOptimizationDataUtility.convertNotNegatives(
+				inputTableau, paramaterNegativeIndices);
+		
+		testInput(expectedTableau, resultTableau);
+	}
+	
+	@Test 
+	public void test_extractFunction() {
+		Double[][] simplexTableau = {
+				{-1d, -1d, 0d, 0d, -2d, -10d},
+				{-2d, 0d, 0d, 0d, -2d, -10d},
+				{0d, 0d, -1d, -3d, -0.5d, -2d},
+				{0d, 0d, 0d, -10d, -1d, -6d},
+				{200d, 50d, 80d, 500d, 180d, 0d}};
+		
+		double[] expectedFunction = {200d, 50d, 80d, 500d, 180d, 0d};
+		
+		Double[] resultFunction = LinearOptimizationDataUtility.extractFunction(simplexTableau);
+		testInput(expectedFunction, resultFunction);
+	}
+	
+	@Test
 	public void test_SplitTheta() {
 		double[][] expectedTableau = {
 				{1.0d, 0.0d, 0.0d, 0.0d, 0.0d, 1.0d}, 
