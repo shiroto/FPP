@@ -61,4 +61,17 @@ public class Helper {
 		return roundArray;
 		
 	}
+	
+	public static Double[] roundSolutionData(Double[] array, int dec) {
+		Double[] roundArray = new Double[array.length];
+		for(int i = 0; i < array.length;i++) {
+				Double temp = array[i];
+				temp = temp * Math.pow(10, dec);
+				temp = (double) Math.round(temp);
+				temp = temp / Math.pow(10, dec);
+				roundArray[i] = temp;
+			}
+		return roundArray;
+		
+	}
 }
