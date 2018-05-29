@@ -138,10 +138,6 @@ public class LinearOptimizationDataUtility {
 		// substitute function
 		double theta = function[tableauWidth-2];
 		thetaTableau[tableauLength-1] = substituteTheta(function, -theta);
-//		System.out.println("Theta: ");
-//		for (Double[] line : thetaTableau) {
-//			System.out.println(Arrays.deepToString(line));
-//		}
 		return thetaTableau;
 	}
 	
