@@ -168,13 +168,19 @@ public class BendersSolutionStepScreen extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (masterRoundButton.getText() == "Gerundet") {
 					Double[][] roundMaster;
+					Double[] roundMasterSolution;
 					roundMaster = Helper.roundStepData(master, 1);
 					loadTable(masterTable, roundMaster);
 					loadTableHeader(masterTable);
+					roundMasterSolution = Helper.roundSolutionData(masterSolution, 1);
+					loadSolutionTable(masterSolutionTable, roundMasterSolution);
+					loadTableHeader(masterSolutionTable);
 					masterRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(masterTable, master);
 					loadTableHeader(masterTable);
+					loadSolutionTable(masterSolutionTable, masterSolution);
+					loadTableHeader(masterSolutionTable);
 					masterRoundButton.setText("Gerundet");
 				}
 
@@ -188,13 +194,19 @@ public class BendersSolutionStepScreen extends JPanel {
 
 				if (subRoundButton.getText() == "Gerundet") {
 					Double[][] roundSub;
+					Double[] roundSubSolution;
 					roundSub = Helper.roundStepData(sub, 1);
 					loadTable(subTable, roundSub);
 					loadTableHeader(subTable);
+					roundSubSolution = Helper.roundSolutionData(subSolution, 1);
+					loadSolutionTable(subSolutionTable, roundSubSolution);
+					loadTableHeader(subSolutionTable);
 					subRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(subTable, sub);
 					loadTableHeader(subTable);
+					loadSolutionTable(subSolutionTable, subSolution);
+					loadTableHeader(subSolutionTable);
 					subRoundButton.setText("Gerundet");
 				}
 
