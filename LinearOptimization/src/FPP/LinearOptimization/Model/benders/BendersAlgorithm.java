@@ -47,7 +47,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Arrays.fill(u, 0d);
 		
 		Double[] cut = calculateCut(subProblem, u);
-		addCut(masterProblem, cut);
+//		addCut(masterProblem, cut);
 		
 		Double[] solution;
 		Double[] optimalY = null;
