@@ -29,16 +29,13 @@ public class BendersAlgorithm implements IBendersOptimization {
 		
 		MasterProblem masterProblem = createMasterProblem(bendersOptimizationData);
 		
-		// TODO Dominik: ???
-//		masterProblem.addRestriction(new Double[]{-1d, 0d}, 0d); // add y >= 0 condition
-
 		SubProblem subProblem = createSubProblem(bendersOptimizationData);
 		Problem dualProblem = new Problem(LinearOptimizationDataUtility.createDual(subProblem.getSimplexTableau()));
 		System.out.println("Master: " + Arrays.deepToString(masterProblem.getSimplexTableau()));
 		System.out.println("Sub:    " + Arrays.deepToString(subProblem.getSimplexTableau()));
 		System.out.println("Dual:   " + Arrays.deepToString(dualProblem.getSimplexTableau()));
 		
-		// step 0
+		// Step 0
 		int r = 1;
 		Double UB = Double.MAX_VALUE;
 		Double LB = -Double.MAX_VALUE;
@@ -46,23 +43,43 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Double[] u = new Double[dualProblem.getFunction().length - 1];
 		Arrays.fill(u, 0d);
 		
-		Double[] cut = calculateCut(subProblem, u);
-//		addCut(masterProblem, cut);
-		
 		Double[] solution;
 		Double[] optimalY = null;
+		
+		int yCount = bendersOptimizationData.getYVariableIndices().length;
+		Double[] yZeroes = new Double[dualProblem.getFunction().length - 1];
+		Arrays.fill(yZeroes, 0d);
+		
+		Double[] cut;
+		try {
+			stepZeroCut(masterProblem, subProblem, dualProblem, yZeroes);
+		} catch (Exception e) {
+			cut = calculateAdditionalCut(dualProblem);
+			System.out.println("Step 0: not solvable");
+			addCut(dualProblem, cut);
+			System.out.println(" -> Add additional Cut " + Arrays.toString(cut));
+			try {
+				stepZeroCut(masterProblem, subProblem, dualProblem, yZeroes);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+		
 		while (true) {
 			BendersStepData stepData = new BendersStepData(r);
-			
-			//TODO Dominik: simplextableau sind doch immer minimierer -> solveProblem(masterProblem, true); -> false?
 			
 			// step 1
 			if (masterProblem.isSolvableWithBAndB()) {
 				Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
-				solution = solveProblem(masterTableau, masterProblem.isSolvableWithBAndB(), true);
+				solution = solveProblem(masterTableau, true, true);
 				solution = LinearOptimizationDataUtility.normalizeTheta(solution);			
 			} else {
+				Double[][] masterTableau = masterProblem.getSimplexTableau();
+				for(Double[] row : masterTableau) {
+					System.out.println(Arrays.toString(row));
+				}
 				solution = solveProblem(masterProblem.getSimplexTableau(), false, true);
+				System.out.println("Solution: " + Arrays.toString(solution));
 			}
 			
 			//check for valid solution
@@ -88,7 +105,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			
 			Double[] y = extractSolutionCoefficients(solution, masterProblem.isSolvableWithBAndB());
 			
-			// step 2
+			// Step 2
 			updateSubproblem(subProblem, dualProblem, y);
 			stepData.setSubProblem(subProblem.getSimplexTableau());
 			
@@ -98,12 +115,12 @@ public class BendersAlgorithm implements IBendersOptimization {
 			
 			u = extractSolutionCoefficients(solution, dualProblem.isSolvableWithBAndB());
 			
-			// step 3 
 			Double newLB = calculateLowerBound(masterProblem, y, solution[solution.length - 2]);
 			if (newLB >= LB || LB.isNaN()) {
 				LB = newLB;
 			}
 			
+			// Step 3 
 			//add output
 			System.out.println("r = " + r + "\t LB = " + LB + "\t UB = " + UB);
 			stepData.setLowerBound(LB);
@@ -124,7 +141,6 @@ public class BendersAlgorithm implements IBendersOptimization {
 				addCut(masterProblem, cut);
 			}
 			
-			
 			stepData.setMasterProblem(masterProblem.getSimplexTableau());
 			bendersSolution.addStep(stepData);
 			r++;
@@ -134,12 +150,16 @@ public class BendersAlgorithm implements IBendersOptimization {
 			Problem originSubWithY = getOriginSubWithY(subProblem, optimalY);
 			solution = new Simplex(originSubWithY.getSimplexTableau(), false).loese();
 			
-			Double[] optimalSolution = buildOptimalSolution(bendersOptimizationData, solution, optimalY);
+			Double[] masterFunction = LinearOptimizationDataUtility.extractFunction(masterProblem.getSimplexTableau());
+			Double[] subFunction = LinearOptimizationDataUtility.extractFunction(subProblem.getSimplexTableau());
+			Double[] optimalSolution = buildOptimalSolution(bendersOptimizationData, solution, optimalY, masterFunction,
+					subFunction);
 			bendersSolution.setOptSolution(optimalSolution);
 
 			u = extractSolutionCoefficients(solution, originSubWithY.isSolvableWithBAndB());
 			
-			System.out.println("\n\nOptimal Solution = " + solution[solution.length - 2] * (-1));
+			Double[] optSolution = bendersSolution.getOptSolution();
+			System.out.println("\n\nOptimal Solution = " + optSolution[optSolution.length - 1]);
 			System.out.print("Coefficients = [");
 			String coefficients = "";
 			for (int i = 0; i < u.length; i++) {
@@ -155,20 +175,41 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return bendersSolution;
 	}
 
+	private void stepZeroCut(MasterProblem masterProblem, SubProblem subProblem, Problem dualProblem,
+			Double[] yZeroes) throws Exception {
+		updateSubproblem(subProblem, dualProblem, yZeroes);
+		Double[] solution = solveProblem(dualProblem.getSimplexTableau(), dualProblem.isSolvableWithBAndB(), false);
+		for(Double value : solution) {
+			if(value.isNaN()) {
+				throw new Exception("Not solvable!");
+			}
+		}
+		Double[] u = extractSolutionCoefficients(solution, dualProblem.isSolvableWithBAndB());
+		addCut(masterProblem, calculateCut(subProblem, u));
+	}
+
 	private Double[] buildOptimalSolution(BendersOptimizationData bendersOptimizationData, Double[] solution,
-			Double[] optimalY) {
+			Double[] optimalY, Double[] functionMasterY, Double[] functionSubX) {
 		Double[] optimalSolution = new Double[solution.length -1 + optimalY.length - 1];
+		Double optimalFunctionValue = 0d;
+		
+		// Y-variables
 		for (int i = 0; i < optimalY.length - 1; i++) {
 			optimalSolution[bendersOptimizationData.getYVariableIndices()[i]] = optimalY[i];
+			optimalFunctionValue += optimalY[i] * functionMasterY[i];
 		}
 		
+		// X-variables
 		for (int i = 0, j = 0; i < solution.length - 2; j++) {
 			if (optimalSolution[j] == null) {
 				optimalSolution[j] = solution[i];
+				optimalFunctionValue += solution[i] * functionSubX[i];
 				i++;
 			}
 		}
-		optimalSolution[optimalSolution.length - 1] = (-1) * solution[solution.length - 2];
+		
+//		optimalSolution[optimalSolution.length - 1] = (-1) * solution[solution.length - 2];
+		optimalSolution[optimalSolution.length - 1] = optimalFunctionValue;
 		return optimalSolution;
 	}
 	
