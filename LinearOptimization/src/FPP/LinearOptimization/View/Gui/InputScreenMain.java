@@ -150,7 +150,6 @@ public class InputScreenMain extends JPanel {
 					return;
 				createSimplexTableau();
 				if(cbAlgorithm.getSelectedItem().toString().equals(Algorithm.BendersAlgorithm.getScreenName())) {
-					loadDanzigScreen();
 					loadBendersScreen();
 				}
 				else if (cbAlgorithm.getSelectedItem().toString().equals(Algorithm.DantzigAlgorithm.getScreenName())) {
@@ -173,7 +172,7 @@ public class InputScreenMain extends JPanel {
 		inputBB.setLayout(null);
 		inputBB.setFunctionTable(new JTable(functionTable.getModel()));
 		inputBB.setSimplexTableau(simplexTableau);
-		mainFrame.getTabs().addTab("Benders Input", inputBenders);
+		mainFrame.getTabs().addTab("Branch & Bound Input", inputBB);
 		mainFrame.setTab(1);
 		
 	}
