@@ -76,20 +76,27 @@ public class LinearOptimizationDataUtility {
 	 * @param solution
 	 * @return
 	 */
-	public static Double[] normalizeTheta(Double[] solution) {
+	public static Double[] normalizeTheta(Double[] solution, boolean isSimplex) {
 		// init return solution
+		int c = 0;
+		if(isSimplex) {
+			c += 1;
+		}
 		Double[] newSolution = new Double[solution.length-1];
 		System.arraycopy(solution, 0, newSolution, 0, newSolution.length-2);
 		
 		// determine theta1 & theta2
-		Double theta1 = solution[solution.length-3];
-		Double theta2 = solution[solution.length-2];
+		Double theta1 = solution[solution.length- (3 + c)];
+		Double theta2 = solution[solution.length- (2 + c)];
 		
 		// resubstitute theta
-		newSolution[newSolution.length-2] = theta1 - theta2;
+		newSolution[newSolution.length- (2 + c)] = theta1 - theta2;
 		
 		// copy "zielfunktionswert"
 		System.arraycopy(solution, newSolution.length, newSolution, newSolution.length-1, 1);
+		if(isSimplex) {
+			System.arraycopy(solution, newSolution.length-1, newSolution, newSolution.length-2, 1);
+		}
 		solution = newSolution;
 		return solution;
 	}

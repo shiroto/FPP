@@ -100,7 +100,7 @@ public class LinearOptimizationDataUtilityTest {
 	public void test_NormalizeTheta() {
 		double[] expectedSolution = {0.0d, 0.0d, 1.0d, 0.0d, -33.00000000002339d};
 		Double[] solution = {0.0d, 0.0d, 1.0d, 8192.0d, 8192.0d, -33.00000000002339d};
-		Double[] resultSolution = LinearOptimizationDataUtility.normalizeTheta(solution);
+		Double[] resultSolution = LinearOptimizationDataUtility.normalizeTheta(solution, false);
 		testInput(expectedSolution, resultSolution);
 	}
 	

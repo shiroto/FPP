@@ -29,7 +29,7 @@ public class BranchAndBTest {
 		Tableau tableau = new Tableau(masterTableau);
 		List<Double[]> solution = new BranchAndBound(tableau, false).solve();
 		if (solution.size() > 0) {
-			System.out.println(Arrays.deepToString(LinearOptimizationDataUtility.normalizeTheta(solution.get(0))));
+			System.out.println(Arrays.deepToString(LinearOptimizationDataUtility.normalizeTheta(solution.get(0), false)));
 		}
 	}
 	
@@ -52,7 +52,7 @@ public class BranchAndBTest {
 		if (solution.size() > 0) {
 			System.out.println("Splitted:" + Arrays.deepToString(solution.get(0)));
 			System.out.println("Normalized:" + Arrays.deepToString(
-					LinearOptimizationDataUtility.normalizeTheta(solution.get(0))));
+					LinearOptimizationDataUtility.normalizeTheta(solution.get(0), false)));
 		}
 	}
 	

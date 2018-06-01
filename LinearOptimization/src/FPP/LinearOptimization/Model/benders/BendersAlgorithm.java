@@ -72,13 +72,11 @@ public class BendersAlgorithm implements IBendersOptimization {
 			if (masterProblem.isSolvableWithBAndB()) {
 				Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
 				solution = solveProblem(masterTableau, true, true);
-				solution = LinearOptimizationDataUtility.normalizeTheta(solution);			
+				solution = LinearOptimizationDataUtility.normalizeTheta(solution, false);			
 			} else {
-				Double[][] masterTableau = masterProblem.getSimplexTableau();
-				for(Double[] row : masterTableau) {
-					System.out.println(Arrays.toString(row));
-				}
-				solution = solveProblem(masterProblem.getSimplexTableau(), false, true);
+				Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
+				solution = solveProblem(masterTableau, false, true);
+				solution = LinearOptimizationDataUtility.normalizeTheta(solution, true);	
 				System.out.println("Solution: " + Arrays.toString(solution));
 			}
 			

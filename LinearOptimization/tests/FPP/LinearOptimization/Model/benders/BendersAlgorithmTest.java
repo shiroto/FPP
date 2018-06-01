@@ -22,7 +22,7 @@ public class BendersAlgorithmTest {
 	 * Function must be minimizer
 	 */
 	
-//	@Test
+	@Test
 	void test_example_powerPoint() {
 		System.out.println("test_example_powerPoint_B");
 		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
@@ -45,7 +45,7 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-//	@Test
+	@Test
 	void test_example_powerPoint_2() {
 		System.out.println("test_example_powerPoint_F");
 		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
