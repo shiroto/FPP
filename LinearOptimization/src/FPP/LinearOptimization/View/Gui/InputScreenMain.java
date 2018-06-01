@@ -46,6 +46,9 @@ public class InputScreenMain extends JPanel {
 	int restrictions;
 	private JRadioButton rdbtnMin = new JRadioButton("Min");
 	private JRadioButton rdbtnMax = new JRadioButton("Max");
+	private JComboBox<String> cbAlgorithm;
+	private InputScreenDantzig inputDanzig;
+	private InputScreenBB inputBB;
 
 	public InputScreenMain(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -77,7 +80,7 @@ public class InputScreenMain extends JPanel {
 		this.add(btnInput);
 	}
 
-	protected void loadScreen() {
+	protected void loadBendersScreen() {
 		inputBenders = new InputScreenBenders(mainFrame);
 		inputBenders.setVisible(true);
 		inputBenders.setLayout(null);
@@ -146,11 +149,43 @@ public class InputScreenMain extends JPanel {
 				if (!validateTableInput())
 					return;
 				createSimplexTableau();
-				loadScreen();
+				if(cbAlgorithm.getSelectedItem().toString().equals(Algorithm.BendersAlgorithm.getScreenName())) {
+					loadDanzigScreen();
+					loadBendersScreen();
+				}
+				else if (cbAlgorithm.getSelectedItem().toString().equals(Algorithm.DantzigAlgorithm.getScreenName())) {
+					loadDanzigScreen();
+				}
+				else if (cbAlgorithm.getSelectedItem().toString().equals(Algorithm.BranchBoundAlgorithm.getScreenName())) {
+					loadBBScreen();
+				}
+				
 			}
 
 		});
 		this.add(btnSubmit);
+		
+	}
+
+	protected void loadBBScreen() {
+		inputBB = new InputScreenBB(mainFrame);
+		inputBB.setVisible(true);
+		inputBB.setLayout(null);
+		inputBB.setFunctionTable(new JTable(functionTable.getModel()));
+		inputBB.setSimplexTableau(simplexTableau);
+		mainFrame.getTabs().addTab("Benders Input", inputBenders);
+		mainFrame.setTab(1);
+		
+	}
+
+	protected void loadDanzigScreen() {
+		inputDanzig = new InputScreenDantzig(mainFrame);
+		inputDanzig.setVisible(true);
+		inputDanzig.setLayout(null);
+		inputDanzig.setFunctionTable(new JTable(functionTable.getModel()));
+		inputDanzig.setSimplexTableau(simplexTableau);
+		mainFrame.getTabs().addTab("Danzig Input", inputDanzig);
+		mainFrame.setTab(1);
 		
 	}
 
@@ -221,11 +256,12 @@ public class InputScreenMain extends JPanel {
 		JLabel lblAlgorithmus = new JLabel("Algorithmus");
 		panel_combo.add(lblAlgorithmus);
 
-		JComboBox comboBox = new JComboBox();
-		panel_combo.add(comboBox);
+		cbAlgorithm = new JComboBox();
+		panel_combo.add(cbAlgorithm);
 
-		comboBox.addItem(Algorithm.BendersAlgorithm.getScreenName());
-		comboBox.addItem(Algorithm.DanzigAlgorithm.getScreenName());
+		cbAlgorithm.addItem(Algorithm.BendersAlgorithm.getScreenName());
+		cbAlgorithm.addItem(Algorithm.DantzigAlgorithm.getScreenName());
+		cbAlgorithm.addItem(Algorithm.BranchBoundAlgorithm.getScreenName());
 		this.add(panel_combo);
 		this.validate();
 	}
