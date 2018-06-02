@@ -255,7 +255,7 @@ public class InputScreenMain extends JPanel {
 		JLabel lblAlgorithmus = new JLabel("Algorithmus");
 		panel_combo.add(lblAlgorithmus);
 
-		cbAlgorithm = new JComboBox();
+		cbAlgorithm = new JComboBox<String>();
 		panel_combo.add(cbAlgorithm);
 
 		cbAlgorithm.addItem(Algorithm.BendersAlgorithm.getScreenName());
