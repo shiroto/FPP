@@ -54,7 +54,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 		try {
 			stepZeroCut(masterProblem, subProblem, dualProblem, yZeroes);
 		} catch (Exception e) {
-			cut = calculateAdditionalCut(dualProblem);
+			cut = calculateAdditionalCut(dualProblem, bendersOptimizationData.getSimplexTableau());
 			System.out.println("Step 0: not solvable");
 			addCut(dualProblem, cut);
 			System.out.println(" -> Add additional Cut " + Arrays.toString(cut));
@@ -130,7 +130,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			}
 			
 			if (solution[solution.length - 2].equals(Double.NaN)) {
-				cut = calculateAdditionalCut(dualProblem);
+				cut = calculateAdditionalCut(dualProblem, bendersOptimizationData.getSimplexTableau());
 				System.out.println("not solvable");
 				addCut(dualProblem, cut);
 			} else {
@@ -211,16 +211,18 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return optimalSolution;
 	}
 	
-	private Double[] calculateAdditionalCut(Problem problem) {
-		double functionValue = Math.abs(problem.getFunction()[0]);
+	private Double[] calculateAdditionalCut(Problem problem, Double[][] initialTableau) {
+		// multiply 2 highest values of the initial tableau for the additional cut
+		double[] highestValues = findTwoHighestDistinctValues(mode(initialTableau));
+		double functionValue = highestValues[0] * highestValues[1];
+		
 		for (int i = 1; i < problem.getFunction().length - 1; i++) {
 			functionValue *= Math.abs(problem.getFunction()[i]);
 		}
 
 		Double[] cut = new Double[problem.getCoefficients()[0].length + 1];
 		Arrays.fill(cut, 1d);
-//		cut[cut.length - 1] = functionValue + ADDITIONAL_CUT_MIN_CORRECTION;
-		cut[cut.length - 1] = ADDITIONAL_CUT_MIN_CORRECTION;
+		cut[cut.length - 1] = functionValue + ADDITIONAL_CUT_MIN_CORRECTION;
 		return cut;
 	}
 
@@ -442,5 +444,40 @@ public class BendersAlgorithm implements IBendersOptimization {
 		function[function.length - 1] = dualProblem.getFunction()[function.length - 1]; //set constant to function
 		
 		dualProblem.setFunction(function);
+	}
+	
+	private double[] findTwoHighestDistinctValues(List<Double> array)
+	{
+	    double max = Double.MIN_VALUE;
+	    double secondMax = -Double.MAX_VALUE;
+	    for (double value:array)
+	    {
+	        if (value > max)
+	        {
+	            secondMax = max;
+	            max = value;
+	        }
+	        else if (value > secondMax && value < max)
+	        {
+	            secondMax = value;
+	        }
+	    }
+	    return new double[] { max, secondMax };
+	}
+
+	/**
+	 * Converts a 2d array to an list (1d array).
+	 * 
+	 * @param arr
+	 * @return
+	 */
+	public List<Double> mode(Double[][] arr) {
+	    List<Double> list = new ArrayList<Double>();
+	    for (int i = 0; i < arr.length; i++) {
+	    for (int j = 0; j < arr[i].length; j++) { 
+	            list.add(arr[i][j]); 
+	        }
+	    }
+	    return list;
 	}
 }
