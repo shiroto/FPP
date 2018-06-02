@@ -9,15 +9,23 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+
 
 public class MainFrame {
 
@@ -28,6 +36,9 @@ public class MainFrame {
 	private JButton btnZoomIn, btnZoomOut;
 	private double currentZoom = 1.0;
 	private JPanel buttonPanel = new JPanel();
+	private JMenuBar menubar;
+	private JMenu projektmenu;
+	private JMenuItem save, open, fresh;
 
 	/**
 	 * Launch the application.
@@ -72,7 +83,16 @@ public class MainFrame {
 
 		frame.add(tabs);
 		frame.setVisible(true);
-
+		
+		//Menu
+		menubar = new JMenuBar();
+		projektmenu = new JMenu("Projekt");
+		menubar.add(projektmenu);
+		projektmenu.add(fresh = new JMenuItem("Neues Projekt"));
+		projektmenu.add(save = new JMenuItem("Projekt speichern"));
+		projektmenu.add(open =new JMenuItem("Projekt oeffnen") );
+		frame.setJMenuBar(menubar);
+		
 		// Zoom Buttons
 		btnZoomIn = new JButton();
 		btnZoomIn.setIcon(new ImageIcon(MainFrame.class.getResource("images/plus.png")));
@@ -107,6 +127,61 @@ public class MainFrame {
 		});
 
 		frame.add(buttonPanel, BorderLayout.SOUTH);
+		
+		save.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				JFileChooser fc = new JFileChooser(System.getProperty("user.home"));
+				fc.setFileHidingEnabled(true);
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				if (0 == fc.showSaveDialog(frame)) {
+					String path = fc.getSelectedFile().getPath();
+					if (!path.endsWith(".bAndB")) {
+						path = path + ".bAndB";
+					}
+
+					//	problemPanel.save(path);
+						JOptionPane.showMessageDialog(frame,  fc.getSelectedFile().getName()+ " erfolgreich gespeichert.");
+				}
+			}
+		});
+
+		fresh.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.main(null);
+			}
+
+		});
+
+		open.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser(System.getProperty("user.home"));
+				fc.setFileHidingEnabled(true);
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				if (0 == fc.showOpenDialog(frame)) {
+					String path = fc.getSelectedFile().getPath();
+					if (!path.endsWith(".bAndB")) {
+						JOptionPane.showMessageDialog(frame,"Bitte eine .bAndB Datei öffnen");
+					} else {
+						try {
+							//	                	 Laden l = new Laden(path );
+							//	                     BranchAndBound temp= l.lese();
+						//	Laden l = new Laden (path);
+						//	BranchAndBoundSpeichern objekt = l.lese();
+						//	problemPanel.erhalteBandBundErstelleView(objekt);
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(frame,"Datei konnte nicht geladen werden", "Fehler",JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
+
+
+			}
+
+		});
 	}
 
 	protected void zoomIn(Component c) {
