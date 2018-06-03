@@ -5,6 +5,10 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+
 public class Helper {
 	
 	public static boolean isNumeric(String str)  
@@ -73,5 +77,13 @@ public class Helper {
 			}
 		return roundArray;
 		
+	}
+	
+	public static void alignCells(JTable table) {
+		for (int i = 0; i < table.getColumnCount(); i++) {
+			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+			centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
 	}
 }

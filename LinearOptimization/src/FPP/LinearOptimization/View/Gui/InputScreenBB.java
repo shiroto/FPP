@@ -66,6 +66,8 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	}
 
 	private void loadTables() {
+		Helper.alignCells(functionTable);
+		Helper.alignCells(restrictionTable);
 		JPanel problemPanel = new JPanel();
 		problemPanel.setBounds(50, 210, 250, 20);
 

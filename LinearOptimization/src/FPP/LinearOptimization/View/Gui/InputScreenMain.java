@@ -172,8 +172,12 @@ public class InputScreenMain extends JPanel {
 		inputBB = new InputScreenBB(mainFrame);
 		inputBB.setVisible(true);
 		inputBB.setLayout(null);
-		inputBB.setFunctionTable(new JTable(functionTable.getModel()));
-		inputBB.setRestrictionTable((new JTable(restrictionTable.getModel())));
+		JTable functionTableCopy = new JTable(functionTable.getModel());
+		functionTableCopy.setTableHeader(functionTable.getTableHeader());
+		inputBB.setFunctionTable(functionTableCopy);
+		JTable restrictionTableCopy = new JTable(restrictionTable.getModel());
+		restrictionTableCopy.setTableHeader(restrictionTable.getTableHeader());
+		inputBB.setRestrictionTable(restrictionTableCopy);
 		inputBB.setSimplexTableau(simplexTableau);
 		inputBB.initializeScreen();
 		mainFrame.getTabs().addTab("Branch & Bound Input", inputBB);
