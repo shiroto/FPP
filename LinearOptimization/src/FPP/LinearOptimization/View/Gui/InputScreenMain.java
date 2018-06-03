@@ -173,6 +173,7 @@ public class InputScreenMain extends JPanel {
 		inputBB.setVisible(true);
 		inputBB.setLayout(null);
 		inputBB.setFunctionTable(new JTable(functionTable.getModel()));
+		inputBB.setRestrictionTable((new JTable(restrictionTable.getModel())));
 		inputBB.setSimplexTableau(simplexTableau);
 		inputBB.initializeScreen();
 		mainFrame.getTabs().addTab("Branch & Bound Input", inputBB);

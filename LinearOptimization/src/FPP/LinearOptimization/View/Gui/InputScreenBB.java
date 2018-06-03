@@ -8,9 +8,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
-
+import javax.swing.table.TableModel;
 
 public class InputScreenBB extends JPanel implements InputScreenIF {
 
@@ -22,21 +22,25 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	private int numRestr, numVar;
 	private Double[][] simplexTableau;
 	private boolean max;
-	private JTable setFunctionTable;
+	private JTable functionTable;
+	private Object mainframe;
+	private JTable restrictionTable;
+	private JScrollPane scrollPaneRestrictions;
+	private JScrollPane scrollPaneFunction;
 
 	public InputScreenBB(MainFrame mainFrame) {
-		// TODO Auto-generated constructor stub
-		
-	
+		this.mainframe = mainframe;
+
 	}
-	
+
 	public void initializeScreen() {
 		this.numRestr = Integer.valueOf(this.simplexTableau.length);
-		this.numVar = Integer.valueOf(this.simplexTableau[0].length-1);
+		this.numVar = Integer.valueOf(this.simplexTableau[0].length - 1);
 		problemBeschreibungPanel = new JLabel();
 		problemBeschreibungPanel.setVisible(false);
 		this.add(problemBeschreibungPanel);
-		
+
+		loadTables();
 		jCBMin = new JCheckBox();
 		jCBMin.setSelected(true);
 		jCBMin.setVisible(false);
@@ -49,16 +53,52 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					initiateProlembeschreibungsPanel(numVar);
-						
+
 				} else if (e.getStateChange() == ItemEvent.DESELECTED) {
-					
+
 					initiateProlembeschreibungsPanel(numVar);
 				}
 			}
 		});
-		
+
 		initiiereProblemViewFelder();
-		
+
+	}
+
+	private void loadTables() {
+		JPanel problemPanel = new JPanel();
+		problemPanel.setBounds(50, 210, 250, 20);
+
+		JLabel problemLabel = new JLabel("Restriktionen");
+		problemPanel.add(problemLabel);
+
+		scrollPaneRestrictions = new JScrollPane(restrictionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneRestrictions.setBounds(150, 250, 523, 325);
+
+		restrictionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+		JPanel functionPanel = new JPanel();
+		functionPanel.setBounds(50, 100, 250, 20);
+
+		JLabel functionLabel = new JLabel("Zielfunktion");
+		functionPanel.add(functionLabel);
+
+		scrollPaneFunction = new JScrollPane(functionTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneFunction.setBounds(150, 128, 523, 60);
+
+		functionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		scrollPaneFunction.setBorder(null);
+		scrollPaneFunction.setVisible(true);
+		scrollPaneRestrictions.setVisible(true);
+		this.add(problemPanel);
+		this.add(scrollPaneRestrictions);
+		this.add(functionPanel);
+		this.add(scrollPaneFunction);
+		functionPanel.setVisible(true);
+		problemPanel.setVisible(true);
+
 	}
 
 	@Override
@@ -69,7 +109,8 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	@Override
 	public void setFunctionTable(JTable functionTable) {
-		this.setFunctionTable = functionTable;
+		functionTable.setEnabled(false);
+		this.functionTable = functionTable;
 
 	}
 
@@ -167,37 +208,43 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		this.repaint();
 		this.revalidate();
 	}
-	
 
 	private void initiiereProblemViewFelder() {
 		this.jCBMin.setVisible(true);
 		this.repaint();
 	}
-	
+
 	private void setRadioButtonListsInvisible() {
 		for (JRadioButton jr : this.arrayRadioGanzzahl) {
 			jr.setVisible(false);
 		}
-		for(JRadioButton jr : this.binaerRadio) {
+		for (JRadioButton jr : this.binaerRadio) {
 			jr.setVisible(false);
 		}
 	}
-	
+
 	private void setMinMaxProblem() {
 		if (this.jCBMin.isSelected()) {
 			max = false;
 		} else {
 			max = true;
 		}
-		
+
 	}
+
 	private boolean leseMinMaxProblem() {
 		if (this.jCBMin.isSelected()) {
 			return false;
 		} else {
 			return true;
 		}
-		
+
+	}
+
+	public void setRestrictionTable(JTable restrictionTable) {
+		restrictionTable.setEnabled(false);
+		this.restrictionTable = restrictionTable;
+
 	}
 
 }
