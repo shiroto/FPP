@@ -104,7 +104,6 @@ public class MainFrame {
 		btnZoomIn.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				//zoomIn();
 				for(Component c : getTabs().getComponents())
 					zoomIn(c);
 			}
@@ -120,7 +119,6 @@ public class MainFrame {
 		btnZoomOut.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				//zoomOut();
 				for(Component c : getTabs().getComponents())
 					zoomOut(c);
 			}
@@ -220,56 +218,6 @@ public class MainFrame {
 		if (c instanceof JTable) {
 			updateRowHeights((JTable)c);
 		}	
-	}
-
-	//Not working yet
-	private void zoomIn() {
-		if (currentZoom < 1.5) {
-			currentZoom += 0.1;
-			for (Component c : ((JPanel) tabs.getSelectedComponent()).getComponents()) {
-				if (c instanceof Container) {
-					Container subContainer = (Container) c;
-					for (Component subc : subContainer.getComponents()) {
-
-						subc.setSize(subc.getWidth() + 3, subc.getHeight() + 3);
-						Font f = subc.getFont();
-						subc.setFont(new Font(f.getName(), f.getStyle(), f.getSize() + 1));
-					}
-				} else {
-					c.setSize(c.getWidth() + 3, c.getHeight() + 3);
-					Font f = c.getFont();
-					c.setFont(new Font(f.getName(), f.getStyle(), f.getSize() + 1));
-					
-				}
-				if (c instanceof JTable) {
-					updateRowHeights((JTable) c);
-				}
-			}
-		}
-	}
-
-	private void zoomOut() {
-		if (currentZoom > 0.5) {
-			currentZoom -= 0.1;
-			Component[] components = ((JPanel) tabs.getSelectedComponent()).getComponents();
-			for (int i = 0; i < components.length; i++) {
-				if ((components[i] instanceof Container)) {
-					Container subContainer = (Container) components[i];
-					Component[] subComps = subContainer.getComponents();
-					for (int c = 0; c < subComps.length; c++) {
-						if (subComps[c] instanceof JLabel) {
-							Font f = subComps[c].getFont();
-							subComps[c].setFont(new Font(f.getName(), f.getStyle(), f.getSize() - 1));
-						} else {
-							subComps[c].setSize(subComps[c].getSize().width + 20, subComps[c].getSize().height - 20);
-						}
-					}
-				} else {
-					components[i].setSize(components[i].getSize().width - 20, components[i].getSize().height - 20);
-				}
-			}
-		}
-
 	}
 
 	private void updateRowHeights(JTable table) {
