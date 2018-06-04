@@ -39,7 +39,7 @@ public class BendersAlgorithmTest {
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
-		double result = -1250;
+		double result = 1430;
 		double[] parameterResults = {4d, 4d, 0d, 0.5d, 1d};
 		
 		testInput(inputData, result, parameterResults);
@@ -62,7 +62,7 @@ public class BendersAlgorithmTest {
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
-		double result = -50d;
+		double result = 950d;
 		double[] parameterResults = {0d, 0d, 0d, 0.1, 5d};
 		
 		testInput(inputData, result, parameterResults);
@@ -95,7 +95,6 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	// TODO Martin 
 	@Test
 	void test_example_02() {
 		System.out.println("test_example_02");
@@ -130,9 +129,9 @@ public class BendersAlgorithmTest {
 		Double[][] simplexTableau = new Double[][] {
 			{-1d, -1d, 1d, 1d, 0d, 30d},
 			{1d, 0d, 1d, -3d, 0d, 30d},
-//			{1d, 0d, 0d, 0d, 0d, 40d},
-//			{0d, 1d, 0d, 0d, 0d, 1d},
-//			{0d, 0d, 0d, 0d, 1d, 1d},
+			{1d, 0d, 0d, 0d, 0d, 40d},
+			{0d, 1d, 0d, 0d, 0d, 1d},
+			{0d, 0d, 0d, 0d, 1d, 1d},
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {0, 1, 4};
@@ -148,7 +147,7 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-//	@Test
+	@Test
 	void test_example_04() {
 		System.out.println("test_example_04");
 		// prepare test data
@@ -157,9 +156,9 @@ public class BendersAlgorithmTest {
 			{-1d, -1d, 1d, 1d, 0d, 30d},
 			{1d, 0d, 1d, -3d, 0d, 30d},
 			{0d, -1d, 1d, 0d, 0d, 30d},
-//			{1d, 0d, 0d, 0d, 0d, 40d},
-//			{0d, 1d, 0d, 0d, 0d, 1d},
-//			{0d, 0d, 0d, 0d, 1d, 1d},
+			{1d, 0d, 0d, 0d, 0d, 40d},
+			{0d, 1d, 0d, 0d, 0d, 1d},
+			{0d, 0d, 0d, 0d, 1d, 1d},
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {1, 4};
@@ -175,11 +174,11 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-//	@Test
+	@Test
 	void test_example_05() {
 		System.out.println("test_example_05");
 		// prepare test data
-		Double[] function = {-3d, -2d, -1d, -20d};
+		Double[] function = {-3d, -2d, -1d, 0d};
 		Double[][] simplexTableau = new Double[][] {
 			{1d, 1d, 1d, 7d},
 			{4d, 2d, 1d, 12d},
@@ -192,7 +191,7 @@ public class BendersAlgorithmTest {
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
-		double result = -32d;
+		double result = -12d;
 		double[] parameterResults = {0d, 6d, 0d};
 		
 		testInput(inputData, result, parameterResults);
@@ -216,16 +215,15 @@ public class BendersAlgorithmTest {
 		System.out.println("test_example_06");
 		// prepare test data
 		
-		Double[] function = {-8d, -6d, 2d, 42d, 18d, 33d, 0d};
+		Double[] function = {2d,1d,0d};
 		Double[][] simplexTableau = new Double[][] {
 			{-4d,-4d,-10d},
 			{-2d,-11d,-11d},
 			{-4d,2d,1d},
-			{2d,1d,0d}, 
 			function};
 		int[] paramaterNegativeIndices = {};
-		int[] yVariableIndices = {};
-		BendersMasterCoefficientType[] yTypes = {};
+		int[] yVariableIndices = {1};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Integer};
 		
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
