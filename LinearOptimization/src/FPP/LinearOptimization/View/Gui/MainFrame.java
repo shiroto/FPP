@@ -26,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
+import FPP.LinearOptimization.Controller.IController;
+
 
 public class MainFrame {
 
@@ -39,15 +41,16 @@ public class MainFrame {
 	private JMenuBar menubar;
 	private JMenu projektmenu;
 	private JMenuItem save, open, fresh;
+	private IController controller;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public void newWindow() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainFrame window = new MainFrame();
+					MainFrame window = new MainFrame(controller);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,11 +58,17 @@ public class MainFrame {
 			}
 		});
 	}
+	
+	public IController GetController()
+	{
+		return controller;
+	}
 
 	/**
 	 * Create the application.
 	 */
-	public MainFrame() {
+	public MainFrame(IController controller) {
+		this.controller = controller;
 		initialize();
 	}
 
@@ -148,7 +157,7 @@ public class MainFrame {
 		fresh.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainFrame.main(null);
+				newWindow();
 			}
 
 		});

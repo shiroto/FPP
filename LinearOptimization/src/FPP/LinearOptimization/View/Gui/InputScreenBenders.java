@@ -19,8 +19,11 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import FPP.LinearOptimization.Data.Algorithm;
 import FPP.LinearOptimization.Data.BendersOptimizationData;
+import FPP.LinearOptimization.Data.ILinearOptimizationSolutionData;
 import FPP.LinearOptimization.Data.LinearOptimizationData;
+import FPP.LinearOptimization.Model.ILinearOptimization;
 import FPP.LinearOptimization.Model.benders.BendersAlgorithm;
 import FPP.LinearOptimization.Model.benders.BendersMasterCoefficientType;
 import FPP.LinearOptimization.Model.benders.BendersSolutionData;
@@ -95,8 +98,8 @@ public class InputScreenBenders extends JPanel {
 		loadParamNegIndices();
 		bendersInputObject = new BendersOptimizationData(simplexTableau, parameterNegativeIndices, yVariables,
 				bendersMasterCoefficientType);
-		BendersAlgorithm benders = new BendersAlgorithm();
-		bendersSolutionObject = (BendersSolutionData) benders.solve(bendersInputObject);
+		ILinearOptimizationSolutionData benders = mainFrame.GetController().createAlgorithm(bendersInputObject, Algorithm.BendersAlgorithm);
+		bendersSolutionObject = (BendersSolutionData) benders;
 		System.out.println();
 	}
 

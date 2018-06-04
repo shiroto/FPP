@@ -8,7 +8,7 @@ import FPP.LinearOptimization.Model.benders.BendersStepData;
  * 
  * @author Stefan
  */
-public interface IBendersOptimizationSolutionData {
+public interface IBendersOptimizationSolutionData extends ILinearOptimizationSolutionData {
 
 	/**
 	 * This is the actual problem which is given to the algorithm.
