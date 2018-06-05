@@ -118,7 +118,7 @@ public class BendersAlgorithmTest {
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
 		double result = 25d;
-		double[] parameterResults = {4d, 6d, 0d, 1d, 1d, 1d};
+		double[] parameterResults = {0d, 4.5d, 0.5d, 0d, 1d, 1d};
 		
 		testInput(inputData, result, parameterResults);
 	}
@@ -253,6 +253,9 @@ public class BendersAlgorithmTest {
 	 * 
 	 * https://www.ingenieurkurse.de/operations-research-2/ganzzahlige-optimierung/branch-and-bound-verfahren/branch-and-bound-knapsack-problem.html  
 	 */
+	
+	//TODO Anmerkung Martin: Kann Simplex bzw. B&B überhaupt mit Restriktionen wie -x5 <= 0 umgehen oder nehmen diese automatisch immer x5 >= 0 an
+	//TODO Anmerkung Martin: Test enthält keine y-Variablen und ist somit nicht sinnvoll
 //	@Test
 	void test_example_07() {
 		System.out.println("test_example_07");
@@ -296,7 +299,7 @@ public class BendersAlgorithmTest {
 				{-3d,-5d,-2d,0d}};
 	 * --> [0.0, 1.0, 1.0, 7.0]		
 	 */
-//	@Test
+	@Test
 	void test_example_08() {
 		System.out.println("test_example_08");
 		// prepare test data
@@ -316,7 +319,7 @@ public class BendersAlgorithmTest {
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
-		double result = 7d;
+		double result = -7d;
 		double[] parameterResults = {0d, 1d, 1d};
 		
 		testInput(inputData, result, parameterResults);
@@ -343,6 +346,8 @@ public class BendersAlgorithmTest {
 	 * https://members.loria.fr/CRingeissen/files/master2/solving-lp-ip.pdf
 	 */
 //	@Test
+	//TODO Anmerkung Martin: Kann Simplex bzw. B&B überhaupt mit Restriktionen wie -x5 <= 0 umgehen oder nehmen diese automatisch immer x5 >= 0 an
+	//TODO Anmerkung Martin: Test enthält keine y-Variablen und ist somit nicht sinnvoll
 	void test_example_09() {
 		System.out.println("test_example_09");
 		// prepare test data
@@ -377,7 +382,7 @@ public class BendersAlgorithmTest {
 	/*
 	 * https://members.loria.fr/CRingeissen/files/master2/solving-lp-ip.pdf
 	 */
-//	@Test
+	@Test
 	void test_example_10() {
 		System.out.println("test_example_10");
 		// prepare test data
@@ -472,7 +477,7 @@ Double [][] array= {											     6 ebenen baum
 		};
 	 * https://kops.uni-konstanz.de/bitstream/handle/123456789/40602/Jaekle_2--19g2w6rkcqybq4.pdf?sequence=5
 	 */
-//	@Test
+	@Test
 	void test_example_13() {
 		System.out.println("test_example_13");
 		// prepare test data
@@ -488,7 +493,7 @@ Double [][] array= {											     6 ebenen baum
 			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 					paramaterNegativeIndices, yVariableIndices, yTypes);
 			new BendersAlgorithm().solve(inputData);
-			double result = 29250d;
+			double result = -29250d;
 			double[] parameterResults = {11.75d, 25d};
 			
 			testInput(inputData, result, parameterResults);
@@ -506,7 +511,7 @@ Double [][] array= {											     6 ebenen baum
 	 *	[0.0, 3.0, 3.0]
 	 * https://www.ingenieurkurse.de/operations-research-2/ganzzahlige-optimierung/branch-and-bound-verfahren/maximierungsprobleme/branch-and-bound-am-maximierungsproblem-optimale-loesung/beispiel-branch-and-bound-am-maximierungsproblem-optimale-loesung.html
 	 */
-//	@Test
+	@Test
 	void test_example_14() {
 		System.out.println("test_example_14");
 		// prepare test data
@@ -522,8 +527,8 @@ Double [][] array= {											     6 ebenen baum
 			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 					paramaterNegativeIndices, yVariableIndices, yTypes);
 			new BendersAlgorithm().solve(inputData);
-			double result = 3d;
-			double[] parameterResults = {1d, 1d};
+			double result = -3.5d;
+			double[] parameterResults = {1d, 1.5d};
 			
 			testInput(inputData, result, parameterResults);
 	}
@@ -569,9 +574,7 @@ Double [][] array= {											     6 ebenen baum
 		Double[] parameterResults = Arrays.copyOfRange(optSolution, 0, optSolution.length - 1);
 		double[] parameterResultUnboxed = Stream.of(parameterResults).mapToDouble(Double::doubleValue).toArray();
 
-		if (expectedParameterResults != null) {
-			assertArrayEquals(expectedParameterResults, parameterResultUnboxed, DELTA);
-		}
+		assertArrayEquals(expectedParameterResults, parameterResultUnboxed, DELTA);
 		assertEquals(expectedResult, result, DELTA);
 	}
 }

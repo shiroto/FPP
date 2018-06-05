@@ -236,7 +236,9 @@ public class BendersAlgorithm implements IBendersOptimization {
 		if (solveAbleWithBAndB) {
 			Tableau tableau = new Tableau(simplexTableau);
 			
-			List<Double[]> solution = new BranchAndBound(tableau, max).solve();
+			boolean[] flagInteger = initializeFlagInteger(simplexTableau);
+			
+			List<Double[]> solution = new BranchAndBound(tableau, max, flagInteger).solve();
 			if (solution.size() > 0) {
 				return solution.get(0);
 			}
@@ -245,6 +247,14 @@ public class BendersAlgorithm implements IBendersOptimization {
 		} else {
 			return new Simplex(simplexTableau, max).loese();
 		}
+	}
+
+	private boolean[] initializeFlagInteger(Double[][] simplexTableau) {
+		boolean[] flagInteger = new boolean[simplexTableau[0].length];
+		Arrays.fill(flagInteger, true);
+		flagInteger[flagInteger.length - 1] = false;
+		flagInteger[flagInteger.length - 2] = false;
+		return flagInteger;
 	}
 	
 	private void addCut(Problem problem, Double[] cut) {
