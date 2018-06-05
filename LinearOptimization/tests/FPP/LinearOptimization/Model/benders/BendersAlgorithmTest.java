@@ -1,7 +1,7 @@
 package FPP.LinearOptimization.Model.benders;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import FPP.LinearOptimization.Data.BendersOptimizationData;
 import FPP.LinearOptimization.Data.IBendersOptimizationSolutionData;
-import FPP.LinearOptimization.Model.benders.BendersAlgorithm;
-import FPP.LinearOptimization.Model.benders.BendersMasterCoefficientType;
 
 public class BendersAlgorithmTest {
 	
