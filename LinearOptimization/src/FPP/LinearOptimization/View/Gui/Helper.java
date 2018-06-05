@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class Helper {
+	public static  int KOMMASTELLEN = 3;
 	
 	public static boolean isNumeric(String str)  
 	{  
