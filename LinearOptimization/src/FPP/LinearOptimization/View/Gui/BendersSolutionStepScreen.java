@@ -175,12 +175,16 @@ public class BendersSolutionStepScreen extends JPanel {
 					roundMasterSolution = Helper.roundSolutionData(masterSolution, 1);
 					loadSolutionTable(masterSolutionTable, roundMasterSolution);
 					loadTableHeader(masterSolutionTable);
+					ubLabel.setText("Upper Bound = " + Helper.round(ub, 1));
+					lbLabel.setText("Lower Bound = " + Helper.round(lb, 1));
 					masterRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(masterTable, master);
 					loadTableHeader(masterTable);
 					loadSolutionTable(masterSolutionTable, masterSolution);
 					loadTableHeader(masterSolutionTable);
+					ubLabel.setText("Upper Bound = " + ub);
+					lbLabel.setText("Lower Bound = " + lb);
 					masterRoundButton.setText("Gerundet");
 				}
 
@@ -201,12 +205,16 @@ public class BendersSolutionStepScreen extends JPanel {
 					roundSubSolution = Helper.roundSolutionData(subSolution, 1);
 					loadSolutionTable(subSolutionTable, roundSubSolution);
 					loadTableHeader(subSolutionTable);
+					ubLabel.setText("Upper Bound = " + Helper.round(ub, 1));
+					lbLabel.setText("Lower Bound = " + Helper.round(lb, 1));
 					subRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(subTable, sub);
 					loadTableHeader(subTable);
 					loadSolutionTable(subSolutionTable, subSolution);
 					loadTableHeader(subSolutionTable);
+					lbLabel.setText("Lower Bound = " + lb);
+					ubLabel.setText("Upper Bound = " + ub);
 					subRoundButton.setText("Gerundet");
 				}
 
