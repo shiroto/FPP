@@ -1,9 +1,18 @@
 package FPP.LinearOptimization.View.Gui;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Arrays;
+import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,6 +20,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
+import FPP.LinearOptimization.Model.BranchAndBound.*;
+import FPP.LinearOptimization.View.Gui.*;
 
 public class InputScreenBB extends JPanel implements InputScreenIF {
 
@@ -22,14 +33,21 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	private int numRestr, numVar;
 	private Double[][] simplexTableau;
 	private boolean max;
-	private JTable functionTable;
-	private Object mainframe;
+	private MainFrame mainframe;
 	private JTable restrictionTable;
 	private JScrollPane scrollPaneRestrictions;
 	private JScrollPane scrollPaneFunction;
-
+	private JButton btnSubmit;
+	private BranchAndBound branchAndBoundProblem;
+	private boolean [] binaerListe;
+	private double[][] array;
+	private boolean[] ganzzahlFlag;
+	private boolean binaer;
+	private double[] zielfunktion;
+	private JTable functionTable;
+	
 	public InputScreenBB(MainFrame mainFrame) {
-		this.mainframe = mainframe;
+		this.mainframe = mainFrame;
 
 	}
 
@@ -62,7 +80,60 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		});
 
 		initiiereProblemViewFelder();
+		
+		btnSubmit = new JButton("Submit");
+		btnSubmit.setBounds(1033, 527, 171, 41);
+		btnSubmit.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				validateInput();
+				createBBProblem();
+				loadScreen();
+			}
+
+		});
+		this.add(btnSubmit);
+
+	}
+
+	protected void loadScreen() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void createBBProblem() {
+		branchAndBoundProblem = erstelleProblem();
+		branchAndBoundProblem.getStartKnoten().getProblem().getInitialTableau().printArray();
+		// List<double[]> loesung = branchAndBoundProblem.solve(); bei Last in First Out
+		List<double[]> loesung = branchAndBoundProblem.solveMaximumUpperBound();
+		zeigeLoesung(loesung);
+		System.out.println(Arrays.toString(loesung.get(0)));
+		FPP.LinearOptimization.View.Gui.BranchAndBound.MeineSwingDemo sd = new FPP.LinearOptimization.View.Gui.BranchAndBound.MeineSwingDemo();
+		sd.initialisiere(branchAndBoundProblem);
+		 JPanel jc = sd.getPanel();
+		 JPanel outerPanel = new JPanel();
+		 outerPanel.setBackground(Color.WHITE);
+		 outerPanel.setLayout(new GridBagLayout());
+		 GridBagConstraints gbc = new GridBagConstraints();
+		 gbc.gridx = 0;
+		 gbc.gridy = 0;
+		 gbc.anchor = GridBagConstraints.NORTH;
+		 gbc.insets = new Insets(10, 10, 10, 10);
+		 gbc.fill = GridBagConstraints.NONE;
+		 outerPanel.add(jc, gbc);
+		 JScrollPane scrollPane = new JScrollPane(outerPanel);
+		 scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+		 LoesungsPanel l = new LoesungsPanel(mainframe);
+		 l.addPanel(scrollPane);
+		 mainframe.getTabs().addTab("Branch & Bound", l);
+		 mainframe.setTab(2);
+		
+	}
+
+	protected void validateInput() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void loadTables() {
@@ -225,14 +296,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		}
 	}
 
-	private void setMinMaxProblem() {
-		if (this.jCBMin.isSelected()) {
-			max = false;
-		} else {
-			max = true;
-		}
-
-	}
 
 	private boolean leseMinMaxProblem() {
 		if (this.jCBMin.isSelected()) {
@@ -247,6 +310,245 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		restrictionTable.setEnabled(false);
 		this.restrictionTable = restrictionTable;
 
+	}
+	
+	private BranchAndBound erstelleProblem()  {
+			//meinTableModel.fireTableDataChanged();
+			//tabelle.setModel(meinTableModel);
+		
+			setBinProblem();   
+			schreibeGanzzahlFlag();
+			/*
+			if (!binaer) {
+				Arrays.fill(this.binaerListe,true);
+				createArray();
+			} else {
+				schreibeBinaerListe();
+				createArrayBinaerProblem();
+			}
+*/
+			setMinMaxProblem();
+			branchAndBoundProblem = new BranchAndBound(new SimplexTableau(simplexTableau), max, ganzzahlFlag);
+
+		return branchAndBoundProblem;
+	}
+	
+
+	
+	private void schreibeBinaerListe() {
+
+		for(int i =0; i<numVar; i++) {
+			if(this.binaerRadio[i].isSelected()) binaerListe[i] = true;
+			else  binaerListe[i] = false;
+		}
+	}
+
+	private boolean[] leseBinaerListe() {
+		boolean[]  binTemp = new boolean [numVar];
+		for(int i =0; i<numVar; i++) {
+			if(this.binaerRadio[i].isSelected()) binTemp[i] = true;
+			else  binTemp[i] = false;
+		}
+		return binTemp;
+	}
+	
+	private void setBinProblem() {
+		this.binaerListe = new boolean[numVar];
+		boolean isBin= false;
+		for(int i = 0; i <numVar; i++) {
+			if(this.binaerRadio[i].isSelected()) isBin= true;
+		}
+	this.binaer = isBin;
+		
+	}
+
+	private void setMinMaxProblem() {
+		if (this.jCBMin.isSelected()) {
+			max = false;
+		} else {
+			max = true;
+		}
+		
+	}
+	
+	private void zeigeLoesung(List<double[]> loesung) {
+		String ausgabe = "<html> Lösung <br>";
+		for (int i = 0; i < loesung.size(); i++) {
+			double[] temp = loesung.get(i);
+			String zeileTemp = "";
+			for (int e = 0; e < temp.length; e++) {
+				if (e != temp.length - 1)
+					zeileTemp = zeileTemp + "x" + (e + 1) + ": " + temp[e] + " ";
+				else
+					zeileTemp = zeileTemp + "Zielfunktion" + ": " + temp[e] + " ";
+			}
+			ausgabe = ausgabe + zeileTemp + "<br>";
+		}
+		ausgabe = ausgabe + "</html>";
+	//	this.jLResult.setText(ausgabe);
+	//	this.jLResult.setVisible(true);
+	}
+
+	private boolean[] schreibeGanzzahlFlag() {
+		this.ganzzahlFlag = new boolean[numVar];
+		
+		for (int i = 0; i < numVar; i++) {
+			if (arrayRadioGanzzahl[i].isSelected()) {
+				this.ganzzahlFlag[i] = true;
+			} else {
+				this.ganzzahlFlag[i] = false;
+			}
+		}
+		return this.ganzzahlFlag;
+	}
+	
+	private boolean[] leseGanzzahlFlag() {
+		boolean[] ganzzahlFlagTemp= new boolean[numVar];
+		for (int i = 0; i < numVar; i++) {
+			if (arrayRadioGanzzahl[i].isSelected()) {
+				ganzzahlFlagTemp[i] = true;
+			} else {
+				ganzzahlFlagTemp[i] = false;
+			}
+		}
+		return ganzzahlFlagTemp;
+	}
+	
+	
+	private void createArray() {
+		this.array = new double[this.numRestr + 1][this.numVar + 1]; // endgueltiges
+																		// Array
+
+		schreibeZielfunktion();
+
+		if (!this.jCBMin.isSelected()) {
+			multiplieziereZf();
+		}
+
+		setRestriktionsarray();
+
+		// fuege ZF array hinzu
+		for (int i = 0; i < numVar + 1; i++) {
+			double wert = this.zielfunktion[i];
+			array[numRestr][i] = wert;
+		}
+
+	}
+	private void multiplieziereZf() {
+		for (int i = 0; i < numVar; i++) {
+			this.zielfunktion[i] = this.zielfunktion[i] * -1;
+		}
+	}
+	
+	private void setRestriktionsarray()  {
+
+		int numColumns = restrictionTable.getModel().getColumnCount(); // mit
+																// Restriktionen
+		int failIndex = numColumns - 2;
+			for (int i = 0; i < numRestr; i++) { // erstelle Restriktionen
+				String opTemp = restrictionTable.getModel().getValueAt(i, failIndex).toString();
+				for (int e = 0; e < numVar + 1; e++) {
+					if (e != numVar) {
+						if (opTemp.equals("<=")) {
+							this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString());
+						} else {
+							this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString()) * -1;
+						}
+					} else {
+						if (opTemp.equals("<=")) {
+							this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString());
+						} else {
+							this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString()) * -1;
+						}
+					}
+				}
+
+			}
+	}
+
+	
+	/**
+	 * Liest Zielfunktion aus Tablle und speichert diese Im Panel.
+	 * @return Zielfunktions vom Typ double[numVar+1]
+	 * @throws Zielfunktionsexception
+	 */
+	private double[] schreibeZielfunktion()  {
+		this.zielfunktion = new double[numVar+1];
+			for (int i = 0; i < numVar + 1; i++) {
+				if (i != numVar) {
+					this.zielfunktion[i] = Double.valueOf(this.functionTable.getModel().getValueAt(0, i).toString());
+				} else {
+					this.zielfunktion[i] = 0d;
+				}
+			}
+			return this.zielfunktion;
+	}
+	
+	private void createArrayBinaerProblem() {
+		
+		int anzahlBin= getAnzahlBin();
+		int anzahlZeilen = this.numRestr+1  +anzahlBin*2;
+		this.array = new double[anzahlZeilen][this.numVar+1];
+		schreibeZielfunktion();
+		if (!this.jCBMin.isSelected()) {
+			multiplieziereZf();
+		}
+		setRestriktionsArrayBinaer();
+		// fuege ZF array hinzu
+				for (int i = 0; i < numVar + 1; i++) {
+					Double wert = this.zielfunktion[i];
+					array[numRestr + 2 * anzahlBin][i] = wert;
+				}
+		
+	}
+	private int getAnzahlBin() {
+		int z =0;
+		for(int i =0; i< this.binaerListe.length; i++) {
+			if(this.binaerListe[i]) z++;
+		}
+		return z;
+	}	
+	
+	private void setRestriktionsArrayBinaer()  {
+		int numColumns = restrictionTable.getModel().getColumnCount(); // mit
+		// Restriktionen
+		int failIndex = numColumns - 2; // gibt index an, an dem Operator steht
+		for (int i = 0; i < numRestr; i++) { // erstelle Restriktionen
+			String opTemp = restrictionTable.getModel().getValueAt(i, failIndex).toString();
+			for (int e = 0; e < numVar + 1; e++) {
+				if (e != numVar) {
+					if (opTemp.equals("<=")) {
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString());
+					} else {
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString()) * -1;
+					}
+				} else {
+					if (opTemp.equals("<=")) {
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString());
+					} else {
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString()) * -1;
+					}
+				}
+			}
+
+		}
+		//erstelle binaerrestriktionen
+		int zeile= numRestr;
+		for(int i=0; i <numVar; i++) {
+			if(binaerListe[i]) {
+			for(int e= 0; e<numVar+1; e++) {
+			if (e==i || e== numVar) array[zeile][e]= 1;	
+			else array[zeile][e]= 0;
+			}
+			zeile++;
+			for(int e= 0; e<numVar+1; e++) {
+				if(e==i) array[zeile][e] = -1;
+				else array[zeile][e] = 0;
+			}
+			zeile++;
+			
+			}
+		}
 	}
 
 }
