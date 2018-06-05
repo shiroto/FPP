@@ -19,7 +19,6 @@ public class BendersAlgorithmTest {
 	 * All restrictions have to be <=
 	 * Function must be minimizer
 	 */
-	
 	@Test
 	void test_example_powerPoint() {
 		System.out.println("test_example_powerPoint_B");
@@ -66,6 +65,11 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
+	/**
+	 * Lösung ILOG:
+	 * f = -122.5
+	 * x = [40, 10.5, 19.5, 3]
+	 */
 //	@Test
 	void test_example_01() {
 		System.out.println("test_example_01");
@@ -74,8 +78,8 @@ public class BendersAlgorithmTest {
 		Double[][] simplexTableau = new Double[][] {
 			{-1d, 1d, 1d, 10d, 20d},
 			{1d, -3d, 1d, 0d, 30d},
-			{0d, 0d, 0d, -3.5d, 0d},
-			{0d, 0d, 0d, 3.5d, 0d},
+			{1d, 0d, 0d, -3.5d, 0d},
+			{-1d, 0d, 0d, 3.5d, 0d},
 			{1d, 0d, 0d, 0d, 40d},
 			{0d, 0d, 0d, -1d, -2d},
 			{0d, 0d, 0d, 1d, 3d},
@@ -114,12 +118,12 @@ public class BendersAlgorithmTest {
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
 		double result = 25d;
-		double[] parameterResults = {0d, 4.5d, 0.5d, 0d, 1d, 1d};
+		double[] parameterResults = {4d, 6d, 0d, 1d, 1d, 1d};
 		
 		testInput(inputData, result, parameterResults);
 	}
 	
-//	@Test
+	@Test
 	void test_example_03() {
 		System.out.println("test_example_03");
 		// prepare test data
@@ -565,7 +569,9 @@ Double [][] array= {											     6 ebenen baum
 		Double[] parameterResults = Arrays.copyOfRange(optSolution, 0, optSolution.length - 1);
 		double[] parameterResultUnboxed = Stream.of(parameterResults).mapToDouble(Double::doubleValue).toArray();
 
-		assertArrayEquals(expectedParameterResults, parameterResultUnboxed, DELTA);
+		if (expectedParameterResults != null) {
+			assertArrayEquals(expectedParameterResults, parameterResultUnboxed, DELTA);
+		}
 		assertEquals(expectedResult, result, DELTA);
 	}
 }

@@ -175,14 +175,19 @@ public class BendersAlgorithm implements IBendersOptimization {
 
 	private void stepZeroCut(MasterProblem masterProblem, SubProblem subProblem, Problem dualProblem,
 			Double[] yZeroes) throws Exception {
-		updateSubproblem(subProblem, dualProblem, yZeroes);
-		Double[] solution = solveProblem(dualProblem.getSimplexTableau(), dualProblem.isSolvableWithBAndB(), false);
+		
+		Problem cutProblem = dualProblem;
+		Double[] cutFunction = new Double[cutProblem.getFunction().length];
+		Arrays.fill(cutFunction, 0d);
+		cutProblem.setFunction(cutFunction);
+		
+		Double[] solution = solveProblem(cutProblem.getSimplexTableau(), cutProblem.isSolvableWithBAndB(), false);
 		for(Double value : solution) {
 			if(value.isNaN()) {
 				throw new Exception("Not solvable!");
 			}
 		}
-		Double[] u = extractSolutionCoefficients(solution, dualProblem.isSolvableWithBAndB());
+		Double[] u = extractSolutionCoefficients(solution, cutProblem.isSolvableWithBAndB());
 		addCut(masterProblem, calculateCut(subProblem, u));
 	}
 
