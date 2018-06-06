@@ -2,6 +2,8 @@ package FPP.LinearOptimization.Model.benders;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -70,7 +72,7 @@ public class BendersAlgorithmTest {
 	 * f = -122.5
 	 * x = [40, 10.5, 19.5, 3]
 	 */
-//	@Test
+	@Test
 	void test_example_01() {
 		System.out.println("test_example_01");
 		// prepare test data
@@ -78,8 +80,8 @@ public class BendersAlgorithmTest {
 		Double[][] simplexTableau = new Double[][] {
 			{-1d, 1d, 1d, 10d, 20d},
 			{1d, -3d, 1d, 0d, 30d},
-			{1d, 0d, 0d, -3.5d, 0d},
-			{-1d, 0d, 0d, 3.5d, 0d},
+			{0d, 1d, 0d, -3.5d, 0d},
+			{0d, -1d, 0d, 3.5d, 0d},
 			{1d, 0d, 0d, 0d, 40d},
 			{0d, 0d, 0d, -1d, -2d},
 			{0d, 0d, 0d, 1d, 3d},
@@ -212,7 +214,7 @@ public class BendersAlgorithmTest {
 	 *
 	 * https://www.ingenieurkurse.de/operations-research-2/ganzzahlige-optimierung/branch-and-bound-verfahren/minimierungsprobleme/branch-and-bound-am-minimierungsproblem-optimale-loesung/beispiel-branch-and-bound-am-minimierungsproblem-optimale-loesung-3.html
 	 */
-//	@Test
+	@Test
 	void test_example_06() {
 		System.out.println("test_example_06");
 		// prepare test data
@@ -230,8 +232,8 @@ public class BendersAlgorithmTest {
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
-		double result = 4d;
-		double[] parameterResults = {1d, 2d};
+		double result = 3.5d;
+		double[] parameterResults = {0.75d, 2d};
 		
 		testInput(inputData, result, parameterResults);
 	}
@@ -254,9 +256,7 @@ public class BendersAlgorithmTest {
 	 * https://www.ingenieurkurse.de/operations-research-2/ganzzahlige-optimierung/branch-and-bound-verfahren/branch-and-bound-knapsack-problem.html  
 	 */
 	
-	//TODO Anmerkung Martin: Kann Simplex bzw. B&B überhaupt mit Restriktionen wie -x5 <= 0 umgehen oder nehmen diese automatisch immer x5 >= 0 an
-	//TODO Anmerkung Martin: Test enthält keine y-Variablen und ist somit nicht sinnvoll
-//	@Test
+	@Test
 	void test_example_07() {
 		System.out.println("test_example_07");
 		// prepare test data
@@ -273,14 +273,14 @@ public class BendersAlgorithmTest {
 			{0d,0d,0d,-1d,0d},
 			function};
 		int[] paramaterNegativeIndices = {};
-		int[] yVariableIndices = {};
-		BendersMasterCoefficientType[] yTypes = {};
+		int[] yVariableIndices = {2, 3};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary, BendersMasterCoefficientType.Integer};
 		
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
-		double result = 46d;
-		double[] parameterResults = {0d, 1d, 0d, 1d};
+		double result = -49d;
+		double[] parameterResults = {0d, 0.25d, 1d, 1d};
 		
 		testInput(inputData, result, parameterResults);
 	}
@@ -345,9 +345,7 @@ public class BendersAlgorithmTest {
 	 * --> [1.0, 1.0, 0.0, 0.0, 14.0]
 	 * https://members.loria.fr/CRingeissen/files/master2/solving-lp-ip.pdf
 	 */
-//	@Test
-	//TODO Anmerkung Martin: Kann Simplex bzw. B&B überhaupt mit Restriktionen wie -x5 <= 0 umgehen oder nehmen diese automatisch immer x5 >= 0 an
-	//TODO Anmerkung Martin: Test enthält keine y-Variablen und ist somit nicht sinnvoll
+	@Test
 	void test_example_09() {
 		System.out.println("test_example_09");
 		// prepare test data
@@ -359,21 +357,23 @@ public class BendersAlgorithmTest {
 			{0d,-1d,0d,1d,0d},
 			{1d,0d,0d,0d,1d},		
 			{-1d,0d,0d,0d,0d},
+			//TODO Didi: Diese Restriktionen sollten eig im Masterproblem sein oder???
 			{0d,1d,0d,0d,1d},
 			{0d,-1d,0d,0d,0d},
-			{0d,0d,1d,0d,1d},
-			{0d,0d,-1d,0d,0d},
-			{0d,0d,0d,1d,1d},
-			{0d,0d,0d,-1d,0d},
+//			{0d,0d,1d,0d,1d},
+//			{0d,0d,-1d,0d,0d},
+//			{0d,0d,0d,1d,1d},
+//			{0d,0d,0d,-1d,0d},
 			function};
 		int[] paramaterNegativeIndices = {};
-		int[] yVariableIndices = {};
-		BendersMasterCoefficientType[] yTypes = {};
+		int[] yVariableIndices = {1, 2, 3};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary, 
+				BendersMasterCoefficientType.Binary, BendersMasterCoefficientType.Binary};
 		
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
 		
-		double result = 14d;
+		double result = -14d;
 		double[] parameterResults = {1d, 1d, 0d, 0d};
 		
 		testInput(inputData, result, parameterResults);
@@ -418,7 +418,7 @@ public class BendersAlgorithmTest {
 		};
 	 *http://www.hs-augsburg.de/informatik/projekte/mebib/emiel/entw_inf/or_verf/ganzopt_bab.html
 	 */
-//	@Test
+	@Test
 	void test_example_11() {
 		System.out.println("test_example_11");
 		// prepare test data
@@ -434,9 +434,8 @@ public class BendersAlgorithmTest {
 			
 			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 					paramaterNegativeIndices, yVariableIndices, yTypes);
-			new BendersAlgorithm().solve(inputData);
-			double result = -1d;
-			double[] parameterResults = {0d, 1d, 0d, 1d, 4d};
+			double result = -5d;
+			double[] parameterResults = {0d, 5d/3d, 0d, 1.75d, 3.5d};
 			
 			testInput(inputData, result, parameterResults);
 	}
@@ -448,7 +447,8 @@ Double [][] array= {											     6 ebenen baum
 	 * -> 1 2 43
 	 * https://www.wiwi.uni-frankfurt.de/profs/ohse/lehre/downloads/qmbwl_folien/Microsoft%2BWord%2B-%2BKapitel5OR3.pdf
 	 */
-//	@Test
+	@Test
+	//masterproblem unbounded
 	void test_example_12() {
 		System.out.println("test_example_12");
 		// prepare test data
@@ -462,11 +462,11 @@ Double [][] array= {											     6 ebenen baum
 			
 			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 					paramaterNegativeIndices, yVariableIndices, yTypes);
-			new BendersAlgorithm().solve(inputData);
-			double result = 43d;
-			double[] parameterResults = {1d, 2d};
 			
-			testInput(inputData, result, parameterResults);
+			IBendersOptimizationSolutionData solutionData = new BendersAlgorithm().solve(inputData);
+			assertEquals(solutionData.getAddInfo(), BendersAlgorithm.MASTER_PROBLEM_UNBOUNDED_MESSAGE);
+			assertNull(solutionData.getOptSolution());
+			assertTrue(solutionData.getSteps().isEmpty());
 	}
 	
 	/*
@@ -492,7 +492,6 @@ Double [][] array= {											     6 ebenen baum
 			
 			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 					paramaterNegativeIndices, yVariableIndices, yTypes);
-			new BendersAlgorithm().solve(inputData);
 			double result = -29250d;
 			double[] parameterResults = {11.75d, 25d};
 			
@@ -526,7 +525,6 @@ Double [][] array= {											     6 ebenen baum
 			
 			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 					paramaterNegativeIndices, yVariableIndices, yTypes);
-			new BendersAlgorithm().solve(inputData);
 			double result = -3.5d;
 			double[] parameterResults = {1d, 1.5d};
 			
@@ -544,7 +542,7 @@ Double [][] array= {											     6 ebenen baum
 				{1d,-4d,0d}
 	https://www.ie.bilkent.edu.tr/~mustafap/courses/bb.pdf
  */
-//	@Test
+	@Test
 	void test_example_15() {
 		System.out.println("test_example_15");
 		// prepare test data
@@ -560,9 +558,31 @@ Double [][] array= {											     6 ebenen baum
 			
 			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 					paramaterNegativeIndices, yVariableIndices, yTypes);
-			new BendersAlgorithm().solve(inputData);
-			double result = 6d;
-			double[] parameterResults = {2d, 2d};
+			double result = -7.6d;
+			double[] parameterResults = {4d, 2.9d};
+			
+			testInput(inputData, result, parameterResults);
+	}
+	
+	@Test
+	//same as test_example_15 but with constant in function
+	void test_example_16() {
+		System.out.println("test_example_15");
+		// prepare test data
+		Double[] function = {1d,-4d,7.6d};
+		Double[][] simplexTableau = new Double[][] {
+			{-10d,20d,22d},
+			{5d,10d,49d},
+			{1d,0d,5d},
+			function};
+			int[] paramaterNegativeIndices = {};
+			int[] yVariableIndices = {0};
+			BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Integer};
+			
+			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
+					paramaterNegativeIndices, yVariableIndices, yTypes);
+			double result = 0d;
+			double[] parameterResults = {4d, 2.9d};
 			
 			testInput(inputData, result, parameterResults);
 	}

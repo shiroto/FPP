@@ -17,6 +17,9 @@ public class BendersAlgorithm implements IBendersOptimization {
 	private static final Double DOUBLE_CORRECTION = 0.000001d;
 	private static final Double ADDITIONAL_CUT_MIN_CORRECTION = 9999d;
 	
+	protected static final String MASTER_PROBLEM_UNBOUNDED_MESSAGE = 
+			"Das Masterproblem ist unbeschränkt, daher kann der Algorithmus keine Berechnung durchführen.";
+	
 	@Override
 	public IBendersOptimizationSolutionData solve(BendersOptimizationData bendersOptimizationData) {
 		// initialize the solution object
@@ -86,7 +89,6 @@ public class BendersAlgorithm implements IBendersOptimization {
 				//no solution existing
 			//	break;
 			//}
-			stepData.setMasterSolution(solution);
 			
 			Double newUB;
 			if (masterProblem.isSolvableWithBAndB()) {
@@ -96,10 +98,14 @@ public class BendersAlgorithm implements IBendersOptimization {
 			}
 			
 			if (newUB.isNaN()) {
-				UB = Double.MAX_VALUE;
+				//masterproblem unbounded
+				bendersSolution.setAddInfo(MASTER_PROBLEM_UNBOUNDED_MESSAGE);
+				return bendersSolution;
 			} else if (newUB < UB){
 				UB = newUB;
 			}
+			
+			stepData.setMasterSolution(solution);
 			
 			Double[] y = extractSolutionCoefficients(solution, masterProblem.isSolvableWithBAndB());
 			
