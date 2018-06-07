@@ -1,5 +1,9 @@
 package FPP.LinearOptimization.Model.BranchAndBound;
-
+/**
+ * Beschreibt die Lösung des Simplex Problems.
+ * @author stf34140
+ *
+ */
 public enum LoesungsInformation {
 	
 	KEINE_ZULAESSIGE_LOESUNG 	(false), 

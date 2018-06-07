@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
@@ -264,6 +266,20 @@ public class InputScreenMain extends JPanel {
 		panel_combo.add(lblAlgorithmus);
 
 		cbAlgorithm = new JComboBox<String>();
+		cbAlgorithm.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				String item = (String) e.getItem();
+				if (item.equals(Algorithm.BranchBoundAlgorithm.getScreenName())) {
+					rdbtnMax.setEnabled(false);
+					rdbtnMin.setEnabled(false);
+				} else {
+					rdbtnMax.setEnabled(true);
+					rdbtnMin.setEnabled(true);
+				}
+			}
+		});
 		panel_combo.add(cbAlgorithm);
 
 		cbAlgorithm.addItem(Algorithm.BendersAlgorithm.getScreenName());

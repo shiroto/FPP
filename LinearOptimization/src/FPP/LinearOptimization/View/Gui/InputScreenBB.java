@@ -9,8 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -22,9 +25,10 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import FPP.LinearOptimization.Model.BranchAndBound.*;
 import FPP.LinearOptimization.View.Gui.*;
-
+import FPP.LinearOptimization.Model.BranchAndBound.*;
 public class InputScreenBB extends JPanel implements InputScreenIF {
 
+	public static int KOMMASTELLEN = 2;
 	private JRadioButton[] binaerRadio;
 	private JRadioButton[] arrayRadioGanzzahl;
 	private final int YPOSRADIOBUTTON = 65;
@@ -32,7 +36,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	private JCheckBox jCBMin;
 	private int numRestr, numVar;
 	private Double[][] simplexTableau;
-	private boolean max;
+	private boolean max = false;
 	private MainFrame mainframe;
 	private JTable restrictionTable;
 	private JScrollPane scrollPaneRestrictions;
@@ -45,14 +49,15 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	private boolean binaer;
 	private double[] zielfunktion;
 	private JTable functionTable;
-	
+	private LoesungsPanel loesungsPanel;
 	public InputScreenBB(MainFrame mainFrame) {
 		this.mainframe = mainFrame;
+		loesungsPanel = new LoesungsPanel(mainframe);
 
 	}
 
 	public void initializeScreen() {
-		this.numRestr = Integer.valueOf(this.simplexTableau.length);
+		this.numRestr = Integer.valueOf(this.simplexTableau.length)-1;
 		this.numVar = Integer.valueOf(this.simplexTableau[0].length - 1);
 		problemBeschreibungPanel = new JLabel();
 		problemBeschreibungPanel.setVisible(false);
@@ -88,7 +93,11 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				validateInput();
-				createBBProblem();
+				branchAndBoundProblem = erstelleProblem();
+				
+				mainframe.getTabs().addTab("Lösung Branch & Bound", loesungsPanel);
+				mainframe.getTabs().setSelectedIndex(mainframe.getTabs().indexOfTab("Lösung Branch & Bound"));
+				new Thread(() -> branchAndBoundProblem.solveMaximumUpperBound(loesungsPanel), "AlgorithmusThread").start();
 				loadScreen();
 			}
 
@@ -99,35 +108,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	protected void loadScreen() {
 		// TODO Auto-generated method stub
-		
-	}
-
-	protected void createBBProblem() {
-		branchAndBoundProblem = erstelleProblem();
-		branchAndBoundProblem.getStartKnoten().getProblem().getInitialTableau().printArray();
-		// List<double[]> loesung = branchAndBoundProblem.solve(); bei Last in First Out
-		List<double[]> loesung = branchAndBoundProblem.solveMaximumUpperBound();
-		zeigeLoesung(loesung);
-		System.out.println(Arrays.toString(loesung.get(0)));
-		FPP.LinearOptimization.View.Gui.BranchAndBound.MeineSwingDemo sd = new FPP.LinearOptimization.View.Gui.BranchAndBound.MeineSwingDemo();
-		sd.initialisiere(branchAndBoundProblem);
-		 JPanel jc = sd.getPanel();
-		 JPanel outerPanel = new JPanel();
-		 outerPanel.setBackground(Color.WHITE);
-		 outerPanel.setLayout(new GridBagLayout());
-		 GridBagConstraints gbc = new GridBagConstraints();
-		 gbc.gridx = 0;
-		 gbc.gridy = 0;
-		 gbc.anchor = GridBagConstraints.NORTH;
-		 gbc.insets = new Insets(10, 10, 10, 10);
-		 gbc.fill = GridBagConstraints.NONE;
-		 outerPanel.add(jc, gbc);
-		 JScrollPane scrollPane = new JScrollPane(outerPanel);
-		 scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-		 LoesungsPanel l = new LoesungsPanel(mainframe);
-		 l.addPanel(scrollPane);
-		 mainframe.getTabs().addTab("Branch & Bound", l);
-		 mainframe.setTab(2);
 		
 	}
 
@@ -313,22 +293,22 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	}
 	
 	private BranchAndBound erstelleProblem()  {
-			//meinTableModel.fireTableDataChanged();
-			//tabelle.setModel(meinTableModel);
+		//meinTableModel.fireTableDataChanged();
+		//tabelle.setModel(meinTableModel);
 		
-			setBinProblem();   
-			schreibeGanzzahlFlag();
-			/*
-			if (!binaer) {
-				Arrays.fill(this.binaerListe,true);
-				createArray();
-			} else {
-				schreibeBinaerListe();
-				createArrayBinaerProblem();
-			}
-*/
-			setMinMaxProblem();
-			branchAndBoundProblem = new BranchAndBound(new SimplexTableau(simplexTableau), max, ganzzahlFlag);
+		setBinProblem();
+		schreibeGanzzahlFlag();
+		
+		if (!binaer) {
+			Arrays.fill(this.binaerListe, true);
+			createArray();
+		} else {
+			schreibeBinaerListe();
+			createArrayBinaerProblem();
+		}
+
+		setMinMaxProblem();
+		branchAndBoundProblem = new BranchAndBound(new SimplexTableau(simplexTableau), max, ganzzahlFlag);
 
 		return branchAndBoundProblem;
 	}
@@ -550,5 +530,26 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			}
 		}
 	}
+	
+	public static DecimalFormat getDecimalFormat() {
+		String dec = "0.";
+		for (int i = 0; i < InputScreenBB.KOMMASTELLEN; i++) {
+			dec = dec + "#";
+		}
+		NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH); // Decimal Seperator auf . setzen
+		DecimalFormat df = (DecimalFormat) nf;
+		df.applyPattern(dec);
+
+		return df;
+	}
 
 }
+
+
+/*
+ * Bsp Input:
+ * {3,2,6},
+ * {5,2,8},
+ * {-2,-1, 0}
+ *  
+ */

@@ -1,16 +1,54 @@
 package FPP.LinearOptimization.Model.BranchAndBound;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Locale;
 
-import FPP.LinearOptimization.View.Gui.Helper;
+import FPP.LinearOptimization.View.Gui.InputScreenBB;
+import FPP.LinearOptimization.View.Gui.BranchAndBound.*;
+
+/**
+ * Die SimplexTableau Klasse enthält das jeweilige Tableau inklusive
+ * Spaltenbezeichnungen. Das Ausgangsarray ist ein zweidimensionales Double
+ * array mit m+1 Zeilen. Dabei sei m sei die Anzahl der Restriktionen. In den
+ * ersten m Zeilen stehen die Restriktionen, die in der Standardform a1x+a12x...
+ * <= b1 vorliegen
+ * <p>
+ * Sollten im ursprünglichen Problem >= Bedingungen vorliegen, muss diese Zeile
+ * durch Multiplikation mit *-1 in die Normalform gebracht werden. In der
+ * letzten Zeile steht die Zielfunktion, das letzte Feld der Zeile ist immer 0d.
+ * Bei Maximierungsproblemen wird die ursprüngliche Zielfunktion mit *-1
+ * multipliziert bei min Problemen kann diese übernommen werden. Diese Schritte
+ * geschehen bei Eingabe durch die GUI automatisch, müssen bei alleiniger
+ * Verwendung der Klasse allerdings manuell durchgeführt werden.
+ * <p>
+ * 
+ * <pre>
+ *Bsp:
+ *maximiere 13x1 + 8x2
+ *Subject to:
+ *x1 + 2x2 <=10
+ *5x1 + 2x2 >=20
+ *
+ *Bsp Array: Double ar = {
+ *	{1d,2d,10d}
+ *	{-5d,-2d,-20d}
+ *	{-13d, -8d, 0d}
+ *}
+ * </pre>
+ * 
+ * @author stf34140
+ *
+ */
 
 public class SimplexTableau {
 
-	private Double[][] array; // Aktuelles Array, welches den aktuellen Simplexschritt beinhaltet
-	private String[] spalten; // Beinhaltet die Spaltenbezeichnungen, die im Austauschschritt angepasst werden
+	private Double[][] array; // Array welches die Restriktionen und die Zielfunktion beinhaltet
+	private String[] spalten; // Beinhaltet die Spaltenbezeichnungen
 	private int m; // Anzahl Restriktionen des tableaus
 	private int q; // Anzahl Entscheidungsvariablen
+	private final double TOLERANZ = 0.000000001;
 
 	public SimplexTableau(Double[][] arrayIn) {
 		q = arrayIn[0].length - 1;
@@ -28,37 +66,53 @@ public class SimplexTableau {
 			}
 		}
 	}
-	
+
 	private SimplexTableau(Double[][] array, int q, int m, String[] spalten) {
 		this.array = array;
 		this.q = q;
 		this.m = m;
 		this.spalten = spalten;
 	}
+
+	/**
+	 *Rundet Gleitkomma Werte innerhalb Toleranzwert auf bzw. ab
+	 */
+	
+	public void korrigiereGleitkommaFehler(){
+				for(int i = 0; i< m+1 ;i++) {
+					for ( int e = 0; e< q+1; e++) {
+						if(  Math.abs(array[i][e]- Math.round(array[i][e]))< TOLERANZ ) {
+							array[i][e]= (double) Math.round(array[i][e]);
+						}
+					}
+				}
+	}
 	
 	public int getM() {
 		return m;
 	}
-	
+
 	public int getQ() {
 		return q;
 	}
-	
+
 	/**
 	 * Gibt Wert im Tableau zurück
-	 * @param i Zeilenindex
-	 * @param j Spaltenindex
+	 * 
+	 * @param i
+	 *            Zeilenindex
+	 * @param j
+	 *            Spaltenindex
 	 */
 	public double getWertAt(int i, int j) {
-		
+
 		return this.array[i][j];
 	}
-	
+
 	public Double[] getZielfunktion() {
 		return array[m];
 	}
-	
-	
+
 	/**
 	 * Prüft ob alle Zielfunktionskoeffizienten positiv , d.h. die Abbruchbedingung
 	 * für primalen Simplexalgorithmus
@@ -78,7 +132,7 @@ public class SimplexTableau {
 	 * existieren ansonsten exisitert keine optimale Lösung.
 	 */
 
-	public boolean getPrimaerLoesbar(int pivotspalte) {
+	public boolean getPrimalLoesbar(int pivotspalte) {
 		int anzahlPos = 0;
 		for (int i = 0; i < m; i++) {
 			if (array[i][pivotspalte] > 0)
@@ -117,7 +171,7 @@ public class SimplexTableau {
 	/**
 	 * Findet Pivotzeile im dualen Austauschschritt
 	 */
-	public int findPivotZeileDual() {
+	public int findePivotZeileDual() {
 		double min = Double.MAX_VALUE;
 		int pivot = 0;
 		for (int i = 0; i < m; i++) {
@@ -155,7 +209,7 @@ public class SimplexTableau {
 	/**
 	 * Findet Pivotzeile im primalen Austauschschritt
 	 */
-	public int findPivotZeilePrimal(int pivotspalte) {
+	public int findePivotZeilePrimal(int pivotspalte) {
 		double pivotZeileMinimum = Double.MAX_VALUE;
 		int zeile = 0;
 		double[] hilfsspalte = new double[m];
@@ -178,7 +232,7 @@ public class SimplexTableau {
 	/**
 	 * Findet Pivotspalte im primalen Austauschschritt
 	 */
-	public int findPivotSpaltePrimal() {
+	public int findePivotSpaltePrimal() {
 		int spalte = 0;
 		double pivotMinimum = array[m][0];
 		for (int i = 0; i < q; i++) {
@@ -234,20 +288,21 @@ public class SimplexTableau {
 		for (int i = 0; i <= m; i++) {
 			for (int e = 0; e <= q; e++) {
 				if (i != pivotFeld.zeileIdx && e != pivotFeld.spalteIdx) {
-					arrayNeu[i][e] = array[i][e] - ((array[pivotFeld.zeileIdx][e] * array[i][pivotFeld.spalteIdx]) / getWert(pivotFeld));
+					arrayNeu[i][e] = array[i][e]
+							- ((array[pivotFeld.zeileIdx][e] * array[i][pivotFeld.spalteIdx]) / getWert(pivotFeld));
 				}
 			}
 		}
 	}
-	
+
 	public double getWert(FeldId feld) {
 		return array[feld.zeileIdx][feld.spalteIdx];
 	}
-	
+
 	public double getWert(int zeilenIdx, int spaltenIdx) {
 		return array[zeilenIdx][spaltenIdx];
 	}
-	
+
 	public String getSpaltenname(int spaltenIdx) {
 		return spalten[spaltenIdx];
 	}
@@ -262,13 +317,13 @@ public class SimplexTableau {
 	}
 
 	/**
-	 * Fügt dem Tableau die neue Bedingung hinzu. Diese Bedingung wird der
-	 * Funktion in der Form eines Double Arrays als Input uebergeben. Diese neue
-	 * Bedingung wird in die vorletzte Zeile des neuen 2D-Arrays eingefügt. Die
-	 * Zeilen davor werden aus dem Ausgangstableau übernommen. Die letzte Zeile des
-	 * neuen 2D-Arrays entspricht wieder der Zielfunktion.
+	 * Fügt dem Tableau die neue Bedingung hinzu. Diese Bedingung wird der Funktion
+	 * in der Form eines Double Arrays als Input uebergeben. Diese neue Bedingung
+	 * wird in die vorletzte Zeile des neuen 2D-Arrays eingefügt. Die Zeilen davor
+	 * werden aus dem Ausgangstableau übernommen. Die letzte Zeile des neuen
+	 * 2D-Arrays entspricht wieder der Zielfunktion.
 	 */
-	public SimplexTableau create2dArray(double[] neu) {
+	public SimplexTableau erstelle2dArray(double[] neu2) {
 		Double[][] ar = new Double[m + 2][q + 1];
 		for (int i = 0; i < m; i++) {
 			for (int e = 0; e < q + 1; e++) {
@@ -276,7 +331,7 @@ public class SimplexTableau {
 			}
 		}
 		for (int i = 0; i < q + 1; i++) {
-			ar[m][i] = neu[i];
+			ar[m][i] = neu2[i];
 		}
 		for (int i = 0; i < q + 1; i++) {
 			ar[m + 1][i] = array[m][i];
@@ -354,14 +409,22 @@ public class SimplexTableau {
 			System.out.println();
 		}
 	}
-	
+
+	/**
+	 * Stellt das Tableau in HTML Form dar
+	 * 
+	 * @return
+	 */
 	public String printHTML() {
 		String dec = "0.";
-		for(int i = 0 ; i <Helper.KOMMASTELLEN; i++ ) {
+		for (int i = 0; i < InputScreenBB.KOMMASTELLEN; i++) {
 			dec = dec + "0";
 		}
-		DecimalFormat df = new DecimalFormat(dec); 
-		String html= "<html> <table style=\"width:100%\">";
+		NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH); // Decimal Seperator auf . setzen
+		DecimalFormat df = (DecimalFormat) nf;
+		df.applyPattern(dec);
+
+		String html = "<html> <table style=\"width:100%\">";
 		for (int i = 0; i <= m + 1; i++) {
 			html += "<tr>";
 			for (int e = 0; e <= q + 1; e++) {
@@ -369,37 +432,36 @@ public class SimplexTableau {
 					if (e == 0 || e > q) {
 						html += "<td> - </td>";
 					} else {
-						html += "<td>" + (spalten[e - 1]) + "</td>";   
+						html += "<td>" + (spalten[e - 1]) + "</td>";
 					}
 				}
 				if (i > 0 && i < m + 1) {
 					if (e == 0) {
-						html += "<td>" + (spalten[q - 1 + i]) + "</td>";   
+						html += "<td>" + (spalten[q - 1 + i]) + "</td>";
 					} else {
-						html += "<td>" + df.format(array[i - 1][e - 1]) + "</td>";   
+						html += "<td>" + df.format(array[i - 1][e - 1]) + "</td>";
 					}
 				}
 				if (i == m + 1) {
 					if (e == 0 || e > q + 1) {
-						html += "<td> -  </td>";   
+						html += "<td> -  </td>";
 					} else {
-						html += "<td>" + df.format(array[i - 1][e - 1]) + "</td>";    
+						html += "<td>" + df.format(array[i - 1][e - 1]) + "</td>";
 					}
 				}
 			}
 			html += "</tr>";
 		}
 		html += "</table> </html>";
-		
-		
+
 		return html;
 	}
 
 	public static class FeldId {
-		
+
 		private final int zeileIdx;
 		private final int spalteIdx;
-		
+
 		public FeldId(int zeileIdx, int spalteIdx) {
 			this.zeileIdx = zeileIdx;
 			this.spalteIdx = spalteIdx;
@@ -412,7 +474,7 @@ public class SimplexTableau {
 		public int getSpalteIdx() {
 			return spalteIdx;
 		}
-		
+
 	}
 
 }

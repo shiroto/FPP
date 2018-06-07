@@ -29,38 +29,32 @@ package FPP.LinearOptimization.View.Gui.BranchAndBound;
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-import java.util.*;
+import java.util.List;
 
 import org.abego.treelayout.TreeForTreeLayout;
 import org.abego.treelayout.util.DefaultTreeForTreeLayout;
 
-import FPP.LinearOptimization.Model.BranchAndBound.*;
-
-
-
+import FPP.LinearOptimization.Model.BranchAndBound.BranchAndBoundKnoten;
 
 public class SampleTreeFactory {
 
-	
+	/**
+	 * Erstellt den zu zeichnenden Baum
+	 */
 
-	
-	public static TreeForTreeLayout<BranchAndBoundKnoten> createTree(BranchAndBound bAndB){
-		BranchAndBoundKnoten root= bAndB.getQueueOld().get(0);
+	public static TreeForTreeLayout<BranchAndBoundKnoten> createTree(List<BranchAndBoundKnoten> knoten) {
+
+		BranchAndBoundKnoten root = knoten.get(0); // Startknoten
 
 		DefaultTreeForTreeLayout<BranchAndBoundKnoten> tree = new DefaultTreeForTreeLayout<>(root);
 
-		while(!bAndB.getQueueOld().isEmpty()) {
-			BranchAndBoundKnoten aktuell = bAndB.getQueueOld().remove(0);
-			if(aktuell.getLinks()!= null) {
-				tree.addChild(aktuell, aktuell.getLinks());
-				tree.addChild(aktuell, aktuell.getRechts());
+		for (BranchAndBoundKnoten k : knoten) {
+			if (k.getLinks() != null) { // Linken und rechten Nachfolger hinzufügen
+				tree.addChild(k, k.getLinks());
+				tree.addChild(k, k.getRechts());
 			}
 		}
 		return tree;
 	}
-
-
-
 
 }
