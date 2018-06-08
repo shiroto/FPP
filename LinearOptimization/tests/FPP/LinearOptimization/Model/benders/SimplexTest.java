@@ -35,4 +35,18 @@ public class SimplexTest {
 		System.out.println("Actual: \t" + Arrays.toString(solution));
 		System.out.println("Expected: \t" + Arrays.toString(expected));
 	}
+	
+	@Test
+	public void test_nullpointerTest() {
+		System.out.println("--------------------------------------------------------");
+		Double[] function = {0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d};
+		Double[][] simplexTableau = {
+				{-6d, 0d, 1d, 0d, -1d, 1d, -0d, 0d, 0d, 0d, 0d, 0d, -9d},
+				{1d,  1d, 1d, 1d,  1d, 1d,  1d, 1d, 1d, 1d, 1d, 1d,  9999d},
+				function
+		};
+		
+		Double[] solution = new Simplex(simplexTableau, true).loese();
+		System.out.println(Arrays.toString(solution));
+	}
 }

@@ -8,6 +8,7 @@ import org.junit.Test;
 import FPP.LinearOptimization.Data.LinearOptimizationDataUtility;
 import de.bb.labor.BranchAndBound;
 import de.bb.labor.Tableau;
+import de.lip.bb.Simplex;
 
 public class BranchAndBTest {
 
@@ -76,20 +77,4 @@ public class BranchAndBTest {
 			System.out.println("Constant:" + Arrays.deepToString(solution.get(0)));
 		}
 	}	
-	
-	@Test
-	public void test_nullpointerTest() {
-		System.out.println("--------------------------------------------------------");
-		Double[] function = {0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d};
-		Double[][] simplexTableau = {
-				{-6d, 0d, 1d, 0d, -1d, 1d, -0d, 0d, 0d, 0d, 0d, 0d, -9d},
-				{1d,  1d, 1d, 1d,  1d, 1d,  1d, 1d, 1d, 1d, 1d, 1d,  9999d},
-		};
-		
-		Tableau tableau = new Tableau(simplexTableau);
-		List<Double[]> solution = new BranchAndBound(tableau, false).solve();
-		if (solution.size() > 0) {
-			System.out.println("Constant:" + Arrays.deepToString(solution.get(0)));
-		}
-	}
 }
