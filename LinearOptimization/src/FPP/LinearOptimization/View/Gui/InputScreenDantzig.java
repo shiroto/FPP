@@ -23,4 +23,10 @@ public class InputScreenDantzig extends JPanel implements InputScreenIF{
 		
 	}
 
+	@Override
+	public void save(String path) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -25,10 +25,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.JTableHeader;
 
 import FPP.LinearOptimization.Controller.IController;
-
-
+import FPP.LinearOptimization.Data.Algorithm;
+import FPP.LinearOptimization.Model.BranchAndBound.BranchAndBound;
+import FPP.LinearOptimmization.Save.*;
 public class MainFrame {
 
 	private JFrame frame;
@@ -58,9 +62,8 @@ public class MainFrame {
 			}
 		});
 	}
-	
-	public IController GetController()
-	{
+
+	public IController GetController() {
 		return controller;
 	}
 
@@ -81,27 +84,41 @@ public class MainFrame {
 		frame.setBounds(10, 10, 1296, 756);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
-		tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
+		// Menu
+		menubar = new JMenuBar();
+		projektmenu = new JMenu(Helper.Keyword.PROJECT);
+		menubar.add(projektmenu);
+		projektmenu.add(fresh = new JMenuItem(Helper.Keyword.NEWPROJECT));
+		projektmenu.add(save = new JMenuItem(Helper.Keyword.SAVEPROJECT));
+		projektmenu.add(open = new JMenuItem(Helper.Keyword.LOADPROJECT));
+		frame.setJMenuBar(menubar);
+
+		tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+		tabs.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				String title = tabs.getTitleAt(tabs.getSelectedIndex());
+				if (title.equals(Helper.Keyword.INPUTBANDB) || title.equals(Helper.Keyword.INPUTBENDERS)
+						|| title.equals(Helper.Keyword.INPUTDANTZIG)) {
+					save.setEnabled(true);
+				} else {
+					save.setEnabled(false);
+				}
+
+			}
+		});
 		// MainScreen mainScreen = new MainScreen();
 		inputScreen = new InputScreenMain(this);
 
 		inputScreen.setVisible(true);
 		inputScreen.setLayout(null);
-		tabs.addTab("Input", inputScreen);
+		tabs.addTab(Helper.Keyword.INPUTSIMPLEX, inputScreen);
 
 		frame.add(tabs);
 		frame.setVisible(true);
-		
-		//Menu
-		menubar = new JMenuBar();
-		projektmenu = new JMenu("Projekt");
-		menubar.add(projektmenu);
-		projektmenu.add(fresh = new JMenuItem("Neues Projekt"));
-		projektmenu.add(save = new JMenuItem("Projekt speichern"));
-		projektmenu.add(open =new JMenuItem("Projekt oeffnen") );
-		frame.setJMenuBar(menubar);
-		
+
 		// Zoom Buttons
 		btnZoomIn = new JButton();
 		btnZoomIn.setIcon(new ImageIcon(MainFrame.class.getResource("images/plus.png")));
@@ -113,7 +130,7 @@ public class MainFrame {
 		btnZoomIn.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				for(Component c : getTabs().getComponents())
+				for (Component c : getTabs().getComponents())
 					zoomIn(c);
 			}
 		});
@@ -128,13 +145,13 @@ public class MainFrame {
 		btnZoomOut.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				for(Component c : getTabs().getComponents())
+				for (Component c : getTabs().getComponents())
 					zoomOut(c);
 			}
 		});
 
 		frame.add(buttonPanel, BorderLayout.SOUTH);
-		
+
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -144,12 +161,18 @@ public class MainFrame {
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				if (0 == fc.showSaveDialog(frame)) {
 					String path = fc.getSelectedFile().getPath();
-					if (!path.endsWith(".bAndB")) {
-						path = path + ".bAndB";
+					if (getTabs().getSelectedComponent() instanceof InputScreenIF) {
+						try {
+							((InputScreenIF) getTabs().getSelectedComponent()).save(path);
+							JOptionPane.showMessageDialog(frame,
+									fc.getSelectedFile().getName() + " erfolgreich gespeichert.");
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(frame,
+									"Datei konnte nicht gespeichert werden. " + ex.getMessage(), "Fehler",
+									JOptionPane.ERROR_MESSAGE);
+							ex.printStackTrace();
+						}
 					}
-
-					//	problemPanel.save(path);
-						JOptionPane.showMessageDialog(frame,  fc.getSelectedFile().getName()+ " erfolgreich gespeichert.");
 				}
 			}
 		});
@@ -170,63 +193,89 @@ public class MainFrame {
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				if (0 == fc.showOpenDialog(frame)) {
 					String path = fc.getSelectedFile().getPath();
-					if (!path.endsWith(".bAndB")) {
-						JOptionPane.showMessageDialog(frame,"Bitte eine .bAndB Datei öffnen");
-					} else {
+					if (path.endsWith(Helper.Keyword.PATHBANDB) || path.endsWith(Helper.Keyword.PATHBENDERS)
+							|| path.endsWith(Helper.Keyword.PATHDANZIG)) {
 						try {
-							//	                	 Laden l = new Laden(path );
-							//	                     BranchAndBound temp= l.lese();
-						//	Laden l = new Laden (path);
-						//	BranchAndBoundSpeichern objekt = l.lese();
-						//	problemPanel.erhalteBandBundErstelleView(objekt);
+							if (path.endsWith(Helper.Keyword.PATHBANDB)) {
+								loadBandB(path);
+								
+							}
 						} catch (Exception ex) {
-							JOptionPane.showMessageDialog(frame,"Datei konnte nicht geladen werden", "Fehler",JOptionPane.ERROR_MESSAGE);
+							ex.printStackTrace();
+							JOptionPane.showMessageDialog(frame, "Datei konnte nicht geladen werden", "Fehler",
+									JOptionPane.ERROR_MESSAGE);
 						}
+					} else {
+						JOptionPane.showMessageDialog(frame, "Bitte ein lineares Optimierungsproblem öffnen");
 					}
 				}
-
 
 			}
 
 		});
 	}
 
-	protected void zoomIn(Component c) {
-		if(c instanceof JPanel) {
-			c = (JPanel)c;
-			for (Component comp : ((JPanel) c).getComponents())
-				zoomIn(comp);
-		} 
-		if(c instanceof JScrollPane) {
-			for (Component comp : ((JScrollPane) c).getViewport().getComponents())
-				zoomIn(comp);
-		}
-		c.setSize(c.getWidth()+1, c.getHeight()+1);
-		Font f = c.getFont();
-		c.setFont(new Font(f.getName(), f.getStyle(), f.getSize()+1));
-		if (c instanceof JTable) {
-			updateRowHeights((JTable)c);
-		}
-	
+	protected void loadBandB(String path) {
+		Laden l = new Laden(path);
+		BranchAndBoundSpeicherKlasse objekt = l.lese();
+		InputScreenBB inputBB = new InputScreenBB(getMainFrame());
+		inputScreen.loadSimplexTableau(objekt);
+		inputScreen.setAlgorithm(Algorithm.BranchBoundAlgorithm);
+		inputBB.setVisible(true);
+		inputBB.setLayout(null);
+		JTable functionTableCopy = new JTable(inputScreen.getFunctionTable().getModel());
+		JTableHeader functionTableCopyHeader = new JTableHeader();
+		functionTableCopyHeader.setColumnModel(inputScreen.getFunctionTable().getColumnModel());
+		functionTableCopy.setTableHeader(functionTableCopyHeader);
+		inputBB.setFunctionTable(functionTableCopy);
+		JTable restrictionTableCopy = new JTable(inputScreen.getRestrictionTable().getModel());
+		JTableHeader restrictionTableCopyHeader = new JTableHeader();
+		restrictionTableCopyHeader.setColumnModel(inputScreen.getRestrictionTable().getColumnModel());
+		restrictionTableCopy.setTableHeader(restrictionTableCopyHeader);
+		inputBB.setRestrictionTable(restrictionTableCopy);
+		inputBB.setSimplexTableau(objekt.getArray());
+		inputBB.initializeScreen();
+		inputBB.erhalteBandBundErstelleView(objekt);
+		tabs.add(Helper.Keyword.INPUTBANDB, inputBB);
+		tabs.setSelectedIndex(tabs.indexOfTab(Helper.Keyword.INPUTBANDB));
 		
 	}
 
+	protected void zoomIn(Component c) {
+		if (c instanceof JPanel) {
+			c = (JPanel) c;
+			for (Component comp : ((JPanel) c).getComponents())
+				zoomIn(comp);
+		}
+		if (c instanceof JScrollPane) {
+			for (Component comp : ((JScrollPane) c).getViewport().getComponents())
+				zoomIn(comp);
+		}
+		c.setSize(c.getWidth() + 1, c.getHeight() + 1);
+		Font f = c.getFont();
+		c.setFont(new Font(f.getName(), f.getStyle(), f.getSize() + 1));
+		if (c instanceof JTable) {
+			updateRowHeights((JTable) c);
+		}
+
+	}
+
 	protected void zoomOut(Component c) {
-		if(c instanceof JPanel) {
-			c = (JPanel)c;
+		if (c instanceof JPanel) {
+			c = (JPanel) c;
 			for (Component comp : ((JPanel) c).getComponents())
 				zoomOut(comp);
-		} 
-		if(c instanceof JScrollPane) {
+		}
+		if (c instanceof JScrollPane) {
 			for (Component comp : ((JScrollPane) c).getViewport().getComponents())
 				zoomOut(comp);
 		}
-		c.setSize(c.getWidth()-1, c.getHeight()-1);
+		c.setSize(c.getWidth() - 1, c.getHeight() - 1);
 		Font f = c.getFont();
-		c.setFont(new Font(f.getName(), f.getStyle(), f.getSize()-1));
+		c.setFont(new Font(f.getName(), f.getStyle(), f.getSize() - 1));
 		if (c instanceof JTable) {
-			updateRowHeights((JTable)c);
-		}	
+			updateRowHeights((JTable) c);
+		}
 	}
 
 	private void updateRowHeights(JTable table) {
@@ -260,5 +309,8 @@ public class MainFrame {
 	public void setTabs(JTabbedPane tabs) {
 		this.tabs = tabs;
 	}
-
+	
+	public MainFrame getMainFrame() {
+		return this;
+	}
 }

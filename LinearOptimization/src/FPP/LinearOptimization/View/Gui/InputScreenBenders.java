@@ -28,7 +28,7 @@ import FPP.LinearOptimization.Model.benders.BendersAlgorithm;
 import FPP.LinearOptimization.Model.benders.BendersMasterCoefficientType;
 import FPP.LinearOptimization.Model.benders.BendersSolutionData;
 
-public class InputScreenBenders extends JPanel {
+public class InputScreenBenders extends JPanel implements InputScreenIF{
 	private JPanel panel_functionTable;
 	private LinearOptimizationData inputObject;
 	private JTable functionTable;
@@ -87,8 +87,8 @@ public class InputScreenBenders extends JPanel {
 		solutionBenders.setVisible(true);
 		solutionBenders.setLayout(null);
 		solutionBenders.initializeScreen();
-		mainFrame.getTabs().addTab("Benders solution", solutionBenders);
-		mainFrame.setTab(2);
+		mainFrame.getTabs().addTab(Helper.Keyword.SOLUTIONBENDERS, solutionBenders);
+		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.SOLUTIONBENDERS));
 
 	}
 
@@ -238,6 +238,12 @@ public class InputScreenBenders extends JPanel {
 	public void setSimplexTableau(Double[][] simplexTableau) {
 		this.simplexTableau = simplexTableau;
 
+	}
+
+	@Override
+	public void save(String path) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

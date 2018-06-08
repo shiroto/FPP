@@ -7,4 +7,5 @@ public interface InputScreenIF {
 
 	void setSimplexTableau(Double[][] simplexTableau);
 	void setFunctionTable(JTable functionTable);
+	void save(String path) throws Exception;
 }

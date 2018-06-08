@@ -87,4 +87,28 @@ public class Helper {
 			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
 	}
+	
+	public static class Keyword{
+		
+		//Menu
+		static final String PROJECT = "Projekt";
+		static final String NEWPROJECT = "Neues Projekt";
+		static final String SAVEPROJECT = "Projekt speichern";
+		static final String LOADPROJECT = "Projekt öffnen";
+		
+		//Tabs
+		static final String INPUTBENDERS = "Eingabe Benders";
+		static final String INPUTDANTZIG = "Eingabe Dantzig-Wolfe";
+		static final String INPUTBANDB = "Eingabe Branch & Bound";
+		static final String SOLUTIONBENDERS = "Ergebnis Benders";
+		static final String SOLUTIONDANTZIG = "Ergebnis Dantzig-Wolfe";
+		static final String SOLUTIONBANDB = "Ergebnis Branch & Bound";
+		static final String INPUTSIMPLEX = "Eingabe Simplex";
+		static final String STEPBENDERS = "Benders Step: ";
+		
+		//Paths
+		static final String PATHBANDB = ".bAndB";
+		static final String PATHDANZIG = ".dw";
+		static final String PATHBENDERS = ".benders";
+	}
 }

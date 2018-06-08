@@ -1,6 +1,7 @@
 package FPP.LinearOptimization.View.Gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,7 +26,9 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import FPP.LinearOptimization.Model.BranchAndBound.*;
 import FPP.LinearOptimization.View.Gui.*;
+import FPP.LinearOptimmization.Save.*;
 import FPP.LinearOptimization.Model.BranchAndBound.*;
+
 public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	public static int KOMMASTELLEN = 2;
@@ -37,27 +40,28 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	private int numRestr, numVar;
 	private Double[][] simplexTableau;
 	private boolean max = false;
-	private MainFrame mainframe;
+	private MainFrame mainFrame;
 	private JTable restrictionTable;
 	private JScrollPane scrollPaneRestrictions;
 	private JScrollPane scrollPaneFunction;
 	private JButton btnSubmit;
 	private BranchAndBound branchAndBoundProblem;
-	private boolean [] binaerListe;
+	private boolean[] binaerListe;
 	private double[][] array;
 	private boolean[] ganzzahlFlag;
 	private boolean binaer;
 	private double[] zielfunktion;
 	private JTable functionTable;
 	private LoesungsPanel loesungsPanel;
+
 	public InputScreenBB(MainFrame mainFrame) {
-		this.mainframe = mainFrame;
-		loesungsPanel = new LoesungsPanel(mainframe);
+		this.mainFrame = mainFrame;
+		loesungsPanel = new LoesungsPanel(mainFrame);
 
 	}
 
 	public void initializeScreen() {
-		this.numRestr = Integer.valueOf(this.simplexTableau.length)-1;
+		this.numRestr = Integer.valueOf(this.simplexTableau.length) - 1;
 		this.numVar = Integer.valueOf(this.simplexTableau[0].length - 1);
 		problemBeschreibungPanel = new JLabel();
 		problemBeschreibungPanel.setVisible(false);
@@ -85,7 +89,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		});
 
 		initiiereProblemViewFelder();
-		
+
 		btnSubmit = new JButton("Submit");
 		btnSubmit.setBounds(1033, 527, 171, 41);
 		btnSubmit.addActionListener(new ActionListener() {
@@ -94,10 +98,11 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			public void actionPerformed(ActionEvent e) {
 				validateInput();
 				branchAndBoundProblem = erstelleProblem();
-				
-				mainframe.getTabs().addTab("Lösung Branch & Bound", loesungsPanel);
-				mainframe.getTabs().setSelectedIndex(mainframe.getTabs().indexOfTab("Lösung Branch & Bound"));
-				new Thread(() -> branchAndBoundProblem.solveMaximumUpperBound(loesungsPanel), "AlgorithmusThread").start();
+
+				mainFrame.getTabs().addTab(Helper.Keyword.SOLUTIONBANDB, loesungsPanel);
+				mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.SOLUTIONBANDB));
+				new Thread(() -> branchAndBoundProblem.solveMaximumUpperBound(loesungsPanel), "AlgorithmusThread")
+						.start();
 				loadScreen();
 			}
 
@@ -108,12 +113,12 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	protected void loadScreen() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	protected void validateInput() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void loadTables() {
@@ -276,7 +281,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		}
 	}
 
-
 	private boolean leseMinMaxProblem() {
 		if (this.jCBMin.isSelected()) {
 			return false;
@@ -291,14 +295,14 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		this.restrictionTable = restrictionTable;
 
 	}
-	
-	private BranchAndBound erstelleProblem()  {
-		//meinTableModel.fireTableDataChanged();
-		//tabelle.setModel(meinTableModel);
-		
+
+	private BranchAndBound erstelleProblem() {
+		// meinTableModel.fireTableDataChanged();
+		// tabelle.setModel(meinTableModel);
+
 		setBinProblem();
 		schreibeGanzzahlFlag();
-		
+
 		if (!binaer) {
 			Arrays.fill(this.binaerListe, true);
 			createArray();
@@ -312,34 +316,37 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 		return branchAndBoundProblem;
 	}
-	
 
-	
 	private void schreibeBinaerListe() {
 
-		for(int i =0; i<numVar; i++) {
-			if(this.binaerRadio[i].isSelected()) binaerListe[i] = true;
-			else  binaerListe[i] = false;
+		for (int i = 0; i < numVar; i++) {
+			if (this.binaerRadio[i].isSelected())
+				binaerListe[i] = true;
+			else
+				binaerListe[i] = false;
 		}
 	}
 
 	private boolean[] leseBinaerListe() {
-		boolean[]  binTemp = new boolean [numVar];
-		for(int i =0; i<numVar; i++) {
-			if(this.binaerRadio[i].isSelected()) binTemp[i] = true;
-			else  binTemp[i] = false;
+		boolean[] binTemp = new boolean[numVar];
+		for (int i = 0; i < numVar; i++) {
+			if (this.binaerRadio[i].isSelected())
+				binTemp[i] = true;
+			else
+				binTemp[i] = false;
 		}
 		return binTemp;
 	}
-	
+
 	private void setBinProblem() {
 		this.binaerListe = new boolean[numVar];
-		boolean isBin= false;
-		for(int i = 0; i <numVar; i++) {
-			if(this.binaerRadio[i].isSelected()) isBin= true;
+		boolean isBin = false;
+		for (int i = 0; i < numVar; i++) {
+			if (this.binaerRadio[i].isSelected())
+				isBin = true;
 		}
-	this.binaer = isBin;
-		
+		this.binaer = isBin;
+
 	}
 
 	private void setMinMaxProblem() {
@@ -348,9 +355,9 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		} else {
 			max = true;
 		}
-		
+
 	}
-	
+
 	private void zeigeLoesung(List<double[]> loesung) {
 		String ausgabe = "<html> Lösung <br>";
 		for (int i = 0; i < loesung.size(); i++) {
@@ -365,13 +372,13 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			ausgabe = ausgabe + zeileTemp + "<br>";
 		}
 		ausgabe = ausgabe + "</html>";
-	//	this.jLResult.setText(ausgabe);
-	//	this.jLResult.setVisible(true);
+		// this.jLResult.setText(ausgabe);
+		// this.jLResult.setVisible(true);
 	}
 
 	private boolean[] schreibeGanzzahlFlag() {
 		this.ganzzahlFlag = new boolean[numVar];
-		
+
 		for (int i = 0; i < numVar; i++) {
 			if (arrayRadioGanzzahl[i].isSelected()) {
 				this.ganzzahlFlag[i] = true;
@@ -381,9 +388,9 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		}
 		return this.ganzzahlFlag;
 	}
-	
+
 	private boolean[] leseGanzzahlFlag() {
-		boolean[] ganzzahlFlagTemp= new boolean[numVar];
+		boolean[] ganzzahlFlagTemp = new boolean[numVar];
 		for (int i = 0; i < numVar; i++) {
 			if (arrayRadioGanzzahl[i].isSelected()) {
 				ganzzahlFlagTemp[i] = true;
@@ -393,8 +400,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		}
 		return ganzzahlFlagTemp;
 	}
-	
-	
+
 	private void createArray() {
 		this.array = new double[this.numRestr + 1][this.numVar + 1]; // endgueltiges
 																		// Array
@@ -414,82 +420,86 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		}
 
 	}
+
 	private void multiplieziereZf() {
 		for (int i = 0; i < numVar; i++) {
 			this.zielfunktion[i] = this.zielfunktion[i] * -1;
 		}
 	}
-	
-	private void setRestriktionsarray()  {
+
+	private void setRestriktionsarray() {
 
 		int numColumns = restrictionTable.getModel().getColumnCount(); // mit
-																// Restriktionen
+		// Restriktionen
 		int failIndex = numColumns - 2;
-			for (int i = 0; i < numRestr; i++) { // erstelle Restriktionen
-				String opTemp = restrictionTable.getModel().getValueAt(i, failIndex).toString();
-				for (int e = 0; e < numVar + 1; e++) {
-					if (e != numVar) {
-						if (opTemp.equals("<=")) {
-							this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString());
-						} else {
-							this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString()) * -1;
-						}
+		for (int i = 0; i < numRestr; i++) { // erstelle Restriktionen
+			String opTemp = restrictionTable.getModel().getValueAt(i, failIndex).toString();
+			for (int e = 0; e < numVar + 1; e++) {
+				if (e != numVar) {
+					if (opTemp.equals("<=")) {
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString());
 					} else {
-						if (opTemp.equals("<=")) {
-							this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString());
-						} else {
-							this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString()) * -1;
-						}
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString()) * -1;
+					}
+				} else {
+					if (opTemp.equals("<=")) {
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString());
+					} else {
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString())
+								* -1;
 					}
 				}
-
 			}
+
+		}
 	}
 
-	
 	/**
 	 * Liest Zielfunktion aus Tablle und speichert diese Im Panel.
+	 * 
 	 * @return Zielfunktions vom Typ double[numVar+1]
 	 * @throws Zielfunktionsexception
 	 */
-	private double[] schreibeZielfunktion()  {
-		this.zielfunktion = new double[numVar+1];
-			for (int i = 0; i < numVar + 1; i++) {
-				if (i != numVar) {
-					this.zielfunktion[i] = Double.valueOf(this.functionTable.getModel().getValueAt(0, i).toString());
-				} else {
-					this.zielfunktion[i] = 0d;
-				}
+	private double[] schreibeZielfunktion() {
+		this.zielfunktion = new double[numVar + 1];
+		for (int i = 0; i < numVar + 1; i++) {
+			if (i != numVar) {
+				this.zielfunktion[i] = Double.valueOf(this.functionTable.getModel().getValueAt(0, i).toString());
+			} else {
+				this.zielfunktion[i] = 0d;
 			}
-			return this.zielfunktion;
+		}
+		return this.zielfunktion;
 	}
-	
+
 	private void createArrayBinaerProblem() {
-		
-		int anzahlBin= getAnzahlBin();
-		int anzahlZeilen = this.numRestr+1  +anzahlBin*2;
-		this.array = new double[anzahlZeilen][this.numVar+1];
+
+		int anzahlBin = getAnzahlBin();
+		int anzahlZeilen = this.numRestr + 1 + anzahlBin * 2;
+		this.array = new double[anzahlZeilen][this.numVar + 1];
 		schreibeZielfunktion();
 		if (!this.jCBMin.isSelected()) {
 			multiplieziereZf();
 		}
 		setRestriktionsArrayBinaer();
 		// fuege ZF array hinzu
-				for (int i = 0; i < numVar + 1; i++) {
-					Double wert = this.zielfunktion[i];
-					array[numRestr + 2 * anzahlBin][i] = wert;
-				}
-		
+		for (int i = 0; i < numVar + 1; i++) {
+			Double wert = this.zielfunktion[i];
+			array[numRestr + 2 * anzahlBin][i] = wert;
+		}
+
 	}
+
 	private int getAnzahlBin() {
-		int z =0;
-		for(int i =0; i< this.binaerListe.length; i++) {
-			if(this.binaerListe[i]) z++;
+		int z = 0;
+		for (int i = 0; i < this.binaerListe.length; i++) {
+			if (this.binaerListe[i])
+				z++;
 		}
 		return z;
-	}	
-	
-	private void setRestriktionsArrayBinaer()  {
+	}
+
+	private void setRestriktionsArrayBinaer() {
 		int numColumns = restrictionTable.getModel().getColumnCount(); // mit
 		// Restriktionen
 		int failIndex = numColumns - 2; // gibt index an, an dem Operator steht
@@ -506,31 +516,36 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 					if (opTemp.equals("<=")) {
 						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString());
 					} else {
-						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString()) * -1;
+						this.array[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString())
+								* -1;
 					}
 				}
 			}
 
 		}
-		//erstelle binaerrestriktionen
-		int zeile= numRestr;
-		for(int i=0; i <numVar; i++) {
-			if(binaerListe[i]) {
-			for(int e= 0; e<numVar+1; e++) {
-			if (e==i || e== numVar) array[zeile][e]= 1;	
-			else array[zeile][e]= 0;
-			}
-			zeile++;
-			for(int e= 0; e<numVar+1; e++) {
-				if(e==i) array[zeile][e] = -1;
-				else array[zeile][e] = 0;
-			}
-			zeile++;
-			
+		// erstelle binaerrestriktionen
+		int zeile = numRestr;
+		for (int i = 0; i < numVar; i++) {
+			if (binaerListe[i]) {
+				for (int e = 0; e < numVar + 1; e++) {
+					if (e == i || e == numVar)
+						array[zeile][e] = 1;
+					else
+						array[zeile][e] = 0;
+				}
+				zeile++;
+				for (int e = 0; e < numVar + 1; e++) {
+					if (e == i)
+						array[zeile][e] = -1;
+					else
+						array[zeile][e] = 0;
+				}
+				zeile++;
+
 			}
 		}
 	}
-	
+
 	public static DecimalFormat getDecimalFormat() {
 		String dec = "0.";
 		for (int i = 0; i < InputScreenBB.KOMMASTELLEN; i++) {
@@ -543,13 +558,135 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		return df;
 	}
 
+	@Override
+	public void save(String path) throws Exception {
+		path = path + Helper.Keyword.PATHBANDB;
+		if ((numRestr >= 1) && (numVar > 1)) {
+			BranchAndBoundSpeicherKlasse sp = new BranchAndBoundSpeicherKlasse();
+			sp.setNumRestr(numRestr);
+			sp.setNumVar(numVar);
+			sp.setZielFunktion(leseZielfunktion());
+			sp.setMax(leseMinMaxProblem());
+			sp.setBin(leseBinaerListe());
+			sp.setGanzzahl(leseGanzzahlFlag());
+			sp.setArray(leseRestkriktionsArray());
+
+			Speichern s = new Speichern(path, sp);
+			s.speichern();
+		} else {
+
+		}
+
+	}
+
+	private Double[] leseZielfunktion() {
+		Double[] zf = new Double[numVar];
+
+		for (int i = 0; i < numVar; i++) {
+			zf[i] = Double.valueOf(this.functionTable.getModel().getValueAt(0, i).toString());
+		}
+		return zf;
+
+	}
+
+	private Double[][] leseRestkriktionsArray() {
+		Double[][] restriktionen = new Double[numRestr][numVar + 1];
+		int numColumns = restrictionTable.getModel().getColumnCount(); // mit
+		// Restriktionen
+		int failIndex = numColumns - 2;
+		for (int i = 0; i < numRestr; i++) { // erstelle Restriktionen
+			String opTemp = restrictionTable.getModel().getValueAt(i, failIndex).toString();
+			for (int e = 0; e < numVar + 1; e++) {
+				if (e != numVar) {
+					if (opTemp.equals("<=")) {
+						restriktionen[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString());
+					} else {
+						restriktionen[i][e] = Double.valueOf(restrictionTable.getModel().getValueAt(i, e).toString())
+								* -1;
+					}
+				} else {
+					if (opTemp.equals("<=")) {
+						restriktionen[i][e] = Double
+								.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString());
+					} else {
+						restriktionen[i][e] = Double
+								.valueOf(restrictionTable.getModel().getValueAt(i, e + 1).toString()) * -1;
+					}
+				}
+			}
+
+		}
+		return restriktionen;
+	}
+
+	public void erhalteBandBundErstelleView(BranchAndBoundSpeicherKlasse bAndB) {
+		if (this.arrayRadioGanzzahl != null && this.binaerRadio != null) { // referenzen auf bestehende probleme
+			// loeschen
+			setRadioButtonListsInvisible();
+		}
+		this.binaerRadio = null;
+		this.ganzzahlFlag = null;
+		this.binaerListe = null;
+		this.arrayRadioGanzzahl = null;
+		this.repaint();
+		this.revalidate();
+		erstelleView(bAndB.getNumRestr(), bAndB.getNumVar());
+		fuelleMax(bAndB);
+		fuelleGanzzahlButtons(bAndB);
+		fuelleBinaerButtons(bAndB);
+
+	}
+
+	private void fuelleBinaerButtons(BranchAndBoundSpeicherKlasse bAndB) {
+		boolean[] bin = bAndB.getBin();
+		for (int i = 0; i < bAndB.getNumVar(); i++) {
+			if (bin[i])
+				binaerRadio[i].setSelected(true);
+			else
+				binaerRadio[i].setSelected(false);
+		}
+		this.repaint();
+		
+	}
+
+	private void fuelleGanzzahlButtons(BranchAndBoundSpeicherKlasse bAndB) {
+		boolean[] flag = bAndB.getGanzzahl();
+		for (int i = 0; i < flag.length; i++) {
+			if (flag[i]) {
+				this.arrayRadioGanzzahl[i].setSelected(true);
+			} else {
+				this.arrayRadioGanzzahl[i].setSelected(false);
+
+			}
+		}
+		this.repaint();
+		
+	}
+
+	private void fuelleMax(BranchAndBoundSpeicherKlasse bAndB) {
+		boolean max = bAndB.isMax();
+		if (max) {
+			this.jCBMin.setSelected(false);
+		} else {
+			this.jCBMin.setSelected(true);
+		}
+		
+	}
+
+	private void erstelleView(int numRestrIn, int numVarIn) {
+		this.numRestr = numRestrIn;
+		this.numVar = numVarIn;
+		initiiereProblemViewFelder();
+		//createAndActivateZfTable(numVarIn);
+		initiateRadioButtonListe(numVarIn);
+		initiateProlembeschreibungsPanel(numVarIn);
+		//createRestrictionTable(numRestrIn, numVarIn);
+		
+	}
+
 }
 
-
 /*
- * Bsp Input:
- * {3,2,6},
- * {5,2,8},
- * {-2,-1, 0}
- *  
+ * Bsp Input: {3,2,6}, {5,2,8}, {-2,-1, 0}
+ * 
  */
