@@ -84,9 +84,9 @@ public class BendersSolutionStepScreen extends JPanel {
 		
 		//Header
 		loadTableHeader(masterTable);
-		loadTableHeader(subTable);
+		loadSubTableHeader(subTable);
 		loadTableHeader(masterSolutionTable);
-		loadTableHeader(subSolutionTable);
+		loadSubTableHeader(subSolutionTable);
 		
 		//ScrollPanes
 		JScrollPane scrollPaneMaster= new  JScrollPane(masterTable);
@@ -145,6 +145,32 @@ public class BendersSolutionStepScreen extends JPanel {
 		TableColumn tc = tcm.getColumn(table.getColumnCount() - 1);
 		tc.setHeaderValue("Lösung");
 	}
+	
+	private void loadSubTableHeader(JTable table) {
+		int[] yIndices = bendersSolutionObject.getBendersOptimizationData().getYVariableIndices();
+		int xIndicesCount = table.getColumnCount() - yIndices.length;
+		Arrays.sort(yIndices);
+		JTableHeader th = table.getTableHeader();
+		TableColumnModel tcm = th.getColumnModel();
+		int yCount = 0;
+		// x indices
+		for (int i = 1; i <= xIndicesCount + yIndices.length; i++) {
+			for (int j = 1; j <= yIndices.length; j++) {
+				if (yIndices[j - 1] == i - 1) {
+					TableColumn tc = tcm.getColumn(i - 1);
+					tc.setHeaderValue("<html>y<sub>" + j + "</sub></html>");
+					yCount++;
+					break;
+				} else {
+					TableColumn tc = tcm.getColumn(i - 1);
+					tc.setHeaderValue("<html>u<sub>" + (i - yCount) + "</sub></html>");
+				}
+			}
+
+		}
+		TableColumn tc = tcm.getColumn(table.getColumnCount() - 1);
+		tc.setHeaderValue("Lösung");
+	}
 
 	private void loadComponents() {
 		// Tables
@@ -153,8 +179,8 @@ public class BendersSolutionStepScreen extends JPanel {
 		this.masterSolutionTable = new JTable(1, masterSolution.length);
 		this.subSolutionTable = new JTable(1, subSolution.length);
 		// Labels
-		this.masterSolutionLabel = new JLabel("Lösung Masterproblem");
-		this.subSolutionLabel = new JLabel("Lösung SubProblem");
+		this.masterSolutionLabel = new JLabel("Lösung: Masterproblem");
+		this.subSolutionLabel = new JLabel("Lösung: Duales Problem zum Subproblem");
 		this.masterLabel = new JLabel("Masterproblem");
 		this.subLabel = new JLabel("Duales Problem zum Subproblem");
 		this.ubLabel = new JLabel("Upper Bound = " + ub);
@@ -201,18 +227,18 @@ public class BendersSolutionStepScreen extends JPanel {
 					Double[] roundSubSolution;
 					roundSub = Helper.roundStepData(sub, 1);
 					loadTable(subTable, roundSub);
-					loadTableHeader(subTable);
+					loadSubTableHeader(subTable);
 					roundSubSolution = Helper.roundSolutionData(subSolution, 1);
 					loadSolutionTable(subSolutionTable, roundSubSolution);
-					loadTableHeader(subSolutionTable);
+					loadSubTableHeader(subSolutionTable);
 					ubLabel.setText("Upper Bound = " + Helper.round(ub, 1));
 					lbLabel.setText("Lower Bound = " + Helper.round(lb, 1));
 					subRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(subTable, sub);
-					loadTableHeader(subTable);
+					loadSubTableHeader(subTable);
 					loadSolutionTable(subSolutionTable, subSolution);
-					loadTableHeader(subSolutionTable);
+					loadSubTableHeader(subSolutionTable);
 					lbLabel.setText("Lower Bound = " + lb);
 					ubLabel.setText("Upper Bound = " + ub);
 					subRoundButton.setText("Gerundet");

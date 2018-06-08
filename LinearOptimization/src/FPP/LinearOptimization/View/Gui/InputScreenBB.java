@@ -26,7 +26,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import FPP.LinearOptimization.Model.BranchAndBound.*;
 import FPP.LinearOptimization.View.Gui.*;
-import FPP.LinearOptimmization.Save.*;
+import FPP.LinearOptimization.View.Save.*;
 import FPP.LinearOptimization.Model.BranchAndBound.*;
 
 public class InputScreenBB extends JPanel implements InputScreenIF {

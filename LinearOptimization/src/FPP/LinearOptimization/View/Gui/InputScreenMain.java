@@ -26,7 +26,7 @@ import javax.swing.table.TableColumnModel;
 import FPP.LinearOptimization.Data.Algorithm;
 import FPP.LinearOptimization.Data.Comparator;
 import FPP.LinearOptimization.Data.LinearOptimizationData;
-import FPP.LinearOptimmization.Save.BranchAndBoundSpeicherKlasse;
+import FPP.LinearOptimization.View.Save.BranchAndBoundSpeicherKlasse;
 
 public class InputScreenMain extends JPanel {
 

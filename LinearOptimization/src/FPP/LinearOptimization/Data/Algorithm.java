@@ -2,7 +2,7 @@ package FPP.LinearOptimization.Data;
 
 public enum Algorithm {
 
-	BendersAlgorithm("Bender"),
+	BendersAlgorithm("Benders"),
 	DantzigAlgorithm("Dantzig-Wolfe"), BranchBoundAlgorithm("Branch & Bound")
 	;
 	

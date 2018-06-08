@@ -106,7 +106,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF{
 	private void loadParamNegIndices() {
 		List<Integer> paramaterNegativeIndicesList = new ArrayList<Integer>();
 		for (int i = 0; i < paramNegIndicesTable.getColumnCount(); i++) {
-			if (paramNegIndicesTable.getValueAt(0, i).toString().equals("< 0")) {
+			if (paramNegIndicesTable.getValueAt(0, i).toString().equals("<= 0")) {
 				paramaterNegativeIndicesList.add(i);
 			}
 		}
@@ -179,7 +179,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF{
 			TableColumn opColumn = paramNegIndicesTable.getColumnModel().getColumn(i);
 			JComboBox comboBox = new JComboBox();
 			comboBox.addItem("> 0");
-			comboBox.addItem("< 0");
+			comboBox.addItem("<= 0");
 			opColumn.setCellEditor(new DefaultCellEditor(comboBox));
 		}
 		// Function table not editable

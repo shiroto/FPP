@@ -142,7 +142,7 @@ public class BendersSolutionScreen extends JPanel {
 		solutionStepBenders.setLayout(null);
 		solutionStepBenders.initializeScreen(step);
 		mainFrame.getTabs().addTab(Helper.Keyword.STEPBENDERS+step, solutionStepBenders);
-		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.STEPBENDERS));
+		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.STEPBENDERS+step));
 	}
 
 	private void loadOptSolution() {

@@ -32,7 +32,7 @@ import javax.swing.table.JTableHeader;
 import FPP.LinearOptimization.Controller.IController;
 import FPP.LinearOptimization.Data.Algorithm;
 import FPP.LinearOptimization.Model.BranchAndBound.BranchAndBound;
-import FPP.LinearOptimmization.Save.*;
+import FPP.LinearOptimization.View.Save.*;
 public class MainFrame {
 
 	private JFrame frame;
