@@ -16,6 +16,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -27,8 +29,10 @@ import FPP.LinearOptimization.Model.ILinearOptimization;
 import FPP.LinearOptimization.Model.benders.BendersAlgorithm;
 import FPP.LinearOptimization.Model.benders.BendersMasterCoefficientType;
 import FPP.LinearOptimization.Model.benders.BendersSolutionData;
+import FPP.LinearOptimization.View.Save.BendersSaveClass;
+import FPP.LinearOptimization.View.Save.LinearOptFileHandler;
 
-public class InputScreenBenders extends JPanel implements InputScreenIF{
+public class InputScreenBenders extends JPanel implements InputScreenIF {
 	private JPanel panel_functionTable;
 	private LinearOptimizationData inputObject;
 	private JTable functionTable;
@@ -45,6 +49,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF{
 	private BendersOptimizationData bendersInputObject;
 	private BendersSolutionScreen solutionBenders;
 	private MainFrame mainFrame;
+	private int numRestr, numVar;
 
 	public InputScreenBenders(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -98,7 +103,8 @@ public class InputScreenBenders extends JPanel implements InputScreenIF{
 		loadParamNegIndices();
 		bendersInputObject = new BendersOptimizationData(simplexTableau, parameterNegativeIndices, yVariables,
 				bendersMasterCoefficientType);
-		ILinearOptimizationSolutionData benders = mainFrame.GetController().createAlgorithm(bendersInputObject, Algorithm.BendersAlgorithm);
+		ILinearOptimizationSolutionData benders = mainFrame.GetController().createAlgorithm(bendersInputObject,
+				Algorithm.BendersAlgorithm);
 		bendersSolutionObject = (BendersSolutionData) benders;
 		System.out.println();
 	}
@@ -122,7 +128,6 @@ public class InputScreenBenders extends JPanel implements InputScreenIF{
 		}
 		yVariables = yVariableIndiciesList.stream().mapToInt(i -> i).toArray();
 	}
-	
 
 	private void loadBendersMasterCoefficientTypes() {
 		bendersMasterCoefficientType = new BendersMasterCoefficientType[yVariables.length];
@@ -242,8 +247,88 @@ public class InputScreenBenders extends JPanel implements InputScreenIF{
 
 	@Override
 	public void save(String path) throws Exception {
-		// TODO Auto-generated method stub
-		
+		path = path + Helper.Keyword.PATHBENDERS;
+		loadYvariableIndices();
+		loadBendersMasterCoefficientTypes();
+		loadParamNegIndices();
+		BendersSaveClass bs = new BendersSaveClass();
+		bs.setNumRestr(numRestr);
+		bs.setNumVar(numVar);
+		bs.setYVariableIndices(this.yVariables);
+		bs.setBendersMasterCoefficientTypes(this.bendersMasterCoefficientType);
+		bs.setParamNegIndices(this.parameterNegativeIndices);
+		bs.setArray(this.simplexTableau);
+		bs.setFunction(this.simplexTableau[this.simplexTableau.length - 1]);
+		LinearOptFileHandler.save(path, bs);
+
+	}
+
+	@Override
+	public void setNumRestr(int numRestr) {
+		this.numRestr = numRestr;
+
+	}
+
+	@Override
+	public int getNumRestr() {
+		return this.numRestr;
+	}
+
+	@Override
+	public void setNumVar(int numVar) {
+		this.numVar = numVar;
+
+	}
+
+	@Override
+	public int getNumVar() {
+		return this.numVar;
+	}
+
+	public void createView(BendersSaveClass obj) {
+		this.setNumRestr(obj.getNumRestr());
+		this.setNumVar(obj.getNumVar());
+		this.setSimplexTableau(obj.getArray());
+		modifyFunctionTable();
+		for (int j = 0; j < paramNegIndicesTable.getColumnCount(); j++) {
+			paramNegIndicesTable.setValueAt("> 0", 0, j);
+		}
+		for (int i = 0; i < obj.getParameterNegativeIndices().length; i++) {
+			paramNegIndicesTable.setValueAt("<= 0", 0, obj.getParameterNegativeIndices()[i]);
+		}
+
+		for (int i = 0; i < variableDefTable.getColumnCount(); i++) {
+			variableDefTable.setValueAt("X", 0, i);
+		}
+
+		for (int i = 0; i < obj.getyVariables().length; i++) {
+			variableDefTable.setValueAt("Y", 0, obj.getyVariables()[i]);
+		}
+		for (int i = 0; i < typeDefTable.getColumnCount(); i++) {
+			typeDefTable.setValueAt("", 0, i);
+		}
+
+		for (int i = 0; i < obj.getyVariables().length; i++) {
+			BendersMasterCoefficientType type = obj.getBendersMasterCoefficientType()[i];
+			switch (type) {
+			case Float:
+				typeDefTable.setValueAt("R", 0, obj.getyVariables()[i]);
+				break;
+			case Integer:
+				typeDefTable.setValueAt("I", 0, obj.getyVariables()[i]);
+				break;
+			case Binary:
+				typeDefTable.setValueAt("B", 0, obj.getyVariables()[i]);
+				break;
+			}
+		}
+		paramNegIndicesTable.revalidate();
+		typeDefTable.revalidate();
+		variableDefTable.revalidate();
+		paramNegIndicesTable.repaint();
+		typeDefTable.repaint();
+		variableDefTable.repaint();
+
 	}
 
 }

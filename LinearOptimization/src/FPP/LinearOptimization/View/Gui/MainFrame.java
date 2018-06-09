@@ -199,6 +199,10 @@ public class MainFrame {
 							if (path.endsWith(Helper.Keyword.PATHBANDB)) {
 								loadBandB(path);
 								
+							}else if (path.endsWith(Helper.Keyword.PATHBENDERS)) {
+								loadBenders(path);
+							}else if (path.endsWith(Helper.Keyword.PATHDANZIG)) {
+								loadDanzig(path);
 							}
 						} catch (Exception ex) {
 							ex.printStackTrace();
@@ -213,6 +217,36 @@ public class MainFrame {
 			}
 
 		});
+	}
+
+	protected void loadBenders(String path)  {
+		try {
+			BendersSaveClass obj = (BendersSaveClass) LinearOptFileHandler.load(path);
+			InputScreenBenders inputBenders = new InputScreenBenders(getMainFrame());
+			inputScreen.loadSimplexTableau(obj);
+			inputScreen.setAlgorithm(Algorithm.BendersAlgorithm);
+			inputBenders.setVisible(true);
+			inputBenders.setLayout(null);
+			inputBenders.setFunctionTable(new JTable(inputScreen.getFunctionTable().getModel()));
+			inputBenders.createView(obj);
+			tabs.addTab(Helper.Keyword.INPUTBENDERS, inputBenders);
+			tabs.setSelectedIndex(tabs.indexOfTab(Helper.Keyword.INPUTBENDERS));
+			
+			
+		} catch (ClassNotFoundException | IOException e) {
+			JOptionPane.showMessageDialog(frame,
+					"Datei konnte nicht geladen werden. " + e.getMessage(), "Fehler",
+					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+
+	protected void loadDanzig(String path) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void loadBandB(String path) {

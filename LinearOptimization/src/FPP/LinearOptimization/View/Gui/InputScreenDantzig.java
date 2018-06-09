@@ -29,4 +29,28 @@ public class InputScreenDantzig extends JPanel implements InputScreenIF{
 		
 	}
 
+	@Override
+	public void setNumRestr(int numRest) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getNumRestr() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setNumVar(int numVar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getNumVar() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -27,6 +27,7 @@ import FPP.LinearOptimization.Data.Algorithm;
 import FPP.LinearOptimization.Data.Comparator;
 import FPP.LinearOptimization.Data.LinearOptimizationData;
 import FPP.LinearOptimization.View.Save.BranchAndBoundSpeicherKlasse;
+import FPP.LinearOptimization.View.Save.SaveableIF;
 
 public class InputScreenMain extends JPanel {
 
@@ -90,6 +91,8 @@ public class InputScreenMain extends JPanel {
 		inputBenders.setLayout(null);
 		inputBenders.setFunctionTable(new JTable(getFunctionTable().getModel()));
 		inputBenders.setSimplexTableau(simplexTableau);
+		inputBenders.setNumRestr(restrictions);
+		inputBenders.setNumVar(xVariables);
 		inputBenders.modifyFunctionTable();
 		mainFrame.getTabs().addTab(Helper.Keyword.INPUTBENDERS, inputBenders);
 		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.INPUTBENDERS));
@@ -186,6 +189,8 @@ public class InputScreenMain extends JPanel {
 		restrictionTableCopyHeader.setColumnModel(restrictionTable.getColumnModel());
 		restrictionTableCopy.setTableHeader(restrictionTableCopyHeader);
 		inputBB.setRestrictionTable(restrictionTableCopy);
+		inputBB.setNumRestr(restrictions);
+		inputBB.setNumVar(xVariables);
 		inputBB.setSimplexTableau(simplexTableau);
 		inputBB.initializeScreen();
 		mainFrame.getTabs().addTab(Helper.Keyword.INPUTBANDB, inputBB);
@@ -417,7 +422,7 @@ public class InputScreenMain extends JPanel {
 		this.inputObject = inputObject;
 	}
 
-	public void loadSimplexTableau(BranchAndBoundSpeicherKlasse objekt) {
+	public void loadSimplexTableau(SaveableIF objekt) {
 		tf_restrictions.setText(String.valueOf(objekt.getNumRestr()));
 		tf_xVariables.setText(String.valueOf(objekt.getNumVar()));
 		btnInput.doClick();
@@ -431,8 +436,8 @@ public class InputScreenMain extends JPanel {
 				}
 			}
 		}
-		for (int columnId = 0; columnId < objekt.getZielFunktion().length; columnId++) {
-			getFunctionTable().setValueAt(objekt.getZielFunktion()[columnId],0, columnId);
+		for (int columnId = 0; columnId < objekt.getFunction().length; columnId++) {
+			getFunctionTable().setValueAt(objekt.getFunction()[columnId],0, columnId);
 			getFunctionTable().setValueAt(0, getFunctionTable().getRowCount()-1, getFunctionTable().getColumnCount()-1);
 		}
 		

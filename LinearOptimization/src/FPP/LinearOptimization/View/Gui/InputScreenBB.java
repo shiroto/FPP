@@ -565,7 +565,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			BranchAndBoundSpeicherKlasse sp = new BranchAndBoundSpeicherKlasse();
 			sp.setNumRestr(numRestr);
 			sp.setNumVar(numVar);
-			sp.setZielFunktion(leseZielfunktion());
+			sp.setFunction(leseZielfunktion());
 			sp.setMax(leseMinMaxProblem());
 			sp.setBin(leseBinaerListe());
 			sp.setGanzzahl(leseGanzzahlFlag());
@@ -646,7 +646,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 				binaerRadio[i].setSelected(false);
 		}
 		this.repaint();
-		
+
 	}
 
 	private void fuelleGanzzahlButtons(BranchAndBoundSpeicherKlasse bAndB) {
@@ -660,7 +660,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			}
 		}
 		this.repaint();
-		
+
 	}
 
 	private void fuelleMax(BranchAndBoundSpeicherKlasse bAndB) {
@@ -670,18 +670,40 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		} else {
 			this.jCBMin.setSelected(true);
 		}
-		
+
 	}
 
 	private void erstelleView(int numRestrIn, int numVarIn) {
 		this.numRestr = numRestrIn;
 		this.numVar = numVarIn;
 		initiiereProblemViewFelder();
-		//createAndActivateZfTable(numVarIn);
+		// createAndActivateZfTable(numVarIn);
 		initiateRadioButtonListe(numVarIn);
 		initiateProlembeschreibungsPanel(numVarIn);
-		//createRestrictionTable(numRestrIn, numVarIn);
-		
+		// createRestrictionTable(numRestrIn, numVarIn);
+
+	}
+
+	@Override
+	public void setNumRestr(int numRest) {
+		this.numRestr = numRest;
+
+	}
+
+	@Override
+	public int getNumRestr() {
+		return numRestr;
+	}
+
+	@Override
+	public void setNumVar(int numVar) {
+		this.numVar = numVar;
+
+	}
+
+	@Override
+	public int getNumVar() {
+		return numVar;
 	}
 
 }

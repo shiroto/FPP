@@ -3,11 +3,11 @@ package FPP.LinearOptimization.View.Save;
 import java.io.Serializable;
 import java.util.Date;
 
-public class BranchAndBoundSpeicherKlasse implements Serializable {
+public class BranchAndBoundSpeicherKlasse implements SaveableIF, Serializable {
 
 	int numVar;
 	int numRestr;
-	Double[] zielFunktion; // Laenge numVar;
+	Double[] function; // Laenge numVar;
 	boolean max;
 	boolean[] binaerVariablenListe; // Laenge numVar
 	boolean[] ganzzahl; // Laenge numVar
@@ -24,10 +24,6 @@ public class BranchAndBoundSpeicherKlasse implements Serializable {
 
 	public void setNumRestr(int numRestr) {
 		this.numRestr = numRestr;
-	}
-
-	public void setZielFunktion(Double[] zielFunktion) {
-		this.zielFunktion = zielFunktion;
 	}
 
 	public void setMax(boolean max) {
@@ -54,8 +50,8 @@ public class BranchAndBoundSpeicherKlasse implements Serializable {
 		return numRestr;
 	}
 
-	public Double[] getZielFunktion() {
-		return zielFunktion;
+	public Double[] getfunction() {
+		return function;
 	}
 
 	public boolean isMax() {
@@ -72,6 +68,17 @@ public class BranchAndBoundSpeicherKlasse implements Serializable {
 
 	public Double[][] getArray() {
 		return array;
+	}
+
+	@Override
+	public Double[] getFunction() {
+		return this.function;
+	}
+
+	@Override
+	public void setFunction(Double[] function) {
+		this.function = function;
+		
 	}
 
 }
