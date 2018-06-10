@@ -53,6 +53,8 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	private double[] zielfunktion;
 	private JTable functionTable;
 	private LoesungsPanel loesungsPanel;
+	private boolean minProblem;
+	private String[] operators;
 
 	public InputScreenBB(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -570,9 +572,9 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			sp.setBin(leseBinaerListe());
 			sp.setGanzzahl(leseGanzzahlFlag());
 			sp.setArray(leseRestkriktionsArray());
-
-			Speichern s = new Speichern(path, sp);
-			s.speichern();
+			sp.setMin(minProblem);
+			sp.setOPs(operators);
+			LinearOptFileHandler.save(path, sp);
 		} else {
 
 		}
@@ -704,6 +706,16 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	@Override
 	public int getNumVar() {
 		return numVar;
+	}
+
+	public void setMinProblem(boolean selected) {
+		this.minProblem = selected;
+		
+	}
+
+	public void setOPs(String[] ops) {
+		this.operators = ops;
+		
 	}
 
 }

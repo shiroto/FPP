@@ -13,6 +13,8 @@ public class BendersSaveClass implements SaveableIF, Serializable {
 	private BendersMasterCoefficientType[] bendersMasterCoefficientType;
 	private int[] parameterNegativeIndices;
 	private Double[] function;
+	private String[] ops;
+	private boolean minProblem;
 
 	@Override
 	public void setArray(Double[][] array) {
@@ -104,6 +106,28 @@ public class BendersSaveClass implements SaveableIF, Serializable {
 
 	public void setParameterNegativeIndices(int[] parameterNegativeIndices) {
 		this.parameterNegativeIndices = parameterNegativeIndices;
+	}
+
+	@Override
+	public boolean getMin() {
+		return minProblem;
+	}
+
+	@Override
+	public void setMin(boolean b) {
+		this.minProblem = b;
+		
+	}
+
+	@Override
+	public String[] getOPs() {
+		return ops;
+	}
+
+	@Override
+	public void setOPs(String[] ops) {
+		this.ops = ops;
+		
 	}
 
 }

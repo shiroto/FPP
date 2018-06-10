@@ -50,6 +50,8 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 	private BendersSolutionScreen solutionBenders;
 	private MainFrame mainFrame;
 	private int numRestr, numVar;
+	private boolean minProblem;
+	private String[] operators;
 
 	public InputScreenBenders(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -259,6 +261,8 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		bs.setParamNegIndices(this.parameterNegativeIndices);
 		bs.setArray(this.simplexTableau);
 		bs.setFunction(this.simplexTableau[this.simplexTableau.length - 1]);
+		bs.setMin(this.minProblem);
+		bs.setOPs(this.operators);
 		LinearOptFileHandler.save(path, bs);
 
 	}
@@ -329,6 +333,15 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		typeDefTable.repaint();
 		variableDefTable.repaint();
 
+	}
+
+	public void setMinProblem(boolean selected) {
+		this.minProblem = selected;
+		
+	}
+
+	public void setOPs(String[] ops) {
+		this.operators = ops;		
 	}
 
 }

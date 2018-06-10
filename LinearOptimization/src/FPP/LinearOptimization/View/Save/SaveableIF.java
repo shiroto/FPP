@@ -11,7 +11,11 @@ public interface SaveableIF {
 	int getNumRestr();
 	Double[] getFunction();
 	void setFunction(Double[] function);
-
+	//True = Min
+	boolean getMin();
+	void setMin(boolean b);
+	String[] getOPs();
+	void setOPs(String[] ops);
 
 	
 }

@@ -13,6 +13,8 @@ public class BranchAndBoundSpeicherKlasse implements SaveableIF, Serializable {
 	boolean[] ganzzahl; // Laenge numVar
 	Double array[][]; // in Standarform mit <= Restriktionen
 	Date time;
+	private String[] ops;
+	private boolean minProblem;
 
 	public BranchAndBoundSpeicherKlasse() {
 		this.time = new Date();
@@ -78,6 +80,28 @@ public class BranchAndBoundSpeicherKlasse implements SaveableIF, Serializable {
 	@Override
 	public void setFunction(Double[] function) {
 		this.function = function;
+		
+	}
+
+	@Override
+	public boolean getMin() {
+		return minProblem;
+	}
+
+	@Override
+	public void setMin(boolean b) {
+		this.minProblem = b;
+		
+	}
+
+	@Override
+	public String[] getOPs() {
+		return ops;
+	}
+
+	@Override
+	public void setOPs(String[] ops) {
+		this.ops = ops;
 		
 	}
 

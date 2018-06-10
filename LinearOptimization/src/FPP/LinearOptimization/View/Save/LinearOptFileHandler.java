@@ -10,10 +10,10 @@ import java.io.ObjectOutputStream;
 public class LinearOptFileHandler {
 
 
-	public static void save(String path, BendersSaveClass bs) throws IOException {
+	public static void save(String path, SaveableIF save) throws IOException {
 		 FileOutputStream fos = new FileOutputStream(path);
 		    ObjectOutputStream oos = new ObjectOutputStream(fos);
-		    oos.writeObject(bs);
+		    oos.writeObject(save);
 		    oos.close();
 	}
 	

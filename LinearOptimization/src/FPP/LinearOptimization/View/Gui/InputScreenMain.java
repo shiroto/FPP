@@ -90,12 +90,23 @@ public class InputScreenMain extends JPanel {
 		inputBenders.setVisible(true);
 		inputBenders.setLayout(null);
 		inputBenders.setFunctionTable(new JTable(getFunctionTable().getModel()));
+		inputBenders.setMinProblem(rdbtnMin.isSelected());
+		inputBenders.setOPs(loadOPs());
 		inputBenders.setSimplexTableau(simplexTableau);
 		inputBenders.setNumRestr(restrictions);
 		inputBenders.setNumVar(xVariables);
 		inputBenders.modifyFunctionTable();
 		mainFrame.getTabs().addTab(Helper.Keyword.INPUTBENDERS, inputBenders);
 		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.INPUTBENDERS));
+		
+	}
+
+	private String[] loadOPs() {
+		String[] ops = new String[restrictions];
+		for(int i = 0; i < restrictions; i++) {
+			ops[i] = (String) restrictionTable.getValueAt(i, xVariables);
+		}
+		return ops;
 		
 	}
 
@@ -192,6 +203,8 @@ public class InputScreenMain extends JPanel {
 		inputBB.setNumRestr(restrictions);
 		inputBB.setNumVar(xVariables);
 		inputBB.setSimplexTableau(simplexTableau);
+		inputBB.setMinProblem(rdbtnMin.isSelected());
+		inputBB.setOPs(loadOPs());
 		inputBB.initializeScreen();
 		mainFrame.getTabs().addTab(Helper.Keyword.INPUTBANDB, inputBB);
 		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.INPUTBANDB));
@@ -462,6 +475,24 @@ public class InputScreenMain extends JPanel {
 
 	public void setAlgorithm(Algorithm branchboundalgorithm) {
 		cbAlgorithm.setSelectedItem(branchboundalgorithm.getScreenName());
+		
+	}
+
+	public void setOPs(String[] oPs) {
+		for(int i = 0; i < restrictions; i++) {
+			restrictionTable.setValueAt(oPs[i], i, xVariables);
+		}
+		
+	}
+
+	public void setMinProblem(boolean min) {
+		if(min) {
+			rdbtnMax.setSelected(false);
+			rdbtnMin.setSelected(true);
+		} else {
+			rdbtnMax.setSelected(true);
+			rdbtnMin.setSelected(false);
+		}
 		
 	}
 
