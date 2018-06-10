@@ -52,7 +52,7 @@ public class InputScreenMain extends JPanel {
 	private JRadioButton rdbtnMax = new JRadioButton("Max");
 	private JComboBox<String> cbAlgorithm;
 	private InputScreenDantzig inputDanzig;
-	private InputScreenBB inputBB;
+	public InputScreenBB inputBB;
 	private JButton btnInput;
 
 	public InputScreenMain(MainFrame mainFrame) {
@@ -290,6 +290,7 @@ public class InputScreenMain extends JPanel {
 		panel_combo.add(lblAlgorithmus);
 
 		cbAlgorithm = new JComboBox<String>();
+		/*
 		cbAlgorithm.addItemListener(new ItemListener() {
 			
 			@Override
@@ -304,6 +305,7 @@ public class InputScreenMain extends JPanel {
 				}
 			}
 		});
+		*/
 		panel_combo.add(cbAlgorithm);
 
 		cbAlgorithm.addItem(Algorithm.BendersAlgorithm.getScreenName());
@@ -479,9 +481,12 @@ public class InputScreenMain extends JPanel {
 	}
 
 	public void setOPs(String[] oPs) {
-		for(int i = 0; i < restrictions; i++) {
-			restrictionTable.setValueAt(oPs[i], i, xVariables);
+		if(oPs != null) {
+			for(int i = 0; i < restrictions; i++) {
+				restrictionTable.setValueAt(oPs[i], i, xVariables);
+			}
 		}
+
 		
 	}
 

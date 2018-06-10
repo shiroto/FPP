@@ -255,27 +255,29 @@ public class MainFrame {
 		BranchAndBoundSpeicherKlasse objekt;
 		try {
 			objekt = (BranchAndBoundSpeicherKlasse) LinearOptFileHandler.load(path);
-			InputScreenBB inputBB = new InputScreenBB(getMainFrame());
+			inputScreen.inputBB = new InputScreenBB(getMainFrame());
 			inputScreen.loadSimplexTableau(objekt);
 			inputScreen.setAlgorithm(Algorithm.BranchBoundAlgorithm);
 			inputScreen.setMinProblem(objekt.getMin());
 			inputScreen.setOPs(objekt.getOPs());
-			inputBB.setVisible(true);
-			inputBB.setLayout(null);
+			inputScreen.inputBB.setVisible(true);
+			inputScreen.inputBB.setLayout(null);
 			JTable functionTableCopy = new JTable(inputScreen.getFunctionTable().getModel());
 			JTableHeader functionTableCopyHeader = new JTableHeader();
 			functionTableCopyHeader.setColumnModel(inputScreen.getFunctionTable().getColumnModel());
 			functionTableCopy.setTableHeader(functionTableCopyHeader);
-			inputBB.setFunctionTable(functionTableCopy);
+			inputScreen.inputBB.setFunctionTable(functionTableCopy);
 			JTable restrictionTableCopy = new JTable(inputScreen.getRestrictionTable().getModel());
 			JTableHeader restrictionTableCopyHeader = new JTableHeader();
 			restrictionTableCopyHeader.setColumnModel(inputScreen.getRestrictionTable().getColumnModel());
 			restrictionTableCopy.setTableHeader(restrictionTableCopyHeader);
-			inputBB.setRestrictionTable(restrictionTableCopy);
-			inputBB.setSimplexTableau(objekt.getArray());
-			inputBB.initializeScreen();
-			inputBB.erhalteBandBundErstelleView(objekt);
-			tabs.add(Helper.Keyword.INPUTBANDB, inputBB);
+			inputScreen.inputBB.setRestrictionTable(restrictionTableCopy);
+			inputScreen.inputBB.setSimplexTableau(objekt.getArray());
+			inputScreen.inputBB.setNumRestr(objekt.getNumRestr());
+			inputScreen.inputBB.setNumVar(objekt.getNumVar());
+			inputScreen.inputBB.initializeScreen();
+			inputScreen.inputBB.erhalteBandBundErstelleView(objekt);
+			tabs.add(Helper.Keyword.INPUTBANDB, inputScreen.inputBB);
 			tabs.setSelectedIndex(tabs.indexOfTab(Helper.Keyword.INPUTBANDB));
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block

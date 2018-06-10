@@ -63,8 +63,8 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	}
 
 	public void initializeScreen() {
-		this.numRestr = Integer.valueOf(this.simplexTableau.length) - 1;
-		this.numVar = Integer.valueOf(this.simplexTableau[0].length - 1);
+		//this.numRestr = Integer.valueOf(this.simplexTableau.length) - 1;
+		//this.numVar = Integer.valueOf(this.simplexTableau[0].length - 1);
 		problemBeschreibungPanel = new JLabel();
 		problemBeschreibungPanel.setVisible(false);
 		this.add(problemBeschreibungPanel);
@@ -105,7 +105,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 				mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.SOLUTIONBANDB));
 				new Thread(() -> branchAndBoundProblem.solveMaximumUpperBound(loesungsPanel), "AlgorithmusThread")
 						.start();
-				loadScreen();
 			}
 
 		});
@@ -113,10 +112,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	}
 
-	protected void loadScreen() {
-		// TODO Auto-generated method stub
-
-	}
 
 	protected void validateInput() {
 		// TODO Auto-generated method stub
@@ -299,6 +294,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	}
 
 	private BranchAndBound erstelleProblem() {
+		
 		// meinTableModel.fireTableDataChanged();
 		// tabelle.setModel(meinTableModel);
 
@@ -571,7 +567,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			sp.setMax(leseMinMaxProblem());
 			sp.setBin(leseBinaerListe());
 			sp.setGanzzahl(leseGanzzahlFlag());
-			sp.setArray(leseRestkriktionsArray());
+			sp.setArray(this.simplexTableau);
 			sp.setMin(minProblem);
 			sp.setOPs(operators);
 			LinearOptFileHandler.save(path, sp);
