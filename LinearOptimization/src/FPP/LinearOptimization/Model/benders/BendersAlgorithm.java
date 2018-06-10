@@ -49,7 +49,6 @@ public class BendersAlgorithm implements IBendersOptimization {
 		Double[] solution;
 		Double[] optimalY = null;
 		
-		int yCount = bendersOptimizationData.getYVariableIndices().length;
 		Double[] yZeroes = new Double[dualProblem.getFunction().length - 1];
 		Arrays.fill(yZeroes, 0d);
 		
