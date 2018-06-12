@@ -360,10 +360,10 @@ public class BendersAlgorithmTest {
 			//TODO Didi: Diese Restriktionen sollten eig im Masterproblem sein oder???
 			{0d,1d,0d,0d,1d},
 			{0d,-1d,0d,0d,0d},
-//			{0d,0d,1d,0d,1d},
-//			{0d,0d,-1d,0d,0d},
-//			{0d,0d,0d,1d,1d},
-//			{0d,0d,0d,-1d,0d},
+			{0d,0d,1d,0d,1d},
+			{0d,0d,-1d,0d,0d},
+			{0d,0d,0d,1d,1d},
+			{0d,0d,0d,-1d,0d},
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {1, 2, 3};
@@ -564,7 +564,7 @@ Double [][] array= {											     6 ebenen baum
 			testInput(inputData, result, parameterResults);
 	}
 	
-	@Test
+//	@Test
 	//same as test_example_15 but with constant in function
 	void test_example_16() {
 		System.out.println("test_example_15");
