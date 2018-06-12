@@ -13,7 +13,9 @@ import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
@@ -52,6 +54,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 	private int numRestr, numVar;
 	private boolean minProblem;
 	private String[] operators;
+	private JFrame frame;
 
 	public InputScreenBenders(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -78,9 +81,14 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				validateInput();
+				try {
 				createBendersProblem();
 				loadScreen();
+				} catch(Exception ex){
+					 JOptionPane.showMessageDialog(frame, "Problem nicht lösbar. ","Fehler",JOptionPane.ERROR_MESSAGE);
+				}
 			}
 
 		});

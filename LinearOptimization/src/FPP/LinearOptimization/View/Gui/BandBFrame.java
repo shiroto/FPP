@@ -70,7 +70,7 @@ public class BandBFrame {
 		loesungBeschreibung = new JLabel();
 		loesungBeschreibung.setBackground(hintergrundFarbe);
 		loesungBeschreibung.setOpaque(true);
-		loesungBeschreibung.setText("LÃ¶sung:");
+		loesungBeschreibung.setText("Lösung:");
 		panel.add(loesungBeschreibung);
 
 		labelLoesungsInfo = new JLabel();
@@ -105,7 +105,7 @@ public class BandBFrame {
 
 	/**
 	 * FÃ¼gt dem Frame eine Beschreibung des vollzogenen Algorithmusschritts hinzu.
-	 * Der zurÃ¼ckgegebene String enthÃ¤lt die Beschreibung im HTML Format.
+	 * Der zurÃ¼ckgegebene String enthält die Beschreibung im HTML Format.
 	 * 
 	 * @return
 	 */
@@ -119,37 +119,37 @@ public class BandBFrame {
 			case SCHLECHTERE_LOESUNG:
 
 				if (!bAndBKnoten.getProblem().isLoesbar()) {
-					text += "Das Problem ist nicht lÃ¶sbar, <br> ";
+					text += "Das Problem ist nicht lösbar, <br> ";
 					if (bAndBKnoten.getProblem()
 							.getLoesungsInformation() == LoesungsInformation.KEINE_OPTIMALE_LOESUNG) {
 
-						text += "da das zugrundeliegende Simplex <br> Tableau keine optimale LÃ¶sung besitzt. <br> Dies "
+						text += "da das zugrundeliegende Simplex <br> Tableau keine optimale Lösung besitzt. <br> Dies "
 								+ "tritt ein, wenn beim primalen <br> Austauschschritt im Tableau alle <br> Elemente der Pivotspalte &le; 0 sind";
 
 					} else {
-						text += "da das zugrundeliegende Simplex Tableau <br> keine zulÃ¤ssige LÃ¶sung besitzt. Dies <br> tritt ein, wenn im dualen <br> Austauschschritt alle "
+						text += "da das zugrundeliegende Simplex Tableau <br> keine zulässige Lösung besitzt. Dies <br> tritt ein, wenn im dualen <br> Austauschschritt alle "
 								+ "Elemente <br> der Pivotzeile  &ge; 0 sind.";
 
 					}
 
 				} else {
-					text += "Eine bereits gefundene TeillÃ¶sung <br> besitzt mit "
+					text += "Eine bereits gefundene Teillösung <br> besitzt mit "
 							+ df.format(bAndBKnoten.getBessereLoesung())
-							+ " einen besseren <br> LÃ¶sungswert als die lokale gefundene <br> LÃ¶sung "
+							+ " einen besseren <br> Lösungswert als die lokale gefundene <br> Lösung "
 							+ df.format(bAndBKnoten.getProblem().getLoesung()[bAndBKnoten.getProblem().getQ()]) + ". Es wird deshalb nicht <br> weiter"
 									+ " verzweigt.";
 				}
 				break;
 
 			case BESSERE_LOESUNG:
-				text += "Die LÃ¶sung ist bezogen auf das <br> Ausgangsproblem P0  zulÃ¤ssig und "
+				text += "Die Lösung ist bezogen auf das <br> Ausgangsproblem P0  zulässig und "
 						+ df.format(bAndBKnoten.getProblem().getLoesung()[bAndBKnoten.getProblem().getQ()])
 						+ " <br> wird als bester gefundener <br> Zielfunktionswert gespeichert.";
 				break;
 			case GLEICHWERTIGE_LOESUNG:
-				text += "Die gefundene LÃ¶sung besitzt mit "
+				text += "Die gefundene Lösung besitzt mit "
 						+ df.format(bAndBKnoten.getProblem().getLoesung()[bAndBKnoten.getProblem().getQ()])
-						+ " <br> denselben Zielfunktionswert  wie eine<br> bereits  gefundene LÃ¶sung. <br> Die LÃ¶sung wurde deshalb der <br> LÃ¶sungsliste  hinzugefÃ¼gt.";
+						+ " <br> denselben Zielfunktionswert  wie eine<br> bereits  gefundene Lösung. <br> Die Lösung wurde deshalb der <br> Lösungsliste  hinzugefügt.";
 				break;
 			case VERZWEIGUNG_NOETIG:
 

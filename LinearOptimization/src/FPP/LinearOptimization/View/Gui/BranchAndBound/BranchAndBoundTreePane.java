@@ -156,7 +156,7 @@ public class BranchAndBoundTreePane extends JPanel {
 		if (bAndBKnoten.getProblem().isLoesbar()) {
 			String temp = "";
 			if (bAndBKnoten.getProblem().getErgebnisTableau().getQ() > 6) {
-				temp += "LÃ¶sungsvektor: \n";
+				temp += "Lösungsvektor: \n";
 				temp += "(";
 				for (int i = 0; i < bAndBKnoten.getProblem().getErgebnisTableau().getQ(); i++) {
 					String loesungsString = df.format(bAndBKnoten.getProblem().getLoesung()[i]);
@@ -178,7 +178,7 @@ public class BranchAndBoundTreePane extends JPanel {
 			temp = temp + "\n";
 			ausgabe = ausgabe + temp;
 		} else {
-			String temp = "Nicht lÃ¶sbar \n";
+			String temp = "Nicht lösbar \n";
 			ausgabe = ausgabe + temp;
 
 		}

@@ -180,7 +180,7 @@ public class SimplexProblem {
 		}
 		System.out.println("Zielfunktionswert: " + tableau.getWert(tableau.getM(), tableau.getQ()));
 		if (!isLoesbar()) {
-			System.out.println("P hat keine optimale LÃ¶sung");
+			System.out.println("P hat keine optimale Lösung");
 		}
 	}
 
