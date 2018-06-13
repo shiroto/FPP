@@ -82,14 +82,18 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				validateInput();
+				if(validateInput()) {
 				try {
 				createBendersProblem();
 				loadScreen();
 				} catch(Exception ex){
 					 JOptionPane.showMessageDialog(frame, "Problem nicht lösbar. ","Fehler",JOptionPane.ERROR_MESSAGE);
-				}
+				} 
+			}else {
+				JOptionPane.showMessageDialog(frame, "Geben Sie die Daten richtig ein. ","Fehler",JOptionPane.ERROR_MESSAGE);
 			}
+			}
+			
 
 		});
 		this.add(btnSubmit);
@@ -158,9 +162,26 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 	}
 
-	private void validateInput() {
-		// TODO Auto-generated method stub
-
+	private boolean validateInput() {
+		
+			for (int columnId = 0; columnId < variableDefTable.getColumnCount(); columnId++) {
+						if(variableDefTable.getValueAt(0, columnId) == null) {
+							return false;
+						}
+			}
+			for (int columnId = 0; columnId < typeDefTable.getColumnCount(); columnId++) {
+				if(variableDefTable.getValueAt(0, columnId).toString().equals("Y")) {
+					if(typeDefTable.getValueAt(0, columnId) == null) {
+						return false;
+					}
+				}
+	}
+			for (int columnId = 0; columnId < paramNegIndicesTable.getColumnCount(); columnId++) {
+				if(paramNegIndicesTable.getValueAt(0, columnId) == null) {
+					return false;
+				}
+	}
+		return true;
 	}
 
 	public void modifyFunctionTable() {
