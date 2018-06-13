@@ -564,7 +564,7 @@ Double [][] array= {											     6 ebenen baum
 			testInput(inputData, result, parameterResults);
 	}
 	
-//	@Test
+	@Test
 	//same as test_example_15 but with constant in function
 	void test_example_16() {
 		System.out.println("test_example_15");

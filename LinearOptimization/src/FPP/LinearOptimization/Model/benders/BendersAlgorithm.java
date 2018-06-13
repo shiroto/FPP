@@ -24,7 +24,10 @@ public class BendersAlgorithm implements IBendersOptimization {
 	public IBendersOptimizationSolutionData solve(BendersOptimizationData bendersOptimizationData) {
 		// initialize the solution object
 		BendersSolutionData bendersSolution = new BendersSolutionData(bendersOptimizationData);
-
+		
+		// if we have a constant, we substitute it with 0 and add it to the optimal solution in the end.
+		Double constant = substituteConstant(bendersOptimizationData);
+		
 		// convert to not-negatives
 		bendersOptimizationData.setSimplexTableau(LinearOptimizationDataUtility.convertNotNegatives(
 				bendersOptimizationData.getSimplexTableau(), 
@@ -156,7 +159,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			Double[] masterFunction = LinearOptimizationDataUtility.extractFunction(masterProblem.getSimplexTableau());
 			Double[] subFunction = LinearOptimizationDataUtility.extractFunction(subProblem.getSimplexTableau());
 			Double[] optimalSolution = buildOptimalSolution(bendersOptimizationData, solution, optimalY, masterFunction,
-					subFunction);
+					subFunction, constant);
 			bendersSolution.setOptSolution(optimalSolution);
 
 			u = extractSolutionCoefficients(solution, originSubWithY.isSolvableWithBAndB());
@@ -178,6 +181,28 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return bendersSolution;
 	}
 
+	/**
+	 * This method substitutes the constant of the simplex tableau function with 0
+	 * and returns that constant.<br>
+	 * This is done because Simplex & BAndB can not handle that in the right way.<br><br>
+	 * 
+	 * If there is no constant in the function, {@link Double}.<code>NaN</code> is returned.<br>
+	 * <b>ATTENTION: constant value has to be added to the optimal solution to get the right result!</b>
+	 * 
+	 * @param bendersOptimizationData
+	 * @return constant of given function
+	 */
+	private Double substituteConstant(BendersOptimizationData bendersOptimizationData) {
+		Double[][] simplexTableau = bendersOptimizationData.getSimplexTableau();
+		if (simplexTableau[simplexTableau.length-1][simplexTableau[0].length-1] != 0d) {
+			Double constant = simplexTableau[simplexTableau.length-1][simplexTableau[0].length-1];
+			simplexTableau[simplexTableau.length-1][simplexTableau[0].length-1] = 0d;
+			bendersOptimizationData.setSimplexTableau(simplexTableau);
+			return constant;
+		}
+		return Double.NaN;
+	}
+
 	private void stepZeroCut(MasterProblem masterProblem, SubProblem subProblem, Problem dualProblem,
 			Double[] yZeroes) throws Exception {
 		
@@ -197,9 +222,10 @@ public class BendersAlgorithm implements IBendersOptimization {
 	}
 
 	private Double[] buildOptimalSolution(BendersOptimizationData bendersOptimizationData, Double[] solution,
-			Double[] optimalY, Double[] functionMasterY, Double[] functionSubX) {
+			Double[] optimalY, Double[] functionMasterY, Double[] functionSubX, Double constant) {
 		Double[] optimalSolution = new Double[solution.length -1 + optimalY.length - 1];
-		Double optimalFunctionValue = 0d;
+		// if function had a constant, we need to add it here again to return the correct result
+		Double optimalFunctionValue = constant.isNaN() ? 0d : constant;
 		
 		// Y-variables
 		for (int i = 0; i < optimalY.length - 1; i++) {
@@ -216,7 +242,6 @@ public class BendersAlgorithm implements IBendersOptimization {
 			}
 		}
 		
-//		optimalSolution[optimalSolution.length - 1] = (-1) * solution[solution.length - 2];
 		optimalSolution[optimalSolution.length - 1] = optimalFunctionValue;
 		return optimalSolution;
 	}
