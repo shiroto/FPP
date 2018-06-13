@@ -1,6 +1,7 @@
 package FPP.LinearOptimization.View.Gui;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -94,7 +95,7 @@ public class BendersSolutionStepScreen extends JPanel {
 		JScrollPane scrollPaneMasterSol= new  JScrollPane(masterSolutionTable);
 		JScrollPane scrollPaneSubSol= new  JScrollPane(subSolutionTable);
 		
-		// TODO: Find right spots in layout for Components
+		//adding all components to the layout
 		Helper.addComponent(this, gbl, masterLabel, 0, 0, 3, 1, 0, 0);
 		Helper.addComponent(this, gbl, scrollPaneMaster, 0, 1, 3, 5, 1, 1);
 		Helper.addComponent(this, gbl, masterSolutionLabel, 0, 6, 3, 1, 0, 0);
@@ -112,11 +113,11 @@ public class BendersSolutionStepScreen extends JPanel {
 
 		Helper.addComponent(this, gbl, stepLabel, 0, 11, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, roundingHint, 5, 11, 2, 1, 1, 1);
-		Helper.addComponent(this, gbl, stepTextField, 0, 12, 1, 1, 1, 1);
-		Helper.addComponent(this, gbl, stepButton, 1, 12, 2, 1, 1, 0.5);
-		Helper.addComponent(this, gbl, prevStepButton, 3, 12, 2, 1, 1, 0.5);
-		Helper.addComponent(this, gbl, nextStepButton, 5, 12, 2, 1, 1, 0.5);
-		Helper.addComponent(this, gbl, finalStepButton, 7, 12, 2, 1, 1, 0.5);
+		Helper.addComponentWithPadding(this, gbl, stepTextField, 0, 12, 1, 1, 1, 1, 0, 0, 0, 0);
+		Helper.addComponentWithPadding(this, gbl, stepButton, 1, 12, 2, 1, 1, 0.5, 0, 0, 0, 30);
+		Helper.addComponentWithPadding(this, gbl, prevStepButton, 3, 12, 2, 1, 1, 0.5, 0, 20, 0, 0);
+		Helper.addComponentWithPadding(this, gbl, nextStepButton, 5, 12, 2, 1, 1, 0.5, 0, 0, 0, 30);
+		Helper.addComponentWithPadding(this, gbl, finalStepButton, 7, 12, 2, 1, 1, 0.5, 0, 20, 0, 30);
 
 	}
 
@@ -247,6 +248,8 @@ public class BendersSolutionStepScreen extends JPanel {
 			}
 		});
 		stepButton = new JButton("Gehe zu Step");
+		stepButton.setPreferredSize(new Dimension(160, 40));
+		stepButton.setMinimumSize(new Dimension(160, 40));
 		stepButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -259,7 +262,12 @@ public class BendersSolutionStepScreen extends JPanel {
 		});
 		// Textfield
 		this.stepTextField = new JTextField();
+		stepTextField.setPreferredSize(new Dimension(120, 40));
+		stepTextField.setMinimumSize(new Dimension(120, 40));
+		
 		prevStepButton = new JButton("<");
+		prevStepButton.setPreferredSize(new Dimension(90, 40));
+		prevStepButton.setMinimumSize(new Dimension(90, 40));
 		prevStepButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -273,6 +281,8 @@ public class BendersSolutionStepScreen extends JPanel {
 			}
 		});
 		nextStepButton = new JButton(">");
+		nextStepButton.setPreferredSize(new Dimension(90, 40));
+		nextStepButton.setMinimumSize(new Dimension(90, 40));
 		nextStepButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -286,6 +296,8 @@ public class BendersSolutionStepScreen extends JPanel {
 			}
 		});
 		finalStepButton = new JButton("Final Step");
+		finalStepButton.setPreferredSize(new Dimension(200, 40));
+		finalStepButton.setMinimumSize(new Dimension(200, 40));
 		finalStepButton.addActionListener(new ActionListener() {
 
 			@Override
