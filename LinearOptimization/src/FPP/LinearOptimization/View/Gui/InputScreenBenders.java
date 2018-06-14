@@ -75,7 +75,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		panel_defTable.setBounds(50, 80, 455, 80);
 		this.add(panel_defTable);
 
-		btnSubmit = new JButton("Submit");
+		btnSubmit = new JButton("Berechnen");
 		btnSubmit.setBounds(1033, 527, 171, 41);
 		btnSubmit.addActionListener(new ActionListener() {
 

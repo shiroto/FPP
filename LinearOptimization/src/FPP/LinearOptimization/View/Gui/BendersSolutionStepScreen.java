@@ -67,7 +67,7 @@ public class BendersSolutionStepScreen extends JPanel {
 	public void initializeScreen(int stepIndex) {
 		
 		this.stepIndex = stepIndex;
-		this.step = stepsList.get(stepIndex);
+		this.step = stepsList.get(this.stepIndex);
 		this.master = step.getMasterProblem();
 		this.sub = step.getSubProblem();
 		this.masterSolution = step.getMasterSolution();
@@ -186,7 +186,7 @@ public class BendersSolutionStepScreen extends JPanel {
 		this.subLabel = new JLabel("Duales Problem zum Subproblem");
 		this.ubLabel = new JLabel("Upper Bound = " + ub);
 		this.lbLabel = new JLabel("Lower Bound = " + lb);
-		this.stepLabel = new JLabel("Step: " + stepIndex + " von " + (stepsList.size() - 1));
+		this.stepLabel = new JLabel("Step: " + (stepIndex + 1) + " von " + (stepsList.size()));
 		// Buttons
 		masterRoundButton = new JButton("Gerundet");
 		masterRoundButton.addActionListener(new ActionListener() {
@@ -257,7 +257,6 @@ public class BendersSolutionStepScreen extends JPanel {
 				if (!validateInput())
 					return;
 				loadNewStep();
-
 			}
 		});
 		// Textfield
@@ -295,7 +294,7 @@ public class BendersSolutionStepScreen extends JPanel {
 
 			}
 		});
-		finalStepButton = new JButton("Final Step");
+		finalStepButton = new JButton("Letzter Step");
 		finalStepButton.setPreferredSize(new Dimension(200, 40));
 		finalStepButton.setMinimumSize(new Dimension(200, 40));
 		finalStepButton.addActionListener(new ActionListener() {
@@ -327,34 +326,43 @@ public class BendersSolutionStepScreen extends JPanel {
 		if (!Helper.isNumeric(String.valueOf(stepTextField.getText()))) {
 			JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
 			return false;
+		} else if ((Integer.parseInt(stepTextField.getText()) <= 0) || (Integer.parseInt(stepTextField.getText()) > stepsList.size())) {
+			JOptionPane.showMessageDialog(null, "Bitte geben Sie einen gültigen Step ein.");
+			return false;
+		} else if (Integer.parseInt(stepTextField.getText()) == (stepIndex + 1)) {
+			JOptionPane.showMessageDialog(null, "Dieser Step wird bereits angezeigt.");
+			return false;
 		} else
 			return true;
 	}
 
 	protected void loadNewStep() {
 		int step = Integer.valueOf(stepTextField.getText());
-		reset();
-		initializeScreen(step);
-		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + step);
-
+		if ((stepsList.size() >= step) && (step > 0)) {
+			reset();
+			initializeScreen(step - 1);
+			mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (step));
+		}
 	}
 
 	protected void increaseStep() {
 		reset();
 		initializeScreen(stepIndex + 1);
-		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex));
+		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex + 1));
 	}
 
 	protected void decreaseStep() {
 		reset();
 		initializeScreen(stepIndex - 1);
-		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex));
+		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex + 1));
 	}
 
 	protected void goToLastStep() {
-		reset();
-		initializeScreen(stepsList.size() - 1);
-		mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex));
+		if (stepIndex != stepsList.size() - 1) {
+			reset();
+			initializeScreen(stepsList.size() - 1);
+			mainFrame.getTabs().setTitleAt(mainFrame.getTabs().getSelectedIndex(), "Benders Step: " + (stepIndex + 1));
+		}
 	}
 
 	private void reset() {

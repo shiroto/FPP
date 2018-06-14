@@ -84,9 +84,9 @@ public class BendersSolutionScreen extends JPanel {
 			JPanel stepsPanel = new JPanel();
 			stepsPanel.setBounds(50, 330, 250, 100);
 			this.add(stepsPanel);
-			JLabel stepsLabel = new JLabel("" + steps.size() + " Steps");
+			JLabel stepsLabel = new JLabel("Steps 1 bis " + steps.size() + " einsehbar");
 
-			stepsTextField = new JTextField();
+			stepsTextField = new JTextField("1");
 			stepsTextField.setSize(50, 50);
 			JButton stepsButton = new JButton("Gehe zu Step");
 			stepsButton.addActionListener(new ActionListener() {
@@ -131,6 +131,9 @@ public class BendersSolutionScreen extends JPanel {
 		if (!Helper.isNumeric(String.valueOf(stepsTextField.getText()))) {
 			JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
 			return false;
+		} else if ((Integer.parseInt(stepsTextField.getText()) <= 0) || (Integer.parseInt(stepsTextField.getText()) > steps.size())) {
+			JOptionPane.showMessageDialog(null, "Bitte geben Sie einen gültigen Step ein.");
+			return false;
 		} else
 			return true;
 	}
@@ -140,7 +143,7 @@ public class BendersSolutionScreen extends JPanel {
 		solutionStepBenders = new BendersSolutionStepScreen(mainFrame,bendersSolutionObject);
 		solutionStepBenders.setVisible(true);
 		solutionStepBenders.setLayout(null);
-		solutionStepBenders.initializeScreen(step);
+		solutionStepBenders.initializeScreen(step - 1);
 		mainFrame.getTabs().addTab(Helper.Keyword.STEPBENDERS+step, solutionStepBenders);
 		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.STEPBENDERS+step));
 	}

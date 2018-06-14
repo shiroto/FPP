@@ -63,7 +63,7 @@ public class InputScreenMain extends JPanel {
 	public void initializeScreen() {
 		initializeComponents();
 
-		btnInput = new JButton("Input");
+		btnInput = new JButton("Eingabe");
 		btnInput.setBounds(132, 417, 171, 41);
 		btnInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
