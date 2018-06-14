@@ -278,6 +278,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 	@Override
 	public void save(String path) throws Exception {
+		if(validateInput()) {
 		path = path + Helper.Keyword.PATHBENDERS;
 		loadYvariableIndices();
 		loadBendersMasterCoefficientTypes();
@@ -293,6 +294,10 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		bs.setMin(this.minProblem);
 		bs.setOPs(this.operators);
 		LinearOptFileHandler.save(path, bs);
+		} else {
+			throw new Exception("Geben Sie alle notwendigen Daten ein.");
+		}
+		
 
 	}
 

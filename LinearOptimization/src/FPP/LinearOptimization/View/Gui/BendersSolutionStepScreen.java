@@ -77,6 +77,8 @@ public class BendersSolutionStepScreen extends JPanel {
 		GridBagLayout gbl = new GridBagLayout();
 		this.setLayout(gbl);
 		loadComponents();
+		master = Helper.roundStepData(master, 0);
+		sub = Helper.roundStepData(sub, 0);
 		loadTable(masterTable, master);
 		loadTable(subTable, sub);
 
