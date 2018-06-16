@@ -39,12 +39,10 @@ public class SimplexProblem {
 		while (isLoesbar() && !tableau.istDualGeloest()) {
 			loeseDual();
 			tableau.korrigiereGleitkommaFehler();
-			tableau.printAll();
 		}
 		while (isLoesbar() && !tableau.istPrimalGeloest()) {
 			loesePrimal();
 			tableau.korrigiereGleitkommaFehler();
-			tableau.printAll();
 		}
 		speichereLoesung();
 		pruefeMehrereOptimale();
@@ -71,8 +69,8 @@ public class SimplexProblem {
 			for (int i = 0; i < tableau.getQ(); i++) { // speichert Entscheidungsvariablen x1...xn an n-1ter Stelle in
 														// Loesungsarray
 				String variablenname = tableau.getSpaltenname(orte[i]);
-				char koeffizientennummer = variablenname.charAt(1);
-				int kNummerInt = koeffizientennummer - '0' - 1; // Konvertierung vom Char ins int Format
+				String onlyDigits =  variablenname.replaceAll("\\D+","");
+				int kNummerInt = Integer.parseInt(onlyDigits) -1;
 				if (orte[i] < tableau.getQ()) {
 					loesung[kNummerInt] = 0d;
 
@@ -86,7 +84,11 @@ public class SimplexProblem {
 				loesung[tableau.getQ()] = tableau.getWert(tableau.getM(), tableau.getQ());
 
 			} else {
-				loesung[tableau.getQ()] = tableau.getWert(tableau.getM(), tableau.getQ()) * -1;
+				if (tableau.getWert(tableau.getM(), tableau.getQ()) != 0) {
+					loesung[tableau.getQ()] = tableau.getWert(tableau.getM(), tableau.getQ()) * -1;
+				} else {
+					loesung[tableau.getQ()] = 0;
+				}
 			}
 
 		} else {
@@ -180,7 +182,7 @@ public class SimplexProblem {
 		}
 		System.out.println("Zielfunktionswert: " + tableau.getWert(tableau.getM(), tableau.getQ()));
 		if (!isLoesbar()) {
-			System.out.println("P hat keine optimale Lösung");
+			System.out.println("P hat keine optimale LÃ¶sung");
 		}
 	}
 

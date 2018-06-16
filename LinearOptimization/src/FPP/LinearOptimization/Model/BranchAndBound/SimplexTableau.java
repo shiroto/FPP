@@ -234,7 +234,7 @@ public class SimplexTableau {
 	 */
 	public int findePivotSpaltePrimal() {
 		int spalte = 0;
-		double pivotMinimum = array[m][0];
+		Double pivotMinimum = array[m][0];
 		for (int i = 0; i < q; i++) {
 			if (array[m][i] <= pivotMinimum) {
 				pivotMinimum = array[m][i];
@@ -323,7 +323,7 @@ public class SimplexTableau {
 	 * werden aus dem Ausgangstableau übernommen. Die letzte Zeile des neuen
 	 * 2D-Arrays entspricht wieder der Zielfunktion.
 	 */
-	public SimplexTableau erstelle2dArray(double[] neu2) {
+	public SimplexTableau erstelle2dArray(double[] neu) {
 		Double[][] ar = new Double[m + 2][q + 1];
 		for (int i = 0; i < m; i++) {
 			for (int e = 0; e < q + 1; e++) {
@@ -331,7 +331,7 @@ public class SimplexTableau {
 			}
 		}
 		for (int i = 0; i < q + 1; i++) {
-			ar[m][i] = neu2[i];
+			ar[m][i] = neu[i];
 		}
 		for (int i = 0; i < q + 1; i++) {
 			ar[m + 1][i] = array[m][i];

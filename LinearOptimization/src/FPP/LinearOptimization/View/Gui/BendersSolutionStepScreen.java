@@ -105,10 +105,10 @@ public class BendersSolutionStepScreen extends JPanel {
 		Helper.addComponent(this, gbl, masterRoundButton, 3, 1, 1, 1, 0, 0);
 
 		Helper.addComponent(this, gbl, subLabel, 4, 0, 3, 1, 1, 1);
-		Helper.addComponent(this, gbl, scrollPaneSub, 4, 1, 3, 5, 1, 1);
+		Helper.addComponent(this, gbl, scrollPaneSub, 4, 1, 5, 5, 1, 1);
 		Helper.addComponent(this, gbl, subSolutionLabel, 4, 6, 3, 1, 1, 1);
-		Helper.addComponent(this, gbl, scrollPaneSubSol, 4, 7, 3, 1, 1, 1);
-		Helper.addComponent(this, gbl, subRoundButton, 7, 1, 1, 1, 0, 0);
+		Helper.addComponent(this, gbl, scrollPaneSubSol, 4, 7, 5, 1, 1, 1);
+		Helper.addComponent(this, gbl, subRoundButton, 9, 1, 1, 1, 0, 0);
 
 		Helper.addComponent(this, gbl, ubLabel, 0, 8, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, lbLabel, 0, 9, 3, 1, 1, 1);
