@@ -99,19 +99,20 @@ public class BendersSolutionStepScreen extends JPanel {
 		
 		//adding all components to the layout
 		Helper.addComponent(this, gbl, masterLabel, 0, 0, 3, 1, 0, 0);
-		Helper.addComponent(this, gbl, scrollPaneMaster, 0, 1, 3, 5, 1, 1);
-		Helper.addComponent(this, gbl, masterSolutionLabel, 0, 6, 3, 1, 0, 0);
-		Helper.addComponent(this, gbl, scrollPaneMasterSol, 0, 7, 3, 1, 0, 0);
+		Helper.addComponent(this, gbl, scrollPaneMaster, 0, 1, 3, 7, 1, 1);
+		Helper.addComponent(this, gbl, masterSolutionLabel, 0, 8, 3, 1, 0, 0);
+		Helper.addComponent(this, gbl, scrollPaneMasterSol, 0, 9, 3, 1, 0, 0);
 		Helper.addComponent(this, gbl, masterRoundButton, 3, 1, 1, 1, 0, 0);
-
-		Helper.addComponent(this, gbl, subLabel, 4, 0, 3, 1, 1, 1);
-		Helper.addComponent(this, gbl, scrollPaneSub, 4, 1, 5, 5, 1, 1);
-		Helper.addComponent(this, gbl, subSolutionLabel, 4, 6, 3, 1, 1, 1);
-		Helper.addComponent(this, gbl, scrollPaneSubSol, 4, 7, 5, 1, 1, 1);
+		
 		Helper.addComponent(this, gbl, subRoundButton, 9, 1, 1, 1, 0, 0);
+		Helper.addComponent(this, gbl, subLabel, 4, 0, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, scrollPaneSub, 4, 1, 5, 7, 1, 1);
+		Helper.addComponent(this, gbl, subSolutionLabel, 4, 8, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, scrollPaneSubSol, 4, 9, 5, 1, 1, 1);
 
-		Helper.addComponent(this, gbl, ubLabel, 0, 8, 3, 1, 1, 1);
-		Helper.addComponent(this, gbl, lbLabel, 0, 9, 3, 1, 1, 1);
+
+		Helper.addComponent(this, gbl, ubLabel, 0, 10, 3, 1, 1, 1);
+		Helper.addComponent(this, gbl, lbLabel, 3, 10, 3, 1, 1, 1);
 
 		Helper.addComponent(this, gbl, stepLabel, 0, 11, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, roundingHint, 5, 11, 2, 1, 1, 1);
