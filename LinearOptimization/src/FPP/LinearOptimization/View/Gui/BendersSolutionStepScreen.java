@@ -86,10 +86,10 @@ public class BendersSolutionStepScreen extends JPanel {
 		loadSolutionTable(subSolutionTable, subSolution);
 		
 		//Header
-		loadTableHeader(masterTable);
-		loadSubTableHeader(subTable);
-		loadTableHeader(masterSolutionTable);
-		loadSubTableHeader(subSolutionTable);
+		loadTableHeader(masterTable, false);
+		loadSubTableHeader(subTable, false);
+		loadTableHeader(masterSolutionTable, true);
+		loadSubTableHeader(subSolutionTable, true);
 		
 		//ScrollPanes
 		JScrollPane scrollPaneMaster= new  JScrollPane(masterTable);
@@ -124,7 +124,7 @@ public class BendersSolutionStepScreen extends JPanel {
 
 	}
 
-	private void loadTableHeader(JTable table) {
+	private void loadTableHeader(JTable table, boolean sol) {
 		int[] yIndices = bendersSolutionObject.getBendersOptimizationData().getYVariableIndices();
 		int xIndicesCount = table.getColumnCount() - yIndices.length;
 		Arrays.sort(yIndices);
@@ -147,10 +147,15 @@ public class BendersSolutionStepScreen extends JPanel {
 
 		}
 		TableColumn tc = tcm.getColumn(table.getColumnCount() - 1);
-		tc.setHeaderValue("Lösung");
+		if (sol) {
+			tc.setHeaderValue("Lösung");
+		} else {
+			tc.setHeaderValue("");
+		}
+
 	}
 	
-	private void loadSubTableHeader(JTable table) {
+	private void loadSubTableHeader(JTable table, boolean sol) {
 		int[] yIndices = bendersSolutionObject.getBendersOptimizationData().getYVariableIndices();
 		int xIndicesCount = table.getColumnCount() - yIndices.length;
 		Arrays.sort(yIndices);
@@ -173,7 +178,11 @@ public class BendersSolutionStepScreen extends JPanel {
 
 		}
 		TableColumn tc = tcm.getColumn(table.getColumnCount() - 1);
-		tc.setHeaderValue("Lösung");
+		if (sol) {
+			tc.setHeaderValue("Lösung");
+		} else {
+			tc.setHeaderValue("");
+		}
 	}
 
 	private void loadComponents() {
@@ -201,18 +210,18 @@ public class BendersSolutionStepScreen extends JPanel {
 					Double[] roundMasterSolution;
 					roundMaster = Helper.roundStepData(master, 1);
 					loadTable(masterTable, roundMaster);
-					loadTableHeader(masterTable);
+					loadTableHeader(masterTable, false);
 					roundMasterSolution = Helper.roundSolutionData(masterSolution, 1);
 					loadSolutionTable(masterSolutionTable, roundMasterSolution);
-					loadTableHeader(masterSolutionTable);
+					loadTableHeader(masterSolutionTable, true);
 					ubLabel.setText("Upper Bound = " + Helper.round(ub, 1));
 					lbLabel.setText("Lower Bound = " + Helper.round(lb, 1));
 					masterRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(masterTable, master);
-					loadTableHeader(masterTable);
+					loadTableHeader(masterTable, false);
 					loadSolutionTable(masterSolutionTable, masterSolution);
-					loadTableHeader(masterSolutionTable);
+					loadTableHeader(masterSolutionTable, true);
 					ubLabel.setText("Upper Bound = " + ub);
 					lbLabel.setText("Lower Bound = " + lb);
 					masterRoundButton.setText("Gerundet");
@@ -231,18 +240,18 @@ public class BendersSolutionStepScreen extends JPanel {
 					Double[] roundSubSolution;
 					roundSub = Helper.roundStepData(sub, 1);
 					loadTable(subTable, roundSub);
-					loadSubTableHeader(subTable);
+					loadSubTableHeader(subTable, false);
 					roundSubSolution = Helper.roundSolutionData(subSolution, 1);
 					loadSolutionTable(subSolutionTable, roundSubSolution);
-					loadSubTableHeader(subSolutionTable);
+					loadSubTableHeader(subSolutionTable, true);
 					ubLabel.setText("Upper Bound = " + Helper.round(ub, 1));
 					lbLabel.setText("Lower Bound = " + Helper.round(lb, 1));
 					subRoundButton.setText("Ungerundet");
 				} else {
 					loadTable(subTable, sub);
-					loadSubTableHeader(subTable);
+					loadSubTableHeader(subTable, false);
 					loadSolutionTable(subSolutionTable, subSolution);
-					loadSubTableHeader(subSolutionTable);
+					loadSubTableHeader(subSolutionTable, true);
 					lbLabel.setText("Lower Bound = " + lb);
 					ubLabel.setText("Upper Bound = " + ub);
 					subRoundButton.setText("Gerundet");
@@ -397,7 +406,7 @@ public class BendersSolutionStepScreen extends JPanel {
 	}
 
 	private void loadTable(JTable table, Double[][] array) {
-		DefaultTableModel model = new DefaultTableModel(array, 0) {
+		DefaultTableModel model = new DefaultTableModel(0, array[0].length) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				// TODO Auto-generated method stub
@@ -410,7 +419,7 @@ public class BendersSolutionStepScreen extends JPanel {
 		table.setModel(model);
 		//table.setTableHeader(null);
 		// Align
-		for (int i = 0; i < array.length - 1; i++) {
+		for (int i = 0; i < array[0].length; i++) {
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 			centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
