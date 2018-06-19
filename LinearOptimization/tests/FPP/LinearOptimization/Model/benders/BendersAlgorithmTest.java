@@ -12,18 +12,31 @@ import org.junit.jupiter.api.Test;
 
 import FPP.LinearOptimization.Data.BendersOptimizationData;
 import FPP.LinearOptimization.Data.IBendersOptimizationSolutionData;
-
+/**
+ * <h1>This class tests the {@link BendersAlgorithm} in all variants.</h1>
+ * <strong>Make sure this tests are working when changing the algorithm!</strong><br>
+ * This class contains all known test cases, so if new cases are known you should add them here.
+ */
 public class BendersAlgorithmTest {
 	
 	private static final double DELTA = 1e-12;
 	
 	/**
-	 * All restrictions have to be <=
-	 * Function must be minimizer
+	 * <h3>1 binary y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 <= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * - x1 - x2 - 2 * y1 <= -10<br>
+	 * - 2 * x1  - 2 * y1 <= -10<br>
+	 * - x3 - 3 * x4 - 0,5 * y <= -2<br>
+	 * - 10 * x4 - y <= -6<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: 1430
+	 * <li> coefficients: [4.0, 4.0, 0.0, 0.5, 1.0]</ul><p>
 	 */
 	@Test
 	void test_example_powerPoint() {
-		System.out.println("test_example_powerPoint_B");
+		System.out.println("\ntest_example_powerPoint_B");
 		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
 		Double[][] simplexTableau = {
 				{-1d, -1d, 0d, 0d, -2d, -10d},
@@ -44,6 +57,19 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
+	/**
+	 * <h3>1 float y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 <= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * - x1 - x2 - 2 * y1 <= -10<br>
+	 * - 2 * x1  - 2 * y1 <= -10<br>
+	 * - x3 - 3 * x4 - 0,5 * y <= -2<br>
+	 * - 10 * x4 - y <= -6<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: 950.0
+	 * <li> coefficients: [0.0, 0.0, 0.0, 0.1, 5.0]</ul><p>
+	 */
 	@Test
 	void test_example_powerPoint_2() {
 		System.out.println("test_example_powerPoint_F");
@@ -68,9 +94,20 @@ public class BendersAlgorithmTest {
 	}
 	
 	/**
-	 * Lösung ILOG:
-	 * f = -122.5
-	 * x = [40, 10.5, 19.5, 3]
+	 * <h3>1 integer y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - x1 - 2 * x2 - 3 * x3 - y1 <= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * - x1 + x2 + x3 + 10 * y1 <= 20<br>
+	 * x1 - 3 * x2 + x3 <= 30<br>
+	 * x2 - 3.5 * y1 <= 0<br>
+	 * - x2 + 3.5 * y1 <= 0<br>
+	 * x1 <= 40<br>
+	 * - y1 <= -2<br>
+	 * y1 <= 3<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -122.5
+	 * <li> coefficients: [40.0, 10.5, 19.5, 3.0]</ul><p>
 	 */
 	@Test
 	void test_example_01() {
