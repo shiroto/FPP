@@ -24,19 +24,20 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 binary y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 <= 0<br>
+	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 >= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - x1 - x2 - 2 * y1 <= -10<br>
-	 * - 2 * x1  - 2 * y1 <= -10<br>
-	 * - x3 - 3 * x4 - 0,5 * y <= -2<br>
-	 * - 10 * x4 - y <= -6<br>
+	 * - x1 - x2 - 2 * y1 >= -10<br>
+	 * - 2 * x1  - 2 * y1 >= -10<br>
+	 * - x3 - 3 * x4 - 0,5 * y >= -2<br>
+	 * - 10 * x4 - y >= -6<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 1430
 	 * <li> coefficients: [4.0, 4.0, 0.0, 0.5, 1.0]</ul><p>
 	 */
 	@Test
-	void test_example_powerPoint() {
-		System.out.println("\ntest_example_powerPoint_B");
+	void test_single_binary_01() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single binary / presentation");
 		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
 		Double[][] simplexTableau = {
 				{-1d, -1d, 0d, 0d, -2d, -10d},
@@ -60,19 +61,20 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 float y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 <= 0<br>
+	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 >= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - x1 - x2 - 2 * y1 <= -10<br>
-	 * - 2 * x1  - 2 * y1 <= -10<br>
-	 * - x3 - 3 * x4 - 0,5 * y <= -2<br>
-	 * - 10 * x4 - y <= -6<br>
+	 * - x1 - x2 - 2 * y1 >= -10<br>
+	 * - 2 * x1  - 2 * y1 >= -10<br>
+	 * - x3 - 3 * x4 - 0,5 * y >= -2<br>
+	 * - 10 * x4 - y >= -6<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 950.0
 	 * <li> coefficients: [0.0, 0.0, 0.0, 0.1, 5.0]</ul><p>
 	 */
 	@Test
-	void test_example_powerPoint_2() {
-		System.out.println("test_example_powerPoint_F");
+	void test_single_float_01() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single float / presentation");
 		Double[] function = {200d, 50d, 80d, 500d, 180d, 0d};
 		Double[][] simplexTableau = {
 				{-1d, -1d, 0d, 0d, -2d, -10d},
@@ -96,22 +98,23 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 integer y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - x1 - 2 * x2 - 3 * x3 - y1 <= 0<br>
+	 * - x1 - 2 * x2 - 3 * x3 - y1 >= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - x1 + x2 + x3 + 10 * y1 <= 20<br>
-	 * x1 - 3 * x2 + x3 <= 30<br>
-	 * x2 - 3.5 * y1 <= 0<br>
-	 * - x2 + 3.5 * y1 <= 0<br>
-	 * x1 <= 40<br>
-	 * - y1 <= -2<br>
-	 * y1 <= 3<br>
+	 * - x1 + x2 + x3 + 10 * y1 >= 20<br>
+	 * x1 - 3 * x2 + x3 >= 30<br>
+	 * x2 - 3.5 * y1 >= 0<br>
+	 * - x2 + 3.5 * y1 >= 0<br>
+	 * x1 >= 40<br>
+	 * - y1 >= -2<br>
+	 * y1 >= 3<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -122.5
 	 * <li> coefficients: [40.0, 10.5, 19.5, 3.0]</ul><p>
 	 */
 	@Test
-	void test_example_01() {
-		System.out.println("test_example_01");
+	void test_single_integer_01() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single integer");
 		// prepare test data
 		Double[] function = {-1d, -2d, -3d, -1d, 0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -136,9 +139,24 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
+	/**
+	 * <h3>Multiple binary y-variables in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - 8 * x1 - 6 * x2 - x3 - 10 * y1 - 8 * y2 + 33 * y3 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * 2 * x1 + x2 - x3 - 10 * y1 - 8 * y2 >= -4<br>
+	 * x1 + x2 + x3 - 5 * y1 - 8 * y3 >= -3<br>
+	 * y1 >= 1<br>
+	 * y2 >= 1<br>
+	 * y3 >= 1<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: 25.0
+	 * <li> coefficients: [0.0, 4.5, 0.5, 0.0, 1.0, 1.0]</ul><p>
+	 */
 	@Test
-	void test_example_02() {
-		System.out.println("test_example_02");
+	void test_multiple_binary_01() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("multiple binary / paper");
 		// prepare test data
 		Double[] function = {-8d, -6d, 2d, 42d, 18d, 33d, 0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -146,7 +164,7 @@ public class BendersAlgorithmTest {
 			{1d, 1d, 1d, -5d, 0d, -8d, -3d},
 			{0d, 0d, 0d, 1d, 0d, 0d, 1d},
 			{0d, 0d, 0d, 0d, 1d, 0d, 1d},
-			{ 0d, 0d, 0d, 0d, 0d, 1d, 1d}, 
+			{0d, 0d, 0d, 0d, 0d, 1d, 1d}, 
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {3, 4, 5};
@@ -162,9 +180,24 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
+	/**
+	 * <h3>Multiple integer y-variables in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - y1 - y2 - 3 * x1 - 2 * x2 - 2 * y3 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * - y1 - y2 + x1 + x2 >= 30<br>
+	 * - y1 + x1 - 3 * x2  >= 30<br>
+	 * y1 >= 40<br>
+	 * y2 >= 1<br>
+	 * y3 >= 1<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -235.75
+	 * <li> coefficients: [40.0, 1.0, 50.75, 20.25, 1.0]</ul><p>
+	 */
 	@Test
-	void test_example_03() {
-		System.out.println("test_example_03");
+	void test_multiple_integer_01() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("multiple integer");
 		// prepare test data
 		Double[] function = {-1d, -1d, -3d, -2d, -2d, 0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -188,9 +221,25 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
+	/**
+	 * <h3>Multiple integer y-variables in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - x1 - y1 - 3 * x2 - 2 * x3 - 2 * y2 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * - x1 - y1 + x2 + x3 >= 30<br>
+	 * x1 + x2 - 3 * x3 >= 30<br>
+	 * - y1 + x2 >= 30<br>
+	 * x1 >= 40<br>
+	 * y1 >= 1<br>
+	 * y2 >= 1<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -214.0
+	 * <li> coefficients: [40.0, 1.0, 31.0, 40.0, 1.0]</ul><p>
+	 */
 	@Test
-	void test_example_04() {
-		System.out.println("test_example_04");
+	void test_multiple_integer_02() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("multiple integer");
 		// prepare test data
 		Double[] function = {-1d, 1d, -3d, -2d, -2d, 0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -215,9 +264,22 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
+	/**
+	 * <h3>Single binary y-variables in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - 3 * x1 - 2 * x2 - y1 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * x1 + x2 + y1 >= 7<br>
+	 * 4 * x1 + 2 * x2 + y1 >= 12<br>
+	 * - 4 * x1 - 2 * x2 - y1 >= -12<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -12.0
+	 * <li> coefficients: [0.0, 6.0, 0.0]</ul><p>
+	 */
 	@Test
-	void test_example_05() {
-		System.out.println("test_example_05");
+	void test_single_binary_02() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single binary");
 		// prepare test data
 		Double[] function = {-3d, -2d, -1d, 0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -238,24 +300,23 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	/*
-	 * Branch and Bound Minimierung
-	 * Keine Deklaration von Y Variablen!
-	 *
-	 * Double [][] array= {
-				{-4d,-4d,-10d},
-				{-2d,-11d,-11d},
-				{-4d,2d,1d},
-				{2d,1d,0d}};
-	 * --> 1,2, Zielfunktionswert=4
-	 *
-	 * https://www.ingenieurkurse.de/operations-research-2/ganzzahlige-optimierung/branch-and-bound-verfahren/minimierungsprobleme/branch-and-bound-am-minimierungsproblem-optimale-loesung/beispiel-branch-and-bound-am-minimierungsproblem-optimale-loesung-3.html
+	/**
+	 * <h3>1 integer y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * 2 * x1 + y1 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * - 4 * x1 - 4 * y1 >= -10<br>
+	 * - 2 * x1 - 11 * y1 >= -11<br>
+	 * - 4 * x1 - 2 * y1 >= 1<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: 3.5
+	 * <li> coefficients: [0.75, 2.0]</ul><p>
 	 */
 	@Test
-	void test_example_06() {
-		System.out.println("test_example_06");
+	void test_single_integer_02() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single integer");
 		// prepare test data
-		
 		Double[] function = {2d,1d,0d};
 		Double[][] simplexTableau = new Double[][] {
 			{-4d,-4d,-10d},
@@ -275,27 +336,28 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	/*
-	 * 0,1 Problem
-	 * 		Double [][] array= {    
-				{8d,8d,6d,6d,14d},
-				{1d,0d,0d,0d,1d},
-				{-1d,0d,0d,0d,0d},
-				{0d,1d,0d,0d,1d},
-				{0d,-1d,0d,0d,0d},
-				{0d,0d,1d,0d,1d},
-				{0d,0d,-1d,0d,0d},
-				{0d,0d,0d,1d,1d},
-				{0d,0d,0d,-1d,0d},
-				{-14d,-20d,-18d, -26d,0d}};
-	 * --> [0.0, 1.0, 0.0, 1.0, 46.0]
-	 * 
-	 * https://www.ingenieurkurse.de/operations-research-2/ganzzahlige-optimierung/branch-and-bound-verfahren/branch-and-bound-knapsack-problem.html  
+	/**
+	 * <h3>Multiple mixed y-variables in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - 14 * x1 - 20 * x2 - 18 * y1 - 26 * y2 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * 8 * x1 + 8 * x2 + 6 * y1 + 6 * y2 >= 14<br>
+	 * x1 >= 1<br>
+	 * - x1 >= 0<br>
+	 * x2 >= 1<br>
+	 * - x2 >= 0<br>
+	 * y1 >= 1<br>
+	 * - y1 >= 0<br>
+	 * y2 >= 1<br>
+	 * - y2 >= 0<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: 3.5
+	 * <li> coefficients: [0.75, 2.0]</ul><p>
 	 */
-	
 	@Test
-	void test_example_07() {
-		System.out.println("test_example_07");
+	void test_multiple_mixed_02() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("multiple mixed");
 		// prepare test data
 		Double[] function = {-14d,-20d,-18d, -26d, 0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -311,7 +373,8 @@ public class BendersAlgorithmTest {
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {2, 3};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary, BendersMasterCoefficientType.Integer};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary,
+				BendersMasterCoefficientType.Integer};
 		
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
@@ -322,23 +385,26 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	/*
-	 * 0 1 Problem
-	 * 
-	 * 	Double [][] array= {
-				{30d,50d,20d,70d},
-				{1d,0d,0d,1d},
-				{-1d,0d,0d,0d},
-				{0d,1d,0d,1d},
-				{0d,-1d,0d,0d},
-				{0d,0d,1d,1d},
-				{0d,0d,-1d,0d},
-				{-3d,-5d,-2d,0d}};
-	 * --> [0.0, 1.0, 1.0, 7.0]		
+	/**
+	 * <h3>1 float y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - 3 * x1 - 5 * x2 - 2 * y1 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * 30 * x1 + 50 * x2 + 20 * y1 >= 70<br>
+	 * x1 >= 1<br>
+	 * - x1 >= 0<br>
+	 * x2 >= 1<br>
+	 * - x2 >= 0<br>
+	 * y1 >= 1<br>
+	 * - y1 >= 0<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -7.0
+	 * <li> coefficients: [0.0, 1.0, 1.0]</ul><p>
 	 */
 	@Test
-	void test_example_08() {
-		System.out.println("test_example_08");
+	void test_single_float_02() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single float");
 		// prepare test data
 		Double[] function = {-3d,-5d,-2d,0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -362,29 +428,31 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	/*
-	 * BINÄR
-		Double [][] array= {
-				{6d,3d,5d,2d,10d},
-				{0d,0d,1d,1d,1d},
-				{-1d,0d,1d,0d,0d},
-				{0d,-1d,0d,1d,0d},
-				{1d,0d,0d,0d,1d},		
-				{-1d,0d,0d,0d,0d},
-				{0d,1d,0d,0d,1d},
-				{0d,-1d,0d,0d,0d},
-				{0d,0d,1d,0d,1d},
-				{0d,0d,-1d,0d,0d},
-				{0d,0d,0d,1d,1d},
-				{0d,0d,0d,-1d,0d},
-				
-				{-9d,-5d,6d,4d,0d}};
-	 * --> [1.0, 1.0, 0.0, 0.0, 14.0]
-	 * https://members.loria.fr/CRingeissen/files/master2/solving-lp-ip.pdf
+	/**
+	 * <h3>Multiple binary y-variables in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - 9 * x1 - 5 * y1 + 6 * y2 + 4 * y3 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * 6 * x1 + 3 * y1 + 5 * y2 + 2 * y3 >= 10<br>
+	 * y2 + y3 >= 1<br>
+	 * - x1 + y2 >= 0<br>
+	 * - y1 + y3 >= 0<br>
+	 * x1 >= 1<br>
+	 * - x1 >= 0<br>
+	 * y1 >= 1<br>
+	 * - y1 >= 0<br>
+	 * y2 >= 1<br>
+	 * - y2 >= 0<br>
+	 * y3 >= 1<br>
+	 * - y3 >= 0<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -14.0
+	 * <li> coefficients: [1.0, 1.0, 0.0, 0.0]</ul><p>
 	 */
 	@Test
-	void test_example_09() {
-		System.out.println("test_example_09");
+	void test_multiple_binary_2() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("multiple binary");
 		// prepare test data
 		Double[] function = {-9d,-5d,6d,4d,0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -394,7 +462,6 @@ public class BendersAlgorithmTest {
 			{0d,-1d,0d,1d,0d},
 			{1d,0d,0d,0d,1d},		
 			{-1d,0d,0d,0d,0d},
-			//TODO Didi: Diese Restriktionen sollten eig im Masterproblem sein oder???
 			{0d,1d,0d,0d,1d},
 			{0d,-1d,0d,0d,0d},
 			{0d,0d,1d,0d,1d},
@@ -416,12 +483,23 @@ public class BendersAlgorithmTest {
 		testInput(inputData, result, parameterResults);
 	}
 	
-	/*
-	 * https://members.loria.fr/CRingeissen/files/master2/solving-lp-ip.pdf
+	/**
+	 * <h3>No y-variables in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * 11 * x1 + 14 * x2  >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * x1 + x2 + y1 >= 17<br>
+	 * 3 * x1 + 7 * x2 + y2 >= 63<br>
+	 * 3 * x1 + 5 * x2 + y3 >= 48<br>
+	 * 3 * x1 + x2 + y4 >= 30<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: 0.0
+	 * <li> coefficients: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</ul><p>
 	 */
 	@Test
-	void test_example_10() {
-		System.out.println("test_example_10");
+	void test_no_y() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("no y in master");
 		// prepare test data
 		Double[] function = {11d,14d,0d,0d,0d, 0d, 0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -445,19 +523,22 @@ public class BendersAlgorithmTest {
 			testInput(inputData, result, parameterResults);
 	}
 	
-	/*
-	 * ganzzahliges problem 
-		Double [][] array= {
-				{2d,3d,0d,0d,0d,5d},				
-				{0d,0d,3d,4d,0d,7d},
-				{-2d,0d,-2d,0d,-2d,-7d},
-				{7d,-3d,5d,-4d, 2d,0d},
-		};
-	 *http://www.hs-augsburg.de/informatik/projekte/mebib/emiel/entw_inf/or_verf/ganzopt_bab.html
+	/**
+	 * <h3>1 integer y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * -7 * x1 - 3 * x2 + 5 * y1 - 4 * x3 + 2 * x4 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * 2 * x1 + 3 * x2 >= 5<br>
+	 * y1 + 4 * x3 >= 7<br>
+	 * - 2 * x1 - 2 * y1 - 2 * x4 >= -7<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -5.0
+	 * <li> coefficients: [0.0, 5.0/3.0, 0.0, 1.75, 3.5]</ul><p>
 	 */
 	@Test
-	void test_example_11() {
-		System.out.println("test_example_11");
+	void test_single_integer_03() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single integer");
 		// prepare test data
 		Double[] function = {7d,-3d,5d,-4d, 2d,0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -476,18 +557,20 @@ public class BendersAlgorithmTest {
 			
 			testInput(inputData, result, parameterResults);
 	}
-	/*
-Double [][] array= {											     6 ebenen baum
-			{6d,4d,15d},
-			{-21d,-11d,0d}
-		};
-	 * -> 1 2 43
-	 * https://www.wiwi.uni-frankfurt.de/profs/ohse/lehre/downloads/qmbwl_folien/Microsoft%2BWord%2B-%2BKapitel5OR3.pdf
+	
+	/**
+	 * <h3>1 integer y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - 21 * y1 - 11 * x1 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * 6 * y1 + 4 * x1 >= 15<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>master problem is unbound!
 	 */
 	@Test
-	//masterproblem unbounded
-	void test_example_12() {
-		System.out.println("test_example_12");
+	void test_master_unbounded() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("master problem unbounded");
 		// prepare test data
 		Double[] function = {-21d,-11d,0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -506,17 +589,21 @@ Double [][] array= {											     6 ebenen baum
 			assertTrue(solutionData.getSteps().isEmpty());
 	}
 	
-	/*
-	Beispiel  max, x1 = 12 x2 = 24   zf= 28000, Baum mit 4 ebenen
-	{100d,50d,2425d},
-			{0d, 20d, 510d},
-			{-1000d,-700d,0d}
-		};
-	 * https://kops.uni-konstanz.de/bitstream/handle/123456789/40602/Jaekle_2--19g2w6rkcqybq4.pdf?sequence=5
+	/**
+	 * <h3>1 integer y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - 1000 * x1 - 700 * y1 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * 100 * x1 + 50 * y1 >= 2425<br>
+	 * 20 * y1 >= 510<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: 29250.0
+	 * <li> coefficients: [11.75, 25.0]</ul><p>
 	 */
 	@Test
-	void test_example_13() {
-		System.out.println("test_example_13");
+	void test_single_integer_04() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single integer");
 		// prepare test data
 		Double[] function = {-1000d,-700d,0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -535,21 +622,21 @@ Double [][] array= {											     6 ebenen baum
 			testInput(inputData, result, parameterResults);
 	}
 	
-	/*
-	 * max problem
-		Double [][] array= {
-						{3d,2d,6d},
-						{5d,2d,8d},
-						{-2d,-1d,0d}
-		};
-	 * 	[1.0, 1.0, 3.0]
-	 *	Alternative Lösungen:
-	 *	[0.0, 3.0, 3.0]
-	 * https://www.ingenieurkurse.de/operations-research-2/ganzzahlige-optimierung/branch-and-bound-verfahren/maximierungsprobleme/branch-and-bound-am-maximierungsproblem-optimale-loesung/beispiel-branch-and-bound-am-maximierungsproblem-optimale-loesung.html
+	/**
+	 * <h3>1 float y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * - 2 * x1 - y1 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * 3 * x1 + 2 * y1 >= 6<br>
+	 * 5 * x1 + 2 * y2 >= 8<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -3.5
+	 * <li> coefficients: [1.0, 1.5]</ul><p>
 	 */
 	@Test
-	void test_example_14() {
-		System.out.println("test_example_14");
+	void test_single_float_03() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single float");
 		// prepare test data
 		Double[] function = {-2d,-1d,0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -568,20 +655,22 @@ Double [][] array= {											     6 ebenen baum
 			testInput(inputData, result, parameterResults);
 	}
 	
-/*
- *   2, 2, ZF= 6; 
-		Double [][] array= {					
-				
-				{-10d,20d,22d},
-				{5d,10d,49d},
-				{1d,0d,5d},
-				
-				{1d,-4d,0d}
-	https://www.ie.bilkent.edu.tr/~mustafap/courses/bb.pdf
- */
+	/**
+	 * <h3>1 integer y-variable in the master problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * y1 - 4 * x1 >= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * -10 * y1 + 20 * x1 >= 22<br>
+	 * 5 * y1 + 10 * x1 >= 49<br>
+	 * y1 >= 5<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: -7.6
+	 * <li> coefficients: [4d, 2.9d]</ul><p>
+	 */
 	@Test
-	void test_example_15() {
-		System.out.println("test_example_15");
+	void test_single_integer_05() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("single integer");
 		// prepare test data
 		Double[] function = {1d,-4d,0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -601,10 +690,22 @@ Double [][] array= {											     6 ebenen baum
 			testInput(inputData, result, parameterResults);
 	}
 	
+	/**
+	 * <h3>constant in problem</h3>
+	 * <b><u>function:</b></u><br>
+	 * y1 - 4 * x1 >= 7.6<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * -10 * y1 + 20 * x1 >= 22<br>
+	 * 5 * y1 + 10 * x1 >= 49<br>
+	 * y1 >= 5<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>optimal solution: 0
+	 * <li> coefficients: [4d, 2.9d]</ul><p>
+	 */
 	@Test
-	//same as test_example_15 but with constant in function
-	void test_example_16() {
-		System.out.println("test_example_15");
+	void test_constant() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("constant in problem");
 		// prepare test data
 		Double[] function = {1d,-4d,7.6d};
 		Double[][] simplexTableau = new Double[][] {
