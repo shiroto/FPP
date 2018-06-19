@@ -148,6 +148,14 @@ public class LinearOptimizationDataUtility {
 		return thetaTableau;
 	}
 	
+	/**
+	 * Substitutes in the restrictions.
+	 * 
+	 * 
+	 * @param restriction
+	 * @param theta
+	 * @return
+	 */
 	private static Double[] substituteTheta(Double[] restriction, Double theta) {
 		int restrictionLength = restriction.length;
 		Double[] result = new Double[restrictionLength+1];
@@ -157,5 +165,18 @@ public class LinearOptimizationDataUtility {
 		System.arraycopy(restriction, restrictionLength-1,
 				result, restrictionLength, 1);
 		return result;
+	}
+
+	/**
+	 * Returns a new solution array without the additional info of the simplex return.<br>
+	 * So the solution is similar to the Branch and Bound output.
+	 * 
+	 * @param solution
+	 * @return
+	 */
+	public static Double[] extractSimplexSolution(Double[] solution) {
+		Double[] newSolution = new Double[solution.length-1];
+		System.arraycopy(solution, 0, newSolution, 0, newSolution.length);
+		return newSolution;
 	}
 }
