@@ -235,7 +235,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 	 * <b>Optimal solution format:</b><br>
 	 * {4d, 4d, 0d, 0.5d, 1d, 1430d}<br>
 	 * The last value represents optimal function value.<br>
-	 * The rest represent optimal x and y values on its respective positions.<br>
+	 * The rest represent optimal x and y values on their respective positions.<br>
 	 * 
 	 * @param bendersOptimizationData {@link BendersOptimizationData} object
 	 * @param solution array of optimal SubProblem solution values (with inserted optimal y-values)
