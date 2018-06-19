@@ -12,6 +12,9 @@ import de.bb.labor.BranchAndBound;
 import de.bb.labor.Tableau;
 import de.lip.bb.Simplex;
 
+/**
+ * Class for the benders algorithm implementing {@link IBendersOptimization}.
+ */
 public class BendersAlgorithm implements IBendersOptimization {
 
 	private static final Double DOUBLE_CORRECTION = 0.000001d;
@@ -22,13 +25,13 @@ public class BendersAlgorithm implements IBendersOptimization {
 	
 	@Override
 	public IBendersOptimizationSolutionData solve(BendersOptimizationData bendersOptimizationData) {
-		// initialize the solution object
+		// Initialize the solution object
 		BendersSolutionData bendersSolution = new BendersSolutionData(bendersOptimizationData);
 		
-		// if we have a constant, we substitute it with 0 and add it to the optimal solution in the end.
+		// If we have a constant, we substitute it with 0 and add it to the optimal solution in the end
 		Double constant = substituteConstant(bendersOptimizationData);
 		
-		// convert to not-negatives
+		// Convert all negative variables to not-negatives
 		bendersOptimizationData.setSimplexTableau(LinearOptimizationDataUtility.convertNotNegatives(
 				bendersOptimizationData.getSimplexTableau(), 
 				bendersOptimizationData.getParamaterNegativeIndices()));
@@ -37,15 +40,16 @@ public class BendersAlgorithm implements IBendersOptimization {
 		
 		SubProblem subProblem = createSubProblem(bendersOptimizationData);
 		Problem dualProblem = new Problem(LinearOptimizationDataUtility.createDual(subProblem.getSimplexTableau()));
-		System.out.println("Master: " + Arrays.deepToString(masterProblem.getSimplexTableau()));
-		System.out.println("Sub:    " + Arrays.deepToString(subProblem.getSimplexTableau()));
-		System.out.println("Dual:   " + Arrays.deepToString(dualProblem.getSimplexTableau()));
+//		System.out.println("Master: " + Arrays.deepToString(masterProblem.getSimplexTableau()));
+//		System.out.println("Sub:    " + Arrays.deepToString(subProblem.getSimplexTableau()));
+//		System.out.println("Dual:   " + Arrays.deepToString(dualProblem.getSimplexTableau()));
 		
 		// Step 0
 		int r = 1;
 		Double UB = Double.MAX_VALUE;
 		Double LB = -Double.MAX_VALUE;
 
+		// u-variables of the dual subproblem
 		Double[] u = new Double[dualProblem.getFunction().length - 1];
 		Arrays.fill(u, 0d);
 		
@@ -71,26 +75,17 @@ public class BendersAlgorithm implements IBendersOptimization {
 		}
 		
 		while (true) {
+			// Step 1
 			BendersStepData stepData = new BendersStepData(r);
 			
-			// step 1
+			Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
 			if (masterProblem.isSolvableWithBAndB()) {
-				Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
 				solution = solveProblem(masterTableau, true, true);
 				solution = LinearOptimizationDataUtility.normalizeTheta(solution, false);			
 			} else {
-				Double[][] masterTableau = LinearOptimizationDataUtility.splitTheta(masterProblem.getSimplexTableau());
 				solution = solveProblem(masterTableau, false, true);
 				solution = LinearOptimizationDataUtility.normalizeTheta(solution, true);	
-				System.out.println("Solution: " + Arrays.toString(solution));
 			}
-			
-			//check for valid solution
-			//if (solution[solution.length - 1] == 0) {
-				//TODO what should happen here?
-				//no solution existing
-			//	break;
-			//}
 			
 			Double newUB;
 			if (masterProblem.isSolvableWithBAndB()) {
@@ -100,7 +95,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			}
 			
 			if (newUB.isNaN()) {
-				//masterproblem unbounded
+				// MasterProblem is unbound
 				bendersSolution.setAddInfo(MASTER_PROBLEM_UNBOUNDED_MESSAGE);
 				return bendersSolution;
 			} else if (newUB < UB){
@@ -109,6 +104,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			
 			stepData.setMasterSolution(solution);
 			
+			// Set y = yr
 			Double[] y = extractSolutionCoefficients(solution, masterProblem.isSolvableWithBAndB());
 			
 			// Step 2
@@ -126,12 +122,11 @@ public class BendersAlgorithm implements IBendersOptimization {
 				LB = newLB;
 			}
 			
-			// Step 3 
-			//add output
 			System.out.println("r = " + r + "\t LB = " + LB + "\t UB = " + UB);
 			stepData.setLowerBound(LB);
 			stepData.setUpperBound(UB);
 			
+			// Step 3 
 			if (LB + DOUBLE_CORRECTION >= UB) {
 				optimalY = y;
 				break;
@@ -139,7 +134,7 @@ public class BendersAlgorithm implements IBendersOptimization {
 			
 			if (solution[solution.length - 2].equals(Double.NaN)) {
 				cut = calculateAdditionalCut(dualProblem, bendersOptimizationData.getSimplexTableau());
-				System.out.println("not solvable");
+				System.out.println("Not solvable");
 				addCut(dualProblem, cut);
 			} else {
 				cut = calculateCut(subProblem, u);
@@ -203,6 +198,19 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return Double.NaN;
 	}
 
+	/**
+	 * This method calculates the first cut in step 0, with all u-values set 
+	 * to 0 and adds the cut to the {@link MasterProblem}.<br><br>
+	 * 
+	 * To set all u-values to 0 all function values are set to 0.<br>
+	 * The SimplexTableau is then solved as usual.<br>
+	 * 
+	 * @param masterProblem {@link MasterProblem}
+	 * @param subProblem {@link SubProblem}
+	 * @param dualProblem DualProblem as {@link Problem}
+	 * @param yZeroes array with 0-values
+	 * @throws Exception if not solvable
+	 */
 	private void stepZeroCut(MasterProblem masterProblem, SubProblem subProblem, Problem dualProblem,
 			Double[] yZeroes) throws Exception {
 		
@@ -221,6 +229,22 @@ public class BendersAlgorithm implements IBendersOptimization {
 		addCut(masterProblem, calculateCut(subProblem, u));
 	}
 
+	/**
+	 * Builds the optimal solution found by the BendersAlgorithm.<br><br>
+	 * 
+	 * <b>Optimal solution format:</b><br>
+	 * {4d, 4d, 0d, 0.5d, 1d, 1430d}<br>
+	 * The last value represents optimal function value.<br>
+	 * The rest represent optimal x and y values on its respective positions.<br>
+	 * 
+	 * @param bendersOptimizationData {@link BendersOptimizationData} object
+	 * @param solution array of optimal SubProblem solution values (with inserted optimal y-values)
+	 * @param optimalY array of final optimal y-values
+	 * @param functionMasterY function of {@link MasterProblem}
+	 * @param functionSubX function of {@link SubProblem}
+	 * @param constant the constant of the initial input-function, 0 if there was none
+	 * @return array of the optimal solutions
+	 */
 	private Double[] buildOptimalSolution(BendersOptimizationData bendersOptimizationData, Double[] solution,
 			Double[] optimalY, Double[] functionMasterY, Double[] functionSubX, Double constant) {
 		Double[] optimalSolution = new Double[solution.length -1 + optimalY.length - 1];
@@ -246,6 +270,14 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return optimalSolution;
 	}
 	
+	/**
+	 * This method calculates and returns a cut serving as variable-boundaries 
+	 * for usually not solvable or unbound tableaus.<br>
+	 *  
+	 * @param {@link Problem}
+	 * @param initialTableau the tableau to add the cut to
+	 * @return the cut as <code>Double[]</code>
+	 */
 	private Double[] calculateAdditionalCut(Problem problem, Double[][] initialTableau) {
 		// multiply 2 highest values of the initial tableau for the additional cut
 		double[] highestValues = findTwoHighestDistinctValues(mode(initialTableau));
@@ -261,6 +293,21 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return cut;
 	}
 
+	/**
+	 * Solves a SimplexTableau with Simplex or BranchAndBound.<br><br>
+	 * 
+	 * <b>Solution format:</b><br>
+	 * {10d, 0d, 130d, 2d}<br>
+	 * Last value represents the solution type.<br>
+	 * Second to last represents optimal function value.<br>
+	 * The rest represent variable values.<br>
+	 * For more information see return of {@link de.lip.bb.Simplex#loese()}.<br>
+	 * 
+	 * @param simplexTableau
+	 * @param solveAbleWithBAndB boolean if solvable with BAndB
+	 * @param max <code>true</code> if maximize, <code>false</code> if minimize
+	 * @return solution as <code>Double[]</code> 
+	 */
 	private Double[] solveProblem(Double[][] simplexTableau,
 			boolean solveAbleWithBAndB, boolean max) {
 		if (solveAbleWithBAndB) {
@@ -272,13 +319,20 @@ public class BendersAlgorithm implements IBendersOptimization {
 			if (solution.size() > 0) {
 				return solution.get(0);
 			}
-			//TODO what happens if no solution can be found?
 			return new Double[0];
 		} else {
 			return new Simplex(simplexTableau, max).loese();
 		}
 	}
 
+	/**
+	 * Creates a boolean array depending on the tableau-length with everything <code>true</code> 
+	 * except the last two entries. <code>true</code> symbolizes that the value on this position 
+	 * is an integer, <code>false</code> for float/double.<br>
+	 * 
+	 * @param simplexTableau
+	 * @return <code>boolean[]</code>-array representing if value at position is boolean
+	 */
 	private boolean[] initializeFlagInteger(Double[][] simplexTableau) {
 		boolean[] flagInteger = new boolean[simplexTableau[0].length];
 		Arrays.fill(flagInteger, true);
@@ -287,6 +341,21 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return flagInteger;
 	}
 	
+	/**
+	 * This functions adds the given cut to the given {@link Problem}.<br><br>
+	 * 
+	 * <b>Cut format:</b><br>
+	 * {1d, 0d, 0d, 7.5d, 50d}<br>
+	 * Last value represents the b column.<br>
+	 * The rest represent coefficient multiplicators.<br>
+	 * The restriction is a <= restriction.<br><br>
+	 * 
+	 * The given example would look like this:<br>
+	 * 1*x1 + 0*x2 + 0*x3 + 7,5*x4 <= 50<br>
+	 * 
+	 * @param problem Any kind of {@link Problem}
+	 * @param cut <code>Double[]</code> array representing a cut
+	 */
 	private void addCut(Problem problem, Double[] cut) {
 		Double[] coefficients = Arrays.copyOf(cut, cut.length - 1);
 		Double functionValue = cut[cut.length - 1];
@@ -294,6 +363,12 @@ public class BendersAlgorithm implements IBendersOptimization {
 		problem.addRestriction(coefficients, functionValue);
 	}
 
+	/**
+	 * Calculates a {@link MasterProblem} from the given {@link BendersOptimizationData}-input data.<br>
+	 * 
+	 * @param bendersOptimizationData algorithm input data
+	 * @return {@link MasterProblem} extracted from input
+	 */
 	private MasterProblem createMasterProblem(BendersOptimizationData bendersOptimizationData) {
 		Double[][] originTableau = bendersOptimizationData.getSimplexTableau();
 		int[] yIndices = bendersOptimizationData.getYVariableIndices();
@@ -351,6 +426,22 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return mp;
 	}
 	
+	/**
+	 * Returns <code>true</code> if a restrictions contains only y-values.<br><br>
+	 * 
+	 * <b>Restriction format:</b><br>
+	 * {1d, 0d, 0d, 7.5d, 50d}<br>
+	 * Last value represents the b column.<br>
+	 * The rest represent coefficient multiplicators.<br>
+	 * The restriction is a <= restriction.<br><br>
+	 * 
+	 * With y at position 1 the given example would look like this:<br>
+	 * 1*y1 + 0*x2 + 0*x3 + 7,5*x4 <= 50<br>
+	 * 
+	 * @param restriction array representing a restriction
+	 * @param yIndices array with y-positions of the given restriction
+	 * @return <code>true</code> if only y in restriction
+	 */
 	private boolean restrictionContainsOnlyY(Double[] restriction, int[] yIndices) {
 		for (int coefIndex = 0; coefIndex < restriction.length - 1; coefIndex++) {
 			if(!LinearOptimizationDataUtility.arrayContains(yIndices, coefIndex)) {
@@ -362,6 +453,12 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return true;
 	}
 	
+	/**
+	 * Calculates a {@link SubProblem} from the given {@link BendersOptimizationData}-input data.<br>
+	 * 
+	 * @param bendersOptimizationData algorithm input data
+	 * @return {@link SubProblem} extracted from input
+	 */
 	private SubProblem createSubProblem(BendersOptimizationData bendersOptimizationData) {
 		Double[][] originTableau = bendersOptimizationData.getSimplexTableau();
 		int[] yIndices = bendersOptimizationData.getYVariableIndices();
@@ -419,6 +516,14 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return new SubProblem(subTableau, coefficientsY);
 	}
 
+	/**
+	 * Inserts optimal y-values into a given {@link Subproblem} and return 
+	 * the solution as a new {@link Problem}. 
+	 * 
+	 * @param sProblem {@link Subproblem} to solve
+	 * @param optimalY array with optimal y-values
+	 * @return new {@link Problem} with inserted y-values
+	 */
 	private Problem getOriginSubWithY(SubProblem sProblem, Double[] optimalY) {
 		Double[][] originSubWithY = sProblem.getSimplexTableau();
 		
@@ -438,6 +543,13 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return new Problem(originSubWithY);
 	}
 
+	/**
+	 * Extracts and returns the coefficient-values from a Simplex or BranchAndBound solution.
+	 * 
+	 * @param simplexSolution array with Simplex or BAndB solution
+	 * @param bAndB <code>true</code> if BAndB, <code>false</code> if Simplex
+	 * @return array with solution coefficient-values
+	 */
 	private Double[] extractSolutionCoefficients(Double[] simplexSolution, boolean bAndB) {
 		int length;
 		if (bAndB) {
@@ -450,6 +562,15 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return u;
 	}
 	
+	/**
+	 * Returns the lower bound of a {@link MasterProblem} with {@link SubProblem}
+	 * -function-value wy and y-values.
+	 * 
+	 * @param mProblem {@link MasterProblem}
+	 * @param y y-values
+	 * @param wy solution of {@link SubProblem} function
+	 * @return lower bound
+	 */
 	private Double calculateLowerBound(MasterProblem mProblem, Double[] y, Double wy) {
 		Double lowerBound = wy;
 		for (int i = 0; i < y.length - 1; i++) { //exclude the theta
@@ -459,6 +580,22 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return lowerBound;
 	}
 
+	/**
+	 * Calculates and returns a cut of a {@link SubProblem} by a given array of u-values.<br><br>
+	 * 
+	 * <b>Cut format:</b><br>
+	 * {1d, 0d, 0d, 7.5d, 50d}<br>
+	 * Last value represents the b column.<br>
+	 * The rest represent coefficient multiplicators.<br>
+	 * The restriction is a <= restriction.<br><br>
+	 * 
+	 * The given example would look like this:<br>
+	 * 1*x1 + 0*x2 + 0*x3 + 7,5*x4 <= 50<br>
+	 * 
+	 * @param sProblem {@link SubProblem}
+	 * @param u array of u-values
+	 * @return cut array
+	 */
 	private Double[] calculateCut(SubProblem sProblem, Double[] u) {
 		Double[] cut = new Double[sProblem.getCoefficientsY()[0].length + 2];
 		Arrays.fill(cut, 0d);
@@ -475,6 +612,13 @@ public class BendersAlgorithm implements IBendersOptimization {
 		return cut;
 	}
 
+	/**
+	 * Inserts y-values into function of the DualProblem so that the u-values can be calculated later.
+	 * 
+	 * @param subProblem {@link SubProblem}
+	 * @param dualProblem the DualProblem as {@link Problem}
+	 * @param y array of y-values
+	 */
 	private void updateSubproblem(SubProblem subProblem, Problem dualProblem, Double[] y) {
 		Double[] function = new Double[dualProblem.getFunction().length];
 		
@@ -491,6 +635,12 @@ public class BendersAlgorithm implements IBendersOptimization {
 		dualProblem.setFunction(function);
 	}
 	
+	/**
+	 * Finds and returns the two highest values of a double-list.
+	 * 
+	 * @param array double-list of values to search in
+	 * @return array of the two highest values
+	 */
 	private double[] findTwoHighestDistinctValues(List<Double> array)
 	{
 	    double max = Double.MIN_VALUE;
@@ -511,10 +661,10 @@ public class BendersAlgorithm implements IBendersOptimization {
 	}
 
 	/**
-	 * Converts a 2d array to an list (1d array).
+	 * Converts a 2 dimensional array to a list (1d array).
 	 * 
-	 * @param arr
-	 * @return
+	 * @param arr 2 dimensional array
+	 * @return list of all values
 	 */
 	public List<Double> mode(Double[][] arr) {
 	    List<Double> list = new ArrayList<Double>();
