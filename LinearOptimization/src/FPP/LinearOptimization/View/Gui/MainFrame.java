@@ -7,6 +7,7 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -84,6 +85,8 @@ public class MainFrame {
 		frame.setBounds(10, 10, 1296, 756);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
+		frame.setTitle("Linear Optimization Tool");
+		frame.setIconImage(new ImageIcon(MainFrame.class.getResource("images/Logo2.png")).getImage());
 
 		// Menu
 		menubar = new JMenuBar();
@@ -151,6 +154,8 @@ public class MainFrame {
 		});
 
 		frame.add(buttonPanel, BorderLayout.SOUTH);
+		inputScreen.revalidate();
+		inputScreen.repaint();
 
 		save.addActionListener(new ActionListener() {
 			@Override
