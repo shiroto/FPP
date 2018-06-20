@@ -243,6 +243,13 @@ public class InputScreenMain extends JPanel {
 		jp_xVariables.add(lb_xVariables);
 
 		tf_xVariables = new JTextField();
+		tf_xVariables.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnInput.doClick();
+			}
+		});
 		jp_xVariables.add(tf_xVariables);
 		tf_xVariables.setColumns(10);
 
@@ -254,6 +261,14 @@ public class InputScreenMain extends JPanel {
 		jp_restrictions.add(lb_restrictions);
 
 		tf_restrictions = new JTextField();
+		tf_restrictions.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnInput.doClick();
+			}
+			
+		});
 		jp_restrictions.add(tf_restrictions);
 		tf_restrictions.setColumns(10);
 		

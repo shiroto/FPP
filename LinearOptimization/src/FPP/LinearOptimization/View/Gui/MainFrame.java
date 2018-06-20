@@ -43,7 +43,9 @@ public class MainFrame {
 	private JPanel buttonPanel = new JPanel();
 	private JMenuBar menubar;
 	private JMenu projektmenu;
+	private JMenu tabsmenu;
 	private JMenuItem save, open, fresh;
+	private JMenuItem closeCurrent, closeAll;
 	private IController controller;
 
 	/**
@@ -93,6 +95,10 @@ public class MainFrame {
 		projektmenu.add(fresh = new JMenuItem(Helper.Keyword.NEWPROJECT));
 		projektmenu.add(save = new JMenuItem(Helper.Keyword.SAVEPROJECT));
 		projektmenu.add(open = new JMenuItem(Helper.Keyword.LOADPROJECT));
+		tabsmenu = new JMenu(Helper.Keyword.TABS);
+		tabsmenu.add(closeCurrent = new JMenuItem(Helper.Keyword.CLOSECURRENT));
+		tabsmenu.add(closeAll = new JMenuItem(Helper.Keyword.CLOSEALL));
+		menubar.add(tabsmenu);
 		frame.setJMenuBar(menubar);
 
 		tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -106,6 +112,11 @@ public class MainFrame {
 					save.setEnabled(true);
 				} else {
 					save.setEnabled(false);
+				}
+				if (title.equals(Helper.Keyword.INPUTSIMPLEX)) {
+					closeCurrent.setEnabled(false);
+				} else {
+					closeCurrent.setEnabled(true);
 				}
 
 			}
@@ -218,6 +229,30 @@ public class MainFrame {
 
 			}
 
+		});
+		
+		closeCurrent.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int current = tabs.getSelectedIndex();
+				tabs.remove(current);
+				tabs.setSelectedIndex(current - 1);
+			}
+		});
+		
+		closeAll.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int amountTabs = tabs.getTabCount();
+				for (int i = amountTabs - 1; i > 0; i--) {
+					tabs.remove(i);
+				}
+				tabs.setSelectedIndex(0);;
+				
+			}
+			
 		});
 	}
 

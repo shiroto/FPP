@@ -136,6 +136,11 @@ public class Helper {
 		static final String SAVEPROJECT = "Projekt speichern";
 		static final String LOADPROJECT = "Projekt öffnen";
 		
+		//MenuTabs
+		static final String TABS = "Tabs";
+		static final String CLOSECURRENT = "Aktuellen Tab schließen";
+		static final String CLOSEALL = "Alle Tabs schließen";
+		
 		//Tabs
 		static final String INPUTBENDERS = "Eingabe Benders";
 		static final String INPUTDANTZIG = "Eingabe Dantzig-Wolfe";

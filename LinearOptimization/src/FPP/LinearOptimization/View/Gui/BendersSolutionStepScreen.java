@@ -247,6 +247,13 @@ public class BendersSolutionStepScreen extends JPanel {
 		this.stepTextField = new JTextField();
 		stepTextField.setPreferredSize(new Dimension(120, 40));
 		stepTextField.setMinimumSize(new Dimension(120, 40));
+		stepTextField.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				stepButton.doClick();
+			}
+		});
 
 		prevStepButton = new JButton("<");
 		prevStepButton.setPreferredSize(new Dimension(90, 40));

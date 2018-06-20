@@ -99,6 +99,13 @@ public class BendersSolutionScreen extends JPanel {
 
 				}
 			});
+			stepsTextField.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					stepsButton.doClick();
+				}
+			});
 			GridBagLayout gbl = new GridBagLayout();
 			stepsPanel.setLayout(gbl);
 
