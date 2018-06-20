@@ -38,10 +38,8 @@ public class MainFrame {
 
 	private JFrame frame;
 	private JTabbedPane tabs;
-	private JPanel panel;
 	private InputScreenMain inputScreen;
 	private JButton btnZoomIn, btnZoomOut;
-	private double currentZoom = 1.0;
 	private JPanel buttonPanel = new JPanel();
 	private JMenuBar menubar;
 	private JMenu projektmenu;
@@ -77,7 +75,7 @@ public class MainFrame {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialize all the contents of the main window.
 	 */
 	private void initialize() {
 
@@ -86,7 +84,7 @@ public class MainFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.setTitle("Linear Optimization Tool");
-		frame.setIconImage(new ImageIcon(MainFrame.class.getResource("images/Logo2.png")).getImage());
+		frame.setIconImage(new ImageIcon(MainFrame.class.getResource("images/logov2.png")).getImage());
 
 		// Menu
 		menubar = new JMenuBar();
@@ -112,7 +110,6 @@ public class MainFrame {
 
 			}
 		});
-		// MainScreen mainScreen = new MainScreen();
 		inputScreen = new InputScreenMain(this);
 
 		inputScreen.setVisible(true);
@@ -157,6 +154,7 @@ public class MainFrame {
 		inputScreen.revalidate();
 		inputScreen.repaint();
 
+		//Save and Load functionality
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -223,6 +221,9 @@ public class MainFrame {
 		});
 	}
 
+	/**
+	 * Loading Benders projects.
+	 */
 	protected void loadBenders(String path)  {
 		try {
 			BendersSaveClass obj = (BendersSaveClass) LinearOptFileHandler.load(path);
@@ -254,7 +255,10 @@ public class MainFrame {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	/**
+	 * Loading Branch and Bound projects.
+	 */
 	protected void loadBandB(String path) {
 		//Laden l = new Laden(path);
 		BranchAndBoundSpeicherKlasse objekt;
@@ -292,6 +296,9 @@ public class MainFrame {
 		
 	}
 
+	/**
+	 * Zooming in all displayed components.
+	 */
 	protected void zoomIn(Component c) {
 		if (c instanceof JPanel) {
 			c = (JPanel) c;
@@ -310,7 +317,10 @@ public class MainFrame {
 		}
 
 	}
-
+	
+	/**
+	 * Zooming out all currently displayed components.
+	 */
 	protected void zoomOut(Component c) {
 		if (c instanceof JPanel) {
 			c = (JPanel) c;
@@ -329,6 +339,9 @@ public class MainFrame {
 		}
 	}
 
+	/**
+	 * Adjusting and updating row heights of tables when zooming.
+	 */
 	private void updateRowHeights(JTable table) {
 		for (int row = 0; row < table.getRowCount(); row++) {
 			int rowHeight = table.getRowHeight();

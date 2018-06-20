@@ -62,9 +62,10 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	}
 
+	/**
+	 * Initializing Branch and Bound Inputscreen.
+	 */
 	public void initializeScreen() {
-		//this.numRestr = Integer.valueOf(this.simplexTableau.length) - 1;
-		//this.numVar = Integer.valueOf(this.simplexTableau[0].length - 1);
 		problemBeschreibungPanel = new JLabel();
 		problemBeschreibungPanel.setVisible(false);
 		this.add(problemBeschreibungPanel);
@@ -92,7 +93,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 		initiiereProblemViewFelder();
 
-		btnSubmit = new JButton("Submit");
+		btnSubmit = new JButton("Weiter");
 		btnSubmit.setBounds(1033, 527, 171, 41);
 		btnSubmit.addActionListener(new ActionListener() {
 
@@ -118,6 +119,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	}
 
+	
 	private void loadTables() {
 		Helper.alignCells(functionTable);
 		Helper.alignCells(restrictionTable);

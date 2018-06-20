@@ -60,11 +60,14 @@ public class InputScreenMain extends JPanel {
 		initializeScreen();
 	}
 
+	/**
+	 * Initializing the Main Input Screen.
+	 */
 	public void initializeScreen() {
 		initializeComponents();
 
 		btnInput = new JButton("Eingabe");
-		btnInput.setBounds(132, 417, 171, 41);
+		btnInput.setBounds(75, 340, 100, 30);
 		btnInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO: Eingaben prüfen
@@ -85,6 +88,9 @@ public class InputScreenMain extends JPanel {
 		this.add(btnInput);
 	}
 
+	/*
+	 * Open and load the benders input screen.
+	 */
 	protected void loadBendersScreen() {
 		inputBenders = new InputScreenBenders(mainFrame);
 		inputBenders.setVisible(true);
@@ -101,6 +107,9 @@ public class InputScreenMain extends JPanel {
 		
 	}
 
+	/*
+	 * Load all operators from the RestrictionTable.
+	 */
 	private String[] loadOPs() {
 		String[] ops = new String[restrictions];
 		for(int i = 0; i < restrictions; i++) {
@@ -110,6 +119,9 @@ public class InputScreenMain extends JPanel {
 		
 	}
 
+	/*
+	 * Setting all components of the input screen.
+	 */
 	protected void initializeInputComponents() {
 		xVariables = Integer.parseInt(tf_xVariables.getText());
 		countX = xVariables;
@@ -117,7 +129,7 @@ public class InputScreenMain extends JPanel {
 		setRestrictionTable(new JTable(restrictions, xVariables + 2));
 		getRestrictionTable().setBounds(446, 74, 435, 225);
 		getRestrictionTable().setVisible(true);
-		//Edit Tom 04.05: +1 für Schlupfvariable
+		//+1 für Schlupfvariable
 		setFunctionTable(new JTable(1, xVariables+1));
 		getFunctionTable().setBounds(446, 374, 435, 225);
 		getFunctionTable().setVisible(true);
@@ -224,10 +236,10 @@ public class InputScreenMain extends JPanel {
 
 	private void initializeComponents() {
 		JPanel jp_xVariables = new JPanel();
-		jp_xVariables.setBounds(50, 50, 250, 70);
+		jp_xVariables.setBounds(50, 50, 150, 70);
 		this.add(jp_xVariables);
 
-		JLabel lb_xVariables = new JLabel("Anzahl Variablen");
+		JLabel lb_xVariables = new JLabel("Anzahl Variablen:");
 		jp_xVariables.add(lb_xVariables);
 
 		tf_xVariables = new JTextField();
@@ -235,10 +247,10 @@ public class InputScreenMain extends JPanel {
 		tf_xVariables.setColumns(10);
 
 		JPanel jp_restrictions = new JPanel();
-		jp_restrictions.setBounds(50, 150, 250, 70);
+		jp_restrictions.setBounds(50, 180, 150, 70);
 		this.add(jp_restrictions);
 
-		JLabel lb_restrictions = new JLabel("Anzahl Restriktionen");
+		JLabel lb_restrictions = new JLabel("Anzahl Restriktionen:");
 		jp_restrictions.add(lb_restrictions);
 
 		tf_restrictions = new JTextField();
@@ -247,6 +259,9 @@ public class InputScreenMain extends JPanel {
 		
 	}
 
+	/*
+	 * Reset all components of the input screen.
+	 */
 	private void reset() {
 		if (panel_combo != null) {
 			this.remove(panel_combo);
@@ -261,7 +276,14 @@ public class InputScreenMain extends JPanel {
 		}
 	}
 
+	/*
+	 * Check for valid inputs in all input tables.
+	 */
 	protected boolean validateTableInput() {
+		if (cbAlgorithm.getSelectedItem() == null) {
+			JOptionPane.showMessageDialog(null, "Bitte wählen Sie einen Algorithmus aus.");
+			return false;
+		}
 		for (int rowId = 0; rowId < getRestrictionTable().getRowCount(); rowId++) {
 			for (int columnId = 0; columnId < getRestrictionTable().getColumnCount(); columnId++) {
 				if (columnId != xVariables) {
@@ -282,39 +304,29 @@ public class InputScreenMain extends JPanel {
 		return true;
 	}
 
+	/*
+	 * Load the combobox with all Algorithms inside.
+	 */
 	protected void loadCombo() {
 		panel_combo = new JPanel();
-		panel_combo.setBounds(50, 250, 250, 100);
+		panel_combo.setBounds(980, 350, 250, 100);
 
-		JLabel lblAlgorithmus = new JLabel("Algorithmus");
+		JLabel lblAlgorithmus = new JLabel("Algorithmus: ");
 		panel_combo.add(lblAlgorithmus);
 
 		cbAlgorithm = new JComboBox<String>();
-		/*
-		cbAlgorithm.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				String item = (String) e.getItem();
-				if (item.equals(Algorithm.BranchBoundAlgorithm.getScreenName())) {
-					rdbtnMax.setEnabled(false);
-					rdbtnMin.setEnabled(false);
-				} else {
-					rdbtnMax.setEnabled(true);
-					rdbtnMin.setEnabled(true);
-				}
-			}
-		});
-		*/
 		panel_combo.add(cbAlgorithm);
-
 		cbAlgorithm.addItem(Algorithm.BendersAlgorithm.getScreenName());
 		cbAlgorithm.addItem(Algorithm.DantzigAlgorithm.getScreenName());
 		cbAlgorithm.addItem(Algorithm.BranchBoundAlgorithm.getScreenName());
+		cbAlgorithm.setSelectedItem(null);
 		this.add(panel_combo);
 		this.validate();
 	}
 
+	/*
+	 * Load the Min / Max Radio buttons.
+	 */
 	protected void loadRadioBtn() {
 		panel = new JPanel();
 		bg = new ButtonGroup();
@@ -333,6 +345,9 @@ public class InputScreenMain extends JPanel {
 		this.revalidate();
 	}
 
+	/*
+	 * Creates the simplex tableau, with all the inputs of the tables.
+	 */
 	protected void createSimplexTableau() {
 		simplexTableau = new Double[restrictions + 1][xVariables + 1];
 		for (int rowId = 0; rowId < getRestrictionTable().getRowCount(); rowId++) {
@@ -375,15 +390,6 @@ public class InputScreenMain extends JPanel {
 		}
 		System.out.println("SimplexTableau fertiggestellt");
 		System.out.println(Arrays.deepToString(simplexTableau));
-
-		/*
-		 * inputObject.cx = countX; String selection =
-		 * bg.getSelection().getActionCommand(); switch(selection) { case "min":
-		 * inputObject.maximize=false; break; case "max": inputObject.maximize=true;
-		 * break;
-		 * 
-		 * }
-		 */
 		System.out.println("");
 
 	}
@@ -411,7 +417,6 @@ public class InputScreenMain extends JPanel {
 		getFunctionTable().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollPaneFunction.setBorder(null);
 		scrollPaneFunction.repaint();
-
 	}
 
 	protected void loadProblemTable() {
