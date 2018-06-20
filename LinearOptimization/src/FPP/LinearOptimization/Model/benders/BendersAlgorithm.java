@@ -23,11 +23,19 @@ public class BendersAlgorithm implements IBendersOptimization {
 
 	protected static final String MASTER_PROBLEM_UNBOUNDED_MESSAGE = 
 			"Das Masterproblem ist unbeschränkt, daher kann der Algorithmus keine Berechnung durchführen.";
+	protected static final String NO_Y_MESSAGE = 
+			"Keine Y-Variablen definiert! Für eine Lösung mit dem Benders Algorithmus wird mind. 1 Y-Variable benötigt.";
 
 	@Override
 	public IBendersOptimizationSolutionData solve(BendersOptimizationData bendersOptimizationData) {
 		// Initialize the solution object
 		BendersSolutionData bendersSolution = new BendersSolutionData(bendersOptimizationData);
+		
+		// Check if we have defined y-variables because we need them for our master problem!
+		if (bendersOptimizationData.getYVariableIndices().length == 0) {
+			bendersSolution.setAddInfo(NO_Y_MESSAGE);
+			return bendersSolution;
+		}
 
 		// If we have a constant, we substitute it with 0 and add it to the optimal solution in the end
 		Double constant = substituteConstant(bendersOptimizationData);

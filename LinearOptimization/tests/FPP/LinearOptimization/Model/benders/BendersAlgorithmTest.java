@@ -522,6 +522,43 @@ public class BendersAlgorithmTest {
 			
 			testInput(inputData, result, parameterResults);
 	}
+	/**
+	 * <h3>No y-variables defined</h3>
+	 * <b><u>function:</b></u><br>
+	 * 11 * x1 + 14 * x2  <= 0<br>
+	 * <b><u>restrictions:</b></u><br>
+	 * x1 + x2 <= 17<br>
+	 * 3 * x1 + 7 * x2 <= 63<br>
+	 * 3 * x1 + 5 * x2 <= 48<br>
+	 * 3 * x1 + x2 <= 30<br>
+	 * <br><b><u>result:</b></u><p><ul>
+	 * <li>message no y-variables defined
+	 */
+	@Test
+	void test_no_y_defined() {
+		System.out.println("\n----------------------------------------------------------------");
+		System.out.println("no y defined");
+		// prepare test data
+		Double[] function = {11d,14d,0d,0d,0d, 0d, 0d};
+		Double[][] simplexTableau = new Double[][] {
+			{1d, 1d, 1d, 0d, 0d, 0d, 17d},
+			{3d, 7d, 0d, 1d, 0d, 0d, 63d},
+			{3d, 5d, 0d, 0d, 1d, 0d, 48d},
+			{3d, 1d, 0d, 0d, 0d, 1d, 30d},
+			function};
+			int[] paramaterNegativeIndices = {};
+			int[] yVariableIndices = {};
+			BendersMasterCoefficientType[] yTypes = {};
+			
+			BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
+					paramaterNegativeIndices, yVariableIndices, yTypes);
+			
+			IBendersOptimizationSolutionData solutionData = new BendersAlgorithm().solve(inputData);
+			assertEquals(solutionData.getAddInfo(), BendersAlgorithm.NO_Y_MESSAGE);
+			System.out.println(solutionData.getAddInfo());
+			assertNull(solutionData.getOptSolution());
+			assertTrue(solutionData.getSteps().isEmpty());
+	}
 	
 	/**
 	 * <h3>1 integer y-variable in the master problem</h3>
@@ -585,6 +622,7 @@ public class BendersAlgorithmTest {
 			
 			IBendersOptimizationSolutionData solutionData = new BendersAlgorithm().solve(inputData);
 			assertEquals(solutionData.getAddInfo(), BendersAlgorithm.MASTER_PROBLEM_UNBOUNDED_MESSAGE);
+			System.out.println(solutionData.getAddInfo());
 			assertNull(solutionData.getOptSolution());
 			assertTrue(solutionData.getSteps().isEmpty());
 	}
