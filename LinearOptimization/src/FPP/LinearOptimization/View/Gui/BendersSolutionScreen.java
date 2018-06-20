@@ -107,24 +107,6 @@ public class BendersSolutionScreen extends JPanel {
 			Helper.addComponent(stepsPanel, gbl, stepsButton, 1, 1, 1, 1, 1, 1);
 
 		}
-		/*
-		 * scrollPaneSolution = new JScrollPane(solutionTable,
-		 * JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-		 * JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		 * scrollPaneSolution.setBounds(399, 250, 523, 60);
-		 * this.add(scrollPaneSolution);
-		 * solutionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		 * scrollPaneSolution.setBorder(null);
-		 * 
-		 * scrollPaneFunction = new JScrollPane(functionTable,
-		 * JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-		 * JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		 * scrollPaneFunction.setBounds(399, 90, 523, 60); this.add(scrollPaneFunction);
-		 * solutionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		 * scrollPaneFunction.setBorder(null);
-		 * 
-		 * scrollPaneSolution.repaint(); scrollPaneFunction.repaint();
-		 */
 	}
 
 	protected boolean validateInput() {

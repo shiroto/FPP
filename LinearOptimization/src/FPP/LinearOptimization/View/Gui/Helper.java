@@ -13,6 +13,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class Helper {
 	public static  int KOMMASTELLEN = 3;
 	
+	/**
+	 * Help method for checking if the input string of a text field is a number.
+	 */
 	public static boolean isNumeric(String str)  
 	{  
 	  try  
@@ -26,6 +29,9 @@ public class Helper {
 	  return true;  
 	}
 	
+	/**
+	 * Help method for checking if the input string of a text field is an integer.
+	 */
 	public static boolean isInteger(String str)  
 	{  
 	  try  
@@ -39,6 +45,9 @@ public class Helper {
 	  return true;  
 	}
 	
+	/**
+	 * Help method for adding a component to the GridbagLayout in the BendersSolutionStepScreen.
+	 */
 	public static void addComponent(Container cont, GridBagLayout gbl, Component c, int x, int y, int width, int height,
 			double weightx, double weighty) {
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -53,7 +62,9 @@ public class Helper {
 		cont.add(c);
 	}
 	
-	//Method for adding components with extra padding in the GridbagLayout
+	/**
+	 * Help method for adding a component with padding to the GridbagLayout in the BendersSolutionStepScreen.
+	 */
 	public static void addComponentWithPadding(Container cont, GridBagLayout gbl, Component c, int x, int y, int width, int height,
 			double weightx, double weighty, int insetTop, int insetLeft, int insetBottom, int insetRight) {
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -69,6 +80,9 @@ public class Helper {
 		cont.add(c);
 	}
 	
+	/**
+	 * Help method for rounding the BendersSolutionStepData.
+	 */
 	public static Double[][] roundStepData(Double[][] array, int dec) {
 		Double[][] roundArray = new Double[array.length][array[0].length];
 		for(int i = 0; i < array.length;i++) {
@@ -80,6 +94,9 @@ public class Helper {
 		
 	}
 	
+	/**
+	 * Help method for rounding the BendersSolutionStepData.
+	 */
 	public static Double round(Double d, int dec) {
 		Double temp;
 		temp = d * Math.pow(10, dec);
@@ -88,6 +105,9 @@ public class Helper {
 		return temp;
 	}
 	
+	/**
+	 * Help method for rounding the BendersSolutionStepData.
+	 */
 	public static Double[] roundSolutionData(Double[] array, int dec) {
 		Double[] roundArray = new Double[array.length];
 		for(int i = 0; i < array.length;i++) {
@@ -97,6 +117,9 @@ public class Helper {
 		
 	}
 	
+	/**
+	 * Help method for aligning Table cells.
+	 */
 	public static void alignCells(JTable table) {
 		for (int i = 0; i < table.getColumnCount(); i++) {
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();

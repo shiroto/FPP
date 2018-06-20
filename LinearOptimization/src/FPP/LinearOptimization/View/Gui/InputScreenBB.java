@@ -62,9 +62,10 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	}
 
+	/**
+	 * Initializing Branch and Bound Inputscreen.
+	 */
 	public void initializeScreen() {
-		//this.numRestr = Integer.valueOf(this.simplexTableau.length) - 1;
-		//this.numVar = Integer.valueOf(this.simplexTableau[0].length - 1);
 		problemBeschreibungPanel = new JLabel();
 		problemBeschreibungPanel.setVisible(false);
 		this.add(problemBeschreibungPanel);
@@ -118,6 +119,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	}
 
+	
 	private void loadTables() {
 		Helper.alignCells(functionTable);
 		Helper.alignCells(restrictionTable);

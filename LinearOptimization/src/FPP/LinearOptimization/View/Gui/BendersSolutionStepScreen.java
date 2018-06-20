@@ -64,8 +64,9 @@ public class BendersSolutionStepScreen extends JPanel {
 		this.stepsList = bendersSolutionObject.getSteps();
 	}
 
+	
 	public void initializeScreen(int stepIndex) {
-		
+
 		this.stepIndex = stepIndex;
 		this.step = stepsList.get(this.stepIndex);
 		this.master = step.getMasterProblem();
@@ -84,32 +85,31 @@ public class BendersSolutionStepScreen extends JPanel {
 
 		loadSolutionTable(masterSolutionTable, masterSolution);
 		loadSolutionTable(subSolutionTable, subSolution);
-		
-		//Header
+
+		// Header
 		loadTableHeader(masterTable, false);
 		loadSubTableHeader(subTable, false);
 		loadTableHeader(masterSolutionTable, true);
 		loadSubTableHeader(subSolutionTable, true);
-		
-		//ScrollPanes
-		JScrollPane scrollPaneMaster= new  JScrollPane(masterTable);
-		JScrollPane scrollPaneSub= new  JScrollPane(subTable);
-		JScrollPane scrollPaneMasterSol= new  JScrollPane(masterSolutionTable);
-		JScrollPane scrollPaneSubSol= new  JScrollPane(subSolutionTable);
-		
-		//adding all components to the layout
+
+		// ScrollPanes
+		JScrollPane scrollPaneMaster = new JScrollPane(masterTable);
+		JScrollPane scrollPaneSub = new JScrollPane(subTable);
+		JScrollPane scrollPaneMasterSol = new JScrollPane(masterSolutionTable);
+		JScrollPane scrollPaneSubSol = new JScrollPane(subSolutionTable);
+
+		// adding all components to the layout
 		Helper.addComponent(this, gbl, masterLabel, 0, 0, 3, 1, 0, 0);
 		Helper.addComponent(this, gbl, scrollPaneMaster, 0, 1, 3, 7, 1, 1);
 		Helper.addComponent(this, gbl, masterSolutionLabel, 0, 8, 3, 1, 0, 0);
 		Helper.addComponent(this, gbl, scrollPaneMasterSol, 0, 9, 3, 1, 0, 0);
 		Helper.addComponent(this, gbl, masterRoundButton, 3, 1, 1, 1, 0, 0);
-		
+
 		Helper.addComponent(this, gbl, subRoundButton, 9, 1, 1, 1, 0, 0);
 		Helper.addComponent(this, gbl, subLabel, 4, 0, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, scrollPaneSub, 4, 1, 5, 7, 1, 1);
 		Helper.addComponent(this, gbl, subSolutionLabel, 4, 8, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, scrollPaneSubSol, 4, 9, 5, 1, 1, 1);
-
 
 		Helper.addComponent(this, gbl, ubLabel, 0, 10, 3, 1, 1, 1);
 		Helper.addComponent(this, gbl, lbLabel, 3, 10, 3, 1, 1, 1);
@@ -124,58 +124,30 @@ public class BendersSolutionStepScreen extends JPanel {
 
 	}
 
+	
 	private void loadTableHeader(JTable table, boolean sol) {
-		int[] yIndices = bendersSolutionObject.getBendersOptimizationData().getYVariableIndices();
-		int xIndicesCount = table.getColumnCount() - yIndices.length;
-		Arrays.sort(yIndices);
 		JTableHeader th = table.getTableHeader();
 		TableColumnModel tcm = th.getColumnModel();
-		int yCount = 0;
-		// x indices
-		for (int i = 1; i <= xIndicesCount + yIndices.length; i++) {
-			for (int j = 1; j <= yIndices.length; j++) {
-				if (yIndices[j - 1] == i - 1) {
-					TableColumn tc = tcm.getColumn(i - 1);
-					tc.setHeaderValue("<html>y<sub>" + j + "</sub></html>");
-					yCount++;
-					break;
-				} else {
-					TableColumn tc = tcm.getColumn(i - 1);
-					tc.setHeaderValue("<html>x<sub>" + (i - yCount) + "</sub></html>");
-				}
-			}
-
+		for (int i = 1; i <= table.getColumnCount() - 2; i++) {
+			TableColumn tc = tcm.getColumn(i - 1);
+			tc.setHeaderValue("<html>y<sub>" + i + "</sub></html>");
 		}
-		TableColumn tc = tcm.getColumn(table.getColumnCount() - 1);
+		TableColumn tc = tcm.getColumn(table.getColumnCount() - 2);
+		tc.setHeaderValue("Theta");
+		tc = tcm.getColumn(table.getColumnCount() - 1);
 		if (sol) {
 			tc.setHeaderValue("Lösung");
 		} else {
 			tc.setHeaderValue("");
 		}
-
 	}
-	
+
 	private void loadSubTableHeader(JTable table, boolean sol) {
-		int[] yIndices = bendersSolutionObject.getBendersOptimizationData().getYVariableIndices();
-		int xIndicesCount = table.getColumnCount() - yIndices.length;
-		Arrays.sort(yIndices);
 		JTableHeader th = table.getTableHeader();
 		TableColumnModel tcm = th.getColumnModel();
-		int yCount = 0;
-		// x indices
-		for (int i = 1; i <= xIndicesCount + yIndices.length; i++) {
-			for (int j = 1; j <= yIndices.length; j++) {
-				if (yIndices[j - 1] == i - 1) {
-					TableColumn tc = tcm.getColumn(i - 1);
-					tc.setHeaderValue("<html>y<sub>" + j + "</sub></html>");
-					yCount++;
-					break;
-				} else {
-					TableColumn tc = tcm.getColumn(i - 1);
-					tc.setHeaderValue("<html>u<sub>" + (i - yCount) + "</sub></html>");
-				}
-			}
-
+		for (int i = 1; i <= table.getColumnCount() - 1; i++) {
+			TableColumn tc = tcm.getColumn(i - 1);
+			tc.setHeaderValue("<html>u<sub>" + i + "</sub></html>");
 		}
 		TableColumn tc = tcm.getColumn(table.getColumnCount() - 1);
 		if (sol) {
@@ -275,7 +247,7 @@ public class BendersSolutionStepScreen extends JPanel {
 		this.stepTextField = new JTextField();
 		stepTextField.setPreferredSize(new Dimension(120, 40));
 		stepTextField.setMinimumSize(new Dimension(120, 40));
-		
+
 		prevStepButton = new JButton("<");
 		prevStepButton.setPreferredSize(new Dimension(90, 40));
 		prevStepButton.setMinimumSize(new Dimension(90, 40));
@@ -338,7 +310,8 @@ public class BendersSolutionStepScreen extends JPanel {
 		if (!Helper.isNumeric(String.valueOf(stepTextField.getText()))) {
 			JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
 			return false;
-		} else if ((Integer.parseInt(stepTextField.getText()) <= 0) || (Integer.parseInt(stepTextField.getText()) > stepsList.size())) {
+		} else if ((Integer.parseInt(stepTextField.getText()) <= 0)
+				|| (Integer.parseInt(stepTextField.getText()) > stepsList.size())) {
 			JOptionPane.showMessageDialog(null, "Bitte geben Sie einen gültigen Step ein.");
 			return false;
 		} else if (Integer.parseInt(stepTextField.getText()) == (stepIndex + 1)) {
@@ -394,7 +367,7 @@ public class BendersSolutionStepScreen extends JPanel {
 		};
 		model.addRow(array);
 		table.setModel(model);
-		//table.setTableHeader(null);
+		// table.setTableHeader(null);
 
 		// Align
 		for (int i = 0; i < array.length - 1; i++) {
@@ -417,7 +390,7 @@ public class BendersSolutionStepScreen extends JPanel {
 			model.addRow(array[i]);
 		}
 		table.setModel(model);
-		//table.setTableHeader(null);
+		// table.setTableHeader(null);
 		// Align
 		for (int i = 0; i < array[0].length; i++) {
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
