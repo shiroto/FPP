@@ -93,7 +93,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 		initiiereProblemViewFelder();
 
-		btnSubmit = new JButton("Submit");
+		btnSubmit = new JButton("Weiter");
 		btnSubmit.setBounds(1033, 527, 171, 41);
 		btnSubmit.addActionListener(new ActionListener() {
 

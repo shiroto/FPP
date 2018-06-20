@@ -67,7 +67,7 @@ public class InputScreenMain extends JPanel {
 		initializeComponents();
 
 		btnInput = new JButton("Eingabe");
-		btnInput.setBounds(132, 417, 171, 41);
+		btnInput.setBounds(75, 340, 100, 30);
 		btnInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO: Eingaben prüfen
@@ -236,10 +236,10 @@ public class InputScreenMain extends JPanel {
 
 	private void initializeComponents() {
 		JPanel jp_xVariables = new JPanel();
-		jp_xVariables.setBounds(50, 50, 250, 70);
+		jp_xVariables.setBounds(50, 50, 150, 70);
 		this.add(jp_xVariables);
 
-		JLabel lb_xVariables = new JLabel("Anzahl Variablen");
+		JLabel lb_xVariables = new JLabel("Anzahl Variablen:");
 		jp_xVariables.add(lb_xVariables);
 
 		tf_xVariables = new JTextField();
@@ -247,10 +247,10 @@ public class InputScreenMain extends JPanel {
 		tf_xVariables.setColumns(10);
 
 		JPanel jp_restrictions = new JPanel();
-		jp_restrictions.setBounds(50, 150, 250, 70);
+		jp_restrictions.setBounds(50, 180, 150, 70);
 		this.add(jp_restrictions);
 
-		JLabel lb_restrictions = new JLabel("Anzahl Restriktionen");
+		JLabel lb_restrictions = new JLabel("Anzahl Restriktionen:");
 		jp_restrictions.add(lb_restrictions);
 
 		tf_restrictions = new JTextField();
@@ -280,6 +280,10 @@ public class InputScreenMain extends JPanel {
 	 * Check for valid inputs in all input tables.
 	 */
 	protected boolean validateTableInput() {
+		if (cbAlgorithm.getSelectedItem() == null) {
+			JOptionPane.showMessageDialog(null, "Bitte wählen Sie einen Algorithmus aus.");
+			return false;
+		}
 		for (int rowId = 0; rowId < getRestrictionTable().getRowCount(); rowId++) {
 			for (int columnId = 0; columnId < getRestrictionTable().getColumnCount(); columnId++) {
 				if (columnId != xVariables) {
@@ -305,9 +309,9 @@ public class InputScreenMain extends JPanel {
 	 */
 	protected void loadCombo() {
 		panel_combo = new JPanel();
-		panel_combo.setBounds(50, 250, 250, 100);
+		panel_combo.setBounds(980, 350, 250, 100);
 
-		JLabel lblAlgorithmus = new JLabel("Algorithmus");
+		JLabel lblAlgorithmus = new JLabel("Algorithmus: ");
 		panel_combo.add(lblAlgorithmus);
 
 		cbAlgorithm = new JComboBox<String>();
@@ -315,6 +319,7 @@ public class InputScreenMain extends JPanel {
 		cbAlgorithm.addItem(Algorithm.BendersAlgorithm.getScreenName());
 		cbAlgorithm.addItem(Algorithm.DantzigAlgorithm.getScreenName());
 		cbAlgorithm.addItem(Algorithm.BranchBoundAlgorithm.getScreenName());
+		cbAlgorithm.setSelectedItem(null);
 		this.add(panel_combo);
 		this.validate();
 	}
