@@ -20,16 +20,9 @@ public interface IBendersOptimizationSolutionData extends ILinearOptimizationSol
 	/**
 	 * This gives you the optimal solution for the given problem.<br>	 
 	 * <b>Example for solution object:</b><br>
-	 * {0d, 0d, 3d, 10d, 500d, 3.0}<br><br>
+	 * {0d, 0d, 3d, 10d, 500d}<br><br>
 	 * 
 	 * 500d is the objective function value<br>
-	 * last value (here 3.0) is an additional info about the solution.<br>
-	 * <p><ul>
-	 * <li>0.0 <b>no solution</b>
-	 * <li>1.0 <b>no optimal solution</b>
-	 * <li>2.0 <b>more than one solution</b>
-	 * <li>3.0 <b>optimal solution</b>
-	 * </ul><p>
 	 * @return optimal solution
 	 */
 	Double[] getOptSolution();

@@ -24,12 +24,12 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 binary y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 >= 0<br>
+	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - x1 - x2 - 2 * y1 >= -10<br>
-	 * - 2 * x1  - 2 * y1 >= -10<br>
-	 * - x3 - 3 * x4 - 0,5 * y >= -2<br>
-	 * - 10 * x4 - y >= -6<br>
+	 * - x1 - x2 - 2 * y1 <= -10<br>
+	 * - 2 * x1  - 2 * y1 <= -10<br>
+	 * - x3 - 3 * x4 - 0,5 * y <= -2<br>
+	 * - 10 * x4 - y <= -6<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 1430
 	 * <li> coefficients: [4.0, 4.0, 0.0, 0.5, 1.0]</ul><p>
@@ -61,12 +61,12 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 float y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 >= 0<br>
+	 * 200 * x1 + 50 * x2 + 80 * x3 + 500 * x4 + 180 * y1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - x1 - x2 - 2 * y1 >= -10<br>
-	 * - 2 * x1  - 2 * y1 >= -10<br>
-	 * - x3 - 3 * x4 - 0,5 * y >= -2<br>
-	 * - 10 * x4 - y >= -6<br>
+	 * - x1 - x2 - 2 * y1 <= -10<br>
+	 * - 2 * x1  - 2 * y1 <= -10<br>
+	 * - x3 - 3 * x4 - 0,5 * y <= -2<br>
+	 * - 10 * x4 - y <= -6<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 950.0
 	 * <li> coefficients: [0.0, 0.0, 0.0, 0.1, 5.0]</ul><p>
@@ -98,15 +98,15 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 integer y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - x1 - 2 * x2 - 3 * x3 - y1 >= 0<br>
+	 * - x1 - 2 * x2 - 3 * x3 - y1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - x1 + x2 + x3 + 10 * y1 >= 20<br>
-	 * x1 - 3 * x2 + x3 >= 30<br>
-	 * x2 - 3.5 * y1 >= 0<br>
-	 * - x2 + 3.5 * y1 >= 0<br>
-	 * x1 >= 40<br>
-	 * - y1 >= -2<br>
-	 * y1 >= 3<br>
+	 * - x1 + x2 + x3 + 10 * y1 <= 20<br>
+	 * x1 - 3 * x2 + x3 <= 30<br>
+	 * x2 - 3.5 * y1 <= 0<br>
+	 * - x2 + 3.5 * y1 <= 0<br>
+	 * x1 <= 40<br>
+	 * - y1 <= -2<br>
+	 * y1 <= 3<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -122.5
 	 * <li> coefficients: [40.0, 10.5, 19.5, 3.0]</ul><p>
@@ -142,13 +142,13 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>Multiple binary y-variables in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - 8 * x1 - 6 * x2 - x3 - 10 * y1 - 8 * y2 + 33 * y3 >= 0<br>
+	 * - 8 * x1 - 6 * x2 - x3 - 10 * y1 - 8 * y2 + 33 * y3 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * 2 * x1 + x2 - x3 - 10 * y1 - 8 * y2 >= -4<br>
-	 * x1 + x2 + x3 - 5 * y1 - 8 * y3 >= -3<br>
-	 * y1 >= 1<br>
-	 * y2 >= 1<br>
-	 * y3 >= 1<br>
+	 * 2 * x1 + x2 - x3 - 10 * y1 - 8 * y2 <= -4<br>
+	 * x1 + x2 + x3 - 5 * y1 - 8 * y3 <= -3<br>
+	 * y1 <= 1<br>
+	 * y2 <= 1<br>
+	 * y3 <= 1<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 25.0
 	 * <li> coefficients: [0.0, 4.5, 0.5, 0.0, 1.0, 1.0]</ul><p>
@@ -183,13 +183,13 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>Multiple integer y-variables in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - y1 - y2 - 3 * x1 - 2 * x2 - 2 * y3 >= 0<br>
+	 * - y1 - y2 - 3 * x1 - 2 * x2 - 2 * y3 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - y1 - y2 + x1 + x2 >= 30<br>
-	 * - y1 + x1 - 3 * x2  >= 30<br>
-	 * y1 >= 40<br>
-	 * y2 >= 1<br>
-	 * y3 >= 1<br>
+	 * - y1 - y2 + x1 + x2 <= 30<br>
+	 * - y1 + x1 - 3 * x2  <= 30<br>
+	 * y1 <= 40<br>
+	 * y2 <= 1<br>
+	 * y3 <= 1<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -235.75
 	 * <li> coefficients: [40.0, 1.0, 50.75, 20.25, 1.0]</ul><p>
@@ -224,14 +224,14 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>Multiple integer y-variables in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - x1 - y1 - 3 * x2 - 2 * x3 - 2 * y2 >= 0<br>
+	 * - x1 - y1 - 3 * x2 - 2 * x3 - 2 * y2 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - x1 - y1 + x2 + x3 >= 30<br>
-	 * x1 + x2 - 3 * x3 >= 30<br>
-	 * - y1 + x2 >= 30<br>
-	 * x1 >= 40<br>
-	 * y1 >= 1<br>
-	 * y2 >= 1<br>
+	 * - x1 - y1 + x2 + x3 <= 30<br>
+	 * x1 + x2 - 3 * x3 <= 30<br>
+	 * - y1 + x2 <= 30<br>
+	 * x1 <= 40<br>
+	 * y1 <= 1<br>
+	 * y2 <= 1<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -214.0
 	 * <li> coefficients: [40.0, 1.0, 31.0, 40.0, 1.0]</ul><p>
@@ -267,11 +267,11 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>Single binary y-variables in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - 3 * x1 - 2 * x2 - y1 >= 0<br>
+	 * - 3 * x1 - 2 * x2 - y1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * x1 + x2 + y1 >= 7<br>
-	 * 4 * x1 + 2 * x2 + y1 >= 12<br>
-	 * - 4 * x1 - 2 * x2 - y1 >= -12<br>
+	 * x1 + x2 + y1 <= 7<br>
+	 * 4 * x1 + 2 * x2 + y1 <= 12<br>
+	 * - 4 * x1 - 2 * x2 - y1 <= -12<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -12.0
 	 * <li> coefficients: [0.0, 6.0, 0.0]</ul><p>
@@ -303,11 +303,11 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 integer y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * 2 * x1 + y1 >= 0<br>
+	 * 2 * x1 + y1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * - 4 * x1 - 4 * y1 >= -10<br>
-	 * - 2 * x1 - 11 * y1 >= -11<br>
-	 * - 4 * x1 - 2 * y1 >= 1<br>
+	 * - 4 * x1 - 4 * y1 <= -10<br>
+	 * - 2 * x1 - 11 * y1 <= -11<br>
+	 * - 4 * x1 - 2 * y1 <= 1<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 3.5
 	 * <li> coefficients: [0.75, 2.0]</ul><p>
@@ -339,17 +339,17 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>Multiple mixed y-variables in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - 14 * x1 - 20 * x2 - 18 * y1 - 26 * y2 >= 0<br>
+	 * - 14 * x1 - 20 * x2 - 18 * y1 - 26 * y2 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * 8 * x1 + 8 * x2 + 6 * y1 + 6 * y2 >= 14<br>
-	 * x1 >= 1<br>
-	 * - x1 >= 0<br>
-	 * x2 >= 1<br>
-	 * - x2 >= 0<br>
-	 * y1 >= 1<br>
-	 * - y1 >= 0<br>
-	 * y2 >= 1<br>
-	 * - y2 >= 0<br>
+	 * 8 * x1 + 8 * x2 + 6 * y1 + 6 * y2 <= 14<br>
+	 * x1 <= 1<br>
+	 * - x1 <= 0<br>
+	 * x2 <= 1<br>
+	 * - x2 <= 0<br>
+	 * y1 <= 1<br>
+	 * - y1 <= 0<br>
+	 * y2 <= 1<br>
+	 * - y2 <= 0<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 3.5
 	 * <li> coefficients: [0.75, 2.0]</ul><p>
@@ -388,15 +388,15 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 float y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - 3 * x1 - 5 * x2 - 2 * y1 >= 0<br>
+	 * - 3 * x1 - 5 * x2 - 2 * y1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * 30 * x1 + 50 * x2 + 20 * y1 >= 70<br>
-	 * x1 >= 1<br>
-	 * - x1 >= 0<br>
-	 * x2 >= 1<br>
-	 * - x2 >= 0<br>
-	 * y1 >= 1<br>
-	 * - y1 >= 0<br>
+	 * 30 * x1 + 50 * x2 + 20 * y1 <= 70<br>
+	 * x1 <= 1<br>
+	 * - x1 <= 0<br>
+	 * x2 <= 1<br>
+	 * - x2 <= 0<br>
+	 * y1 <= 1<br>
+	 * - y1 <= 0<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -7.0
 	 * <li> coefficients: [0.0, 1.0, 1.0]</ul><p>
@@ -429,30 +429,30 @@ public class BendersAlgorithmTest {
 	}
 	
 	/**
-	 * <h3>Multiple binary y-variables in the master problem</h3>
+	 * <h3>Multiple float y-variables in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - 9 * x1 - 5 * y1 + 6 * y2 + 4 * y3 >= 0<br>
+	 * - 9 * x1 - 5 * y1 + 6 * y2 + 4 * y3 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * 6 * x1 + 3 * y1 + 5 * y2 + 2 * y3 >= 10<br>
-	 * y2 + y3 >= 1<br>
-	 * - x1 + y2 >= 0<br>
-	 * - y1 + y3 >= 0<br>
-	 * x1 >= 1<br>
-	 * - x1 >= 0<br>
-	 * y1 >= 1<br>
-	 * - y1 >= 0<br>
-	 * y2 >= 1<br>
-	 * - y2 >= 0<br>
-	 * y3 >= 1<br>
-	 * - y3 >= 0<br>
+	 * 6 * x1 + 3 * y1 + 5 * y2 + 2 * y3 <= 10<br>
+	 * y2 + y3 <= 1<br>
+	 * - x1 + y2 <= 0<br>
+	 * - y1 + y3 <= 0<br>
+	 * x1 <= 1<br>
+	 * - x1 <= 0<br>
+	 * y1 <= 1<br>
+	 * - y1 <= 0<br>
+	 * y2 <= 1<br>
+	 * - y2 <= 0<br>
+	 * y3 <= 1<br>
+	 * - y3 <= 0<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -14.0
 	 * <li> coefficients: [1.0, 1.0, 0.0, 0.0]</ul><p>
 	 */
 	@Test
-	void test_multiple_binary_2() {
+	void test_multiple_float() {
 		System.out.println("\n----------------------------------------------------------------");
-		System.out.println("multiple binary");
+		System.out.println("multiple float");
 		// prepare test data
 		Double[] function = {-9d,-5d,6d,4d,0d};
 		Double[][] simplexTableau = new Double[][] {
@@ -471,8 +471,8 @@ public class BendersAlgorithmTest {
 			function};
 		int[] paramaterNegativeIndices = {};
 		int[] yVariableIndices = {1, 2, 3};
-		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Binary, 
-				BendersMasterCoefficientType.Binary, BendersMasterCoefficientType.Binary};
+		BendersMasterCoefficientType[] yTypes = {BendersMasterCoefficientType.Float, 
+				BendersMasterCoefficientType.Float, BendersMasterCoefficientType.Float};
 		
 		BendersOptimizationData inputData = new BendersOptimizationData(simplexTableau, 
 				paramaterNegativeIndices, yVariableIndices, yTypes);
@@ -486,12 +486,12 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>No y-variables in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * 11 * x1 + 14 * x2  >= 0<br>
+	 * 11 * x1 + 14 * x2  <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * x1 + x2 + y1 >= 17<br>
-	 * 3 * x1 + 7 * x2 + y2 >= 63<br>
-	 * 3 * x1 + 5 * x2 + y3 >= 48<br>
-	 * 3 * x1 + x2 + y4 >= 30<br>
+	 * x1 + x2 + y1 <= 17<br>
+	 * 3 * x1 + 7 * x2 + y2 <= 63<br>
+	 * 3 * x1 + 5 * x2 + y3 <= 48<br>
+	 * 3 * x1 + x2 + y4 <= 30<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 0.0
 	 * <li> coefficients: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</ul><p>
@@ -526,11 +526,11 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 integer y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * -7 * x1 - 3 * x2 + 5 * y1 - 4 * x3 + 2 * x4 >= 0<br>
+	 * -7 * x1 - 3 * x2 + 5 * y1 - 4 * x3 + 2 * x4 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * 2 * x1 + 3 * x2 >= 5<br>
-	 * y1 + 4 * x3 >= 7<br>
-	 * - 2 * x1 - 2 * y1 - 2 * x4 >= -7<br>
+	 * 2 * x1 + 3 * x2 <= 5<br>
+	 * y1 + 4 * x3 <= 7<br>
+	 * - 2 * x1 - 2 * y1 - 2 * x4 <= -7<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -5.0
 	 * <li> coefficients: [0.0, 5.0/3.0, 0.0, 1.75, 3.5]</ul><p>
@@ -559,11 +559,11 @@ public class BendersAlgorithmTest {
 	}
 	
 	/**
-	 * <h3>1 integer y-variable in the master problem</h3>
+	 * <h3>master problem unbounded</h3>
 	 * <b><u>function:</b></u><br>
-	 * - 21 * y1 - 11 * x1 >= 0<br>
+	 * - 21 * y1 - 11 * x1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * 6 * y1 + 4 * x1 >= 15<br>
+	 * 6 * y1 + 4 * x1 <= 15<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>master problem is unbound!
 	 */
@@ -592,10 +592,10 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 integer y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - 1000 * x1 - 700 * y1 >= 0<br>
+	 * - 1000 * x1 - 700 * y1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * 100 * x1 + 50 * y1 >= 2425<br>
-	 * 20 * y1 >= 510<br>
+	 * 100 * x1 + 50 * y1 <= 2425<br>
+	 * 20 * y1 <= 510<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 29250.0
 	 * <li> coefficients: [11.75, 25.0]</ul><p>
@@ -625,10 +625,10 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 float y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * - 2 * x1 - y1 >= 0<br>
+	 * - 2 * x1 - y1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * 3 * x1 + 2 * y1 >= 6<br>
-	 * 5 * x1 + 2 * y2 >= 8<br>
+	 * 3 * x1 + 2 * y1 <= 6<br>
+	 * 5 * x1 + 2 * y2 <= 8<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -3.5
 	 * <li> coefficients: [1.0, 1.5]</ul><p>
@@ -658,11 +658,11 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>1 integer y-variable in the master problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * y1 - 4 * x1 >= 0<br>
+	 * y1 - 4 * x1 <= 0<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * -10 * y1 + 20 * x1 >= 22<br>
-	 * 5 * y1 + 10 * x1 >= 49<br>
-	 * y1 >= 5<br>
+	 * -10 * y1 + 20 * x1 <= 22<br>
+	 * 5 * y1 + 10 * x1 <= 49<br>
+	 * y1 <= 5<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: -7.6
 	 * <li> coefficients: [4d, 2.9d]</ul><p>
@@ -693,11 +693,11 @@ public class BendersAlgorithmTest {
 	/**
 	 * <h3>constant in problem</h3>
 	 * <b><u>function:</b></u><br>
-	 * y1 - 4 * x1 >= 7.6<br>
+	 * y1 - 4 * x1 <= 7.6<br>
 	 * <b><u>restrictions:</b></u><br>
-	 * -10 * y1 + 20 * x1 >= 22<br>
-	 * 5 * y1 + 10 * x1 >= 49<br>
-	 * y1 >= 5<br>
+	 * -10 * y1 + 20 * x1 <= 22<br>
+	 * 5 * y1 + 10 * x1 <= 49<br>
+	 * y1 <= 5<br>
 	 * <br><b><u>result:</b></u><p><ul>
 	 * <li>optimal solution: 0
 	 * <li> coefficients: [4d, 2.9d]</ul><p>

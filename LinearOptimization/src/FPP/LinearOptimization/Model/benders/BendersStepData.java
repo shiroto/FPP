@@ -27,31 +27,17 @@ public class BendersStepData {
 	
 	/**
 	 * Example for solution object:<br>
-	 * {0d, 0d, 3d, 10d, 500d, 3.0}<br><br>
+	 * {0d, 0d, 3d, 10d, 500d}<br><br>
 	 * 
 	 * 500d is the objective function value<br>
-	 * last value (here 3.0) is an additional info about the solution.<br>
-	 * <p><ul>
-	 * <li>0.0 <b>no solution</b>
-	 * <li>1.0 <b>no optimal solution</b>
-	 * <li>2.0 <b>more than one solution</b>
-	 * <li>3.0 <b>optimal solution</b>
-	 * </ul><p>
 	 */
 	private Double[] masterSolution;
 	
 	/**
 	 * Example for solution object:<br>
-	 * {0d, 0d, 3d, 10d, 500d, 3.0}<br><br>
+	 * {0d, 0d, 3d, 10d, 500d}<br><br>
 	 * 
 	 * 500d is the objective function value<br>
-	 * last value (here 3.0) is an additional info about the solution.<br>
-	 * <p><ul>
-	 * <li>0.0 <b>no solution</b>
-	 * <li>1.0 <b>no optimal solution</b>
-	 * <li>2.0 <b>more than one solution</b>
-	 * <li>3.0 <b>optimal solution</b>
-	 * </ul><p>
 	 */
 	private Double[] subSolution;
 	
@@ -60,7 +46,14 @@ public class BendersStepData {
 	 */
 	private int r;
 	
+	/**
+	 * Lower Bound for this iteration step.
+	 */
 	private double lowerBound;
+	
+	/**
+	 * Upper Bound for this iteration step.
+	 */
 	private double upperBound;
 	
 	public BendersStepData(int r) {
