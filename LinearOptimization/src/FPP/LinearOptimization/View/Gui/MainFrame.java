@@ -1,23 +1,19 @@
 package FPP.LinearOptimization.View.Gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -32,7 +28,6 @@ import javax.swing.table.JTableHeader;
 
 import FPP.LinearOptimization.Controller.IController;
 import FPP.LinearOptimization.Data.Algorithm;
-import FPP.LinearOptimization.Model.BranchAndBound.BranchAndBound;
 import FPP.LinearOptimization.View.Save.*;
 public class MainFrame {
 
@@ -40,7 +35,6 @@ public class MainFrame {
 	private JTabbedPane tabs;
 	private InputScreenMain inputScreen;
 	private JButton btnZoomIn, btnZoomOut;
-	private JPanel buttonPanel = new JPanel();
 	private JMenuBar menubar;
 	private JMenu projektmenu;
 	private JMenu tabsmenu;
@@ -82,7 +76,8 @@ public class MainFrame {
 	private void initialize() {
 
 		frame = new JFrame();
-		frame.setBounds(10, 10, 1296, 756);
+		frame.setResizable(false);
+		frame.setBounds(30, 30, 1300, 760);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.setTitle("Linear Optimization Tool");
@@ -91,13 +86,16 @@ public class MainFrame {
 		// Menu
 		menubar = new JMenuBar();
 		projektmenu = new JMenu(Helper.Keyword.PROJECT);
+		projektmenu.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		menubar.add(projektmenu);
 		projektmenu.add(fresh = new JMenuItem(Helper.Keyword.NEWPROJECT));
 		projektmenu.add(save = new JMenuItem(Helper.Keyword.SAVEPROJECT));
 		projektmenu.add(open = new JMenuItem(Helper.Keyword.LOADPROJECT));
+		menubar.add(new JMenu()).setEnabled(false);
 		tabsmenu = new JMenu(Helper.Keyword.TABS);
 		tabsmenu.add(closeCurrent = new JMenuItem(Helper.Keyword.CLOSECURRENT));
 		tabsmenu.add(closeAll = new JMenuItem(Helper.Keyword.CLOSEALL));
+		tabsmenu.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		menubar.add(tabsmenu);
 		frame.setJMenuBar(menubar);
 
@@ -129,13 +127,18 @@ public class MainFrame {
 
 		frame.add(tabs);
 		frame.setVisible(true);
-
+		//Whitespace in Menu
+		menubar.add(new JMenu("                                      ")).setEnabled(false);
+		
 		// Zoom Buttons
 		btnZoomIn = new JButton();
-		btnZoomIn.setIcon(new ImageIcon(MainFrame.class.getResource("images/plus.png")));
-		btnZoomIn.setLocation(5, 5);
-		btnZoomIn.setSize(10, 10);
-		buttonPanel.add(btnZoomIn);
+		btnZoomIn.setIcon(new ImageIcon(MainFrame.class.getResource("images/plus_small.png")));
+		//btnZoomIn.setLocation(5, 5);
+		//btnZoomIn.setSize(10, 10);
+		menubar.add(btnZoomIn);
+		//Whitespace in Menu
+		menubar.add(new JMenu("")).setEnabled(false);
+		//buttonPanel.add(btnZoomIn);
 		btnZoomIn.setVisible(true);
 		btnZoomIn.setToolTipText("Zoom In");
 		btnZoomIn.addActionListener(new ActionListener() {
@@ -147,10 +150,11 @@ public class MainFrame {
 		});
 
 		btnZoomOut = new JButton();
-		btnZoomOut.setIcon(new ImageIcon(MainFrame.class.getResource("images/minus.png")));
-		btnZoomOut.setLocation(40, 5);
-		btnZoomOut.setSize(10, 10);
-		buttonPanel.add(btnZoomOut);
+		btnZoomOut.setIcon(new ImageIcon(MainFrame.class.getResource("images/minus_small.png")));
+		//btnZoomOut.setLocation(40, 5);
+		//btnZoomOut.setSize(10, 10);
+		//buttonPanel.add(btnZoomOut);
+		menubar.add(btnZoomOut);
 		btnZoomOut.setVisible(true);
 		btnZoomOut.setToolTipText("Zoom Out");
 		btnZoomOut.addActionListener(new ActionListener() {
@@ -161,7 +165,6 @@ public class MainFrame {
 			}
 		});
 
-		frame.add(buttonPanel, BorderLayout.SOUTH);
 		inputScreen.revalidate();
 		inputScreen.repaint();
 
@@ -319,6 +322,7 @@ public class MainFrame {
 			inputScreen.inputBB.setSimplexTableau(objekt.getArray());
 			inputScreen.inputBB.setNumRestr(objekt.getNumRestr());
 			inputScreen.inputBB.setNumVar(objekt.getNumVar());
+			inputScreen.inputBB.setMinProblem(objekt.getMin());
 			inputScreen.inputBB.initializeScreen();
 			inputScreen.inputBB.erhalteBandBundErstelleView(objekt);
 			tabs.add(Helper.Keyword.INPUTBANDB, inputScreen.inputBB);

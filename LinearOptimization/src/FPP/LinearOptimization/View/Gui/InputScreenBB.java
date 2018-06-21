@@ -1,11 +1,6 @@
 package FPP.LinearOptimization.View.Gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -36,10 +31,8 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	private JRadioButton[] arrayRadioGanzzahl;
 	private final int YPOSRADIOBUTTON = 65;
 	private JLabel problemBeschreibungPanel;
-	private JCheckBox jCBMin;
 	private int numRestr, numVar;
 	private Double[][] simplexTableau;
-	private boolean max = false;
 	private MainFrame mainFrame;
 	private JTable restrictionTable;
 	private JScrollPane scrollPaneRestrictions;
@@ -71,26 +64,9 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		this.add(problemBeschreibungPanel);
 
 		loadTables();
-		jCBMin = new JCheckBox();
-		jCBMin.setSelected(true);
-		jCBMin.setVisible(false);
-		jCBMin.setText("Minimierungsproblem");
-		this.add(jCBMin);
-		jCBMin.setBounds(760, 25, 160, 17);
+
 		initiateRadioButtonListe(numVar);
-		jCBMin.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					initiateProlembeschreibungsPanel(numVar);
-
-				} else if (e.getStateChange() == ItemEvent.DESELECTED) {
-
-					initiateProlembeschreibungsPanel(numVar);
-				}
-			}
-		});
-
+		initiateProlembeschreibungsPanel(numVar);
 		initiiereProblemViewFelder();
 
 		btnSubmit = new JButton("Weiter");
@@ -241,10 +217,11 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		problemBeschreibungPanel.setBounds(740, yPos, 200, numVar * 26 + 26);
 
 		String ausgabe = "<html>";
-		if (!this.jCBMin.isSelected())
-			ausgabe += "Maximierungsproblem<br> ";
-		else
+		if (minProblem) {
 			ausgabe += "Minimierungsproblem<br>";
+		} else {
+			ausgabe += "Maximierungsproblem<br>";
+		}
 		for (int i = 0; i < numVar; i++) {
 			ausgabe += "x" + (i + 1) + " ";
 			if (this.arrayRadioGanzzahl[i].isSelected())
@@ -267,7 +244,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	}
 
 	private void initiiereProblemViewFelder() {
-		this.jCBMin.setVisible(true);
 		this.repaint();
 	}
 
@@ -278,15 +254,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		for (JRadioButton jr : this.binaerRadio) {
 			jr.setVisible(false);
 		}
-	}
-
-	private boolean leseMinMaxProblem() {
-		if (this.jCBMin.isSelected()) {
-			return false;
-		} else {
-			return true;
-		}
-
 	}
 
 	public void setRestrictionTable(JTable restrictionTable) {
@@ -310,9 +277,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			schreibeBinaerListe();
 			createArrayBinaerProblem();
 		}
-
-		setMinMaxProblem();
-		branchAndBoundProblem = new BranchAndBound(new SimplexTableau(simplexTableau), max, ganzzahlFlag);
+		branchAndBoundProblem = new BranchAndBound(new SimplexTableau(simplexTableau), minProblem, ganzzahlFlag);
 
 		return branchAndBoundProblem;
 	}
@@ -346,15 +311,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 				isBin = true;
 		}
 		this.binaer = isBin;
-
-	}
-
-	private void setMinMaxProblem() {
-		if (this.jCBMin.isSelected()) {
-			max = false;
-		} else {
-			max = true;
-		}
 
 	}
 
@@ -407,10 +363,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 		schreibeZielfunktion();
 
-		if (!this.jCBMin.isSelected()) {
-			multiplieziereZf();
-		}
-
 		setRestriktionsarray();
 
 		// fuege ZF array hinzu
@@ -419,12 +371,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			array[numRestr][i] = wert;
 		}
 
-	}
-
-	private void multiplieziereZf() {
-		for (int i = 0; i < numVar; i++) {
-			this.zielfunktion[i] = this.zielfunktion[i] * -1;
-		}
 	}
 
 	private void setRestriktionsarray() {
@@ -478,9 +424,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		int anzahlZeilen = this.numRestr + 1 + anzahlBin * 2;
 		this.array = new double[anzahlZeilen][this.numVar + 1];
 		schreibeZielfunktion();
-		if (!this.jCBMin.isSelected()) {
-			multiplieziereZf();
-		}
 		setRestriktionsArrayBinaer();
 		// fuege ZF array hinzu
 		for (int i = 0; i < numVar + 1; i++) {
@@ -566,7 +509,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			sp.setNumRestr(numRestr);
 			sp.setNumVar(numVar);
 			sp.setFunction(leseZielfunktion());
-			sp.setMax(leseMinMaxProblem());
 			sp.setBin(leseBinaerListe());
 			sp.setGanzzahl(leseGanzzahlFlag());
 			sp.setArray(this.simplexTableau);
@@ -631,7 +573,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 		this.repaint();
 		this.revalidate();
 		erstelleView(bAndB.getNumRestr(), bAndB.getNumVar());
-		fuelleMax(bAndB);
 		fuelleGanzzahlButtons(bAndB);
 		fuelleBinaerButtons(bAndB);
 
@@ -660,16 +601,6 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 			}
 		}
 		this.repaint();
-
-	}
-
-	private void fuelleMax(BranchAndBoundSpeicherKlasse bAndB) {
-		boolean max = bAndB.isMax();
-		if (max) {
-			this.jCBMin.setSelected(false);
-		} else {
-			this.jCBMin.setSelected(true);
-		}
 
 	}
 

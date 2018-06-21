@@ -1,11 +1,7 @@
 package FPP.LinearOptimization.View.Gui;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
@@ -26,7 +22,6 @@ import javax.swing.table.TableColumnModel;
 import FPP.LinearOptimization.Data.Algorithm;
 import FPP.LinearOptimization.Data.Comparator;
 import FPP.LinearOptimization.Data.LinearOptimizationData;
-import FPP.LinearOptimization.View.Save.BranchAndBoundSpeicherKlasse;
 import FPP.LinearOptimization.View.Save.SaveableIF;
 
 public class InputScreenMain extends JPanel {
@@ -40,7 +35,6 @@ public class InputScreenMain extends JPanel {
 	private JScrollPane scrollPaneFunction;
 	private JButton btnSubmit;
 	private LinearOptimizationData inputObject;
-	private int countX;
 	private JPanel panel;
 	private ButtonGroup bg;
 	private JPanel panel_combo;
@@ -124,7 +118,6 @@ public class InputScreenMain extends JPanel {
 	 */
 	protected void initializeInputComponents() {
 		xVariables = Integer.parseInt(tf_xVariables.getText());
-		countX = xVariables;
 		restrictions = Integer.parseInt(tf_restrictions.getText());
 		setRestrictionTable(new JTable(restrictions, xVariables + 2));
 		getRestrictionTable().setBounds(446, 74, 435, 225);
