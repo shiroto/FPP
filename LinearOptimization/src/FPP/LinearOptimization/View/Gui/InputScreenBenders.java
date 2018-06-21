@@ -82,15 +82,17 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				if(validateInput()) {
+				try {
+					validateInput(); 
 				try {
 				createBendersProblem();
 				loadScreen();
 				} catch(Exception ex){
 					 JOptionPane.showMessageDialog(frame, "Problem nicht lösbar. ","Fehler",JOptionPane.ERROR_MESSAGE);
 				} 
-			}else {
-				JOptionPane.showMessageDialog(frame, "Geben Sie die Daten richtig ein. ","Fehler",JOptionPane.ERROR_MESSAGE);
+			}
+			 catch(Exception exep) {
+				 JOptionPane.showMessageDialog(frame, "Fehlerhafte Eingabe: " + exep.getMessage(),"Fehler",JOptionPane.ERROR_MESSAGE);
 			}
 			}
 			
@@ -162,26 +164,29 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 	}
 
-	private boolean validateInput() {
-		
+	private void validateInput() throws Exception {
+		int countY = 0;
 			for (int columnId = 0; columnId < variableDefTable.getColumnCount(); columnId++) {
 						if(variableDefTable.getValueAt(0, columnId) == null) {
-							return false;
+							throw new Exception("Geben Sie alle x bzw. y-Variablen an.");
 						}
 			}
 			for (int columnId = 0; columnId < typeDefTable.getColumnCount(); columnId++) {
 				if(variableDefTable.getValueAt(0, columnId).toString().equals("Y")) {
+					countY += 1;
 					if(typeDefTable.getValueAt(0, columnId) == null) {
-						return false;
+						throw new Exception("Y-Variable benötigt einen Wert.");
 					}
 				}
 	}
 			for (int columnId = 0; columnId < paramNegIndicesTable.getColumnCount(); columnId++) {
 				if(paramNegIndicesTable.getValueAt(0, columnId) == null) {
-					return false;
+					throw new Exception("Geben Sie den Wertebereich für jede Variable an.");
 				}
 	}
-		return true;
+			if(countY == 0) {
+				throw new Exception("Eingabe für Benders Algorithmus nicht geeignet. Y-Variable fehlt.");
+			}
 	}
 
 	public void modifyFunctionTable() {
@@ -278,7 +283,8 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 	@Override
 	public void save(String path) throws Exception {
-		if(validateInput()) {
+		try {
+			validateInput();
 		path = path + Helper.Keyword.PATHBENDERS;
 		loadYvariableIndices();
 		loadBendersMasterCoefficientTypes();
@@ -294,7 +300,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		bs.setMin(this.minProblem);
 		bs.setOPs(this.operators);
 		LinearOptFileHandler.save(path, bs);
-		} else {
+		} catch (Exception exept) {
 			throw new Exception("Geben Sie alle notwendigen Daten ein.");
 		}
 		
