@@ -2,6 +2,12 @@ package FPP.LinearOptimization.Data;
 
 public class LinearOptimizationDataUtility {
 
+	/**
+	 * Converts a given Problem as SimplexTableau to its dual form and returns the new SimplexTableau.
+	 * 
+	 * @param simplexTableau
+	 * @return simplexTableau
+	 */
 	public static Double[][] createDual(Double[][] simplexTableau) {
 		// transpose matrix
 		Double[][] dualTableau = new Double[simplexTableau[0].length][simplexTableau.length];
@@ -21,6 +27,13 @@ public class LinearOptimizationDataUtility {
         return dualTableau;
 	}
 
+	/**
+	 * Converts all variables that are <= into >= variables.
+	 * 
+	 * @param simplexTableau
+	 * @param paramaterNegativeIndices indices of variables that can be negative
+	 * @return simplexTableau
+	 */
 	public static Double[][] convertNotNegatives(Double[][] simplexTableau, int[] paramaterNegativeIndices) {
 		int tableauLength = simplexTableau.length;
 		Double[][] positiveTableau = new Double[tableauLength][simplexTableau[0].length];
@@ -41,6 +54,12 @@ public class LinearOptimizationDataUtility {
 		return positiveTableau;
 	}
 	
+	/**
+	 * Extracts and returns the function of a SimplexTableau.
+	 * 
+	 * @param simplexTableau
+	 * @return function as array
+	 */
 	public static Double[] extractFunction(Double[][] simplexTableau) {
 		int functionLength = simplexTableau[0].length;
 
@@ -51,6 +70,13 @@ public class LinearOptimizationDataUtility {
 		return function;
 	}
 	
+	/**
+	 * Checks if an array contains a specific value.
+	 * 
+	 * @param array array to search in
+	 * @param v value to be searched
+	 * @return <code>true</code> if in array or <code>false</code> if not
+	 */
 	public static boolean arrayContains(final int[] array, final int v) {
 		boolean result = false;
 		for (int i : array) {
@@ -150,7 +176,6 @@ public class LinearOptimizationDataUtility {
 	
 	/**
 	 * Substitutes in the restrictions.
-	 * 
 	 * 
 	 * @param restriction
 	 * @param theta
