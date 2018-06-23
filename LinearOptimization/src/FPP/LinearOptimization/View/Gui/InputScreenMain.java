@@ -325,7 +325,8 @@ public class InputScreenMain extends JPanel {
 		cbAlgorithm = new JComboBox<String>();
 		panel_combo.add(cbAlgorithm);
 		cbAlgorithm.addItem(Algorithm.BendersAlgorithm.getScreenName());
-		cbAlgorithm.addItem(Algorithm.DantzigAlgorithm.getScreenName());
+		//DantzigWolfe not implemented
+		//cbAlgorithm.addItem(Algorithm.DantzigAlgorithm.getScreenName());
 		cbAlgorithm.addItem(Algorithm.BranchBoundAlgorithm.getScreenName());
 		cbAlgorithm.setSelectedItem(null);
 		this.add(panel_combo);
