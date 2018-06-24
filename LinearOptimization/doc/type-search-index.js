@@ -1,1 +1,1 @@
-typeSearchIndex = [{"p":"FPP.LinearOptimization.Model.benders","l":"BendersAlgorithmTest"}]
+typeSearchIndex = [{"p":"FPP.LinearOptimization.Data","l":"BendersOptimizationData"},{"p":"FPP.LinearOptimization.Data","l":"IBendersOptimizationSolutionData"},{"p":"FPP.LinearOptimization.Data","l":"LinearOptimizationDataUtility"}]
