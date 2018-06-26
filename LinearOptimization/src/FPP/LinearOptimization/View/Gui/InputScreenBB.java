@@ -1,5 +1,6 @@
 package FPP.LinearOptimization.View.Gui;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -86,16 +87,19 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 		});
 		this.add(btnSubmit);
+		// Keeping previous Zoom State
+		for (int i = 0; i < mainFrame.getZoomState(); i++) {
+			for (Component c : this.getComponents())
+				mainFrame.zoomIn(c);
+		}
 
 	}
-
 
 	protected void validateInput() {
 		// TODO Auto-generated method stub
 
 	}
 
-	
 	private void loadTables() {
 		Helper.alignCells(functionTable);
 		Helper.alignCells(restrictionTable);
@@ -263,7 +267,7 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 	}
 
 	private BranchAndBound erstelleProblem() {
-		
+
 		// meinTableModel.fireTableDataChanged();
 		// tabelle.setModel(meinTableModel);
 
@@ -639,12 +643,12 @@ public class InputScreenBB extends JPanel implements InputScreenIF {
 
 	public void setMinProblem(boolean selected) {
 		this.minProblem = selected;
-		
+
 	}
 
 	public void setOPs(String[] ops) {
 		this.operators = ops;
-		
+
 	}
 
 }

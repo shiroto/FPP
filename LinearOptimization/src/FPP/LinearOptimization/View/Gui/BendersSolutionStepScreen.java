@@ -64,7 +64,6 @@ public class BendersSolutionStepScreen extends JPanel {
 		this.stepsList = bendersSolutionObject.getSteps();
 	}
 
-	
 	public void initializeScreen(int stepIndex) {
 
 		this.stepIndex = stepIndex;
@@ -122,9 +121,13 @@ public class BendersSolutionStepScreen extends JPanel {
 		Helper.addComponentWithPadding(this, gbl, nextStepButton, 5, 12, 2, 1, 1, 0.5, 0, 0, 0, 30);
 		Helper.addComponentWithPadding(this, gbl, finalStepButton, 7, 12, 2, 1, 1, 0.5, 0, 20, 0, 30);
 
+		// Keeping previous Zoom State
+		for (int i = 0; i < mainFrame.getZoomState(); i++) {
+			for (Component c : this.getComponents())
+				mainFrame.zoomIn(c);
+		}
 	}
 
-	
 	private void loadTableHeader(JTable table, boolean sol) {
 		JTableHeader th = table.getTableHeader();
 		TableColumnModel tcm = th.getColumnModel();

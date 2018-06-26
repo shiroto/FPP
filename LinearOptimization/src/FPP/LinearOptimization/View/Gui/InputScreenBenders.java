@@ -1,6 +1,7 @@
 package FPP.LinearOptimization.View.Gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -81,24 +82,29 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				try {
-					validateInput(); 
-				try {
-				createBendersProblem();
-				loadScreen();
-				} catch(Exception ex){
-					 JOptionPane.showMessageDialog(frame, "Problem nicht lösbar. ","Fehler",JOptionPane.ERROR_MESSAGE);
-				} 
+					validateInput();
+					try {
+						createBendersProblem();
+						loadScreen();
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(frame, "Problem nicht lösbar. ", "Fehler",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				} catch (Exception exep) {
+					JOptionPane.showMessageDialog(frame, "Fehlerhafte Eingabe: " + exep.getMessage(), "Fehler",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
-			 catch(Exception exep) {
-				 JOptionPane.showMessageDialog(frame, "Fehlerhafte Eingabe: " + exep.getMessage(),"Fehler",JOptionPane.ERROR_MESSAGE);
-			}
-			}
-			
 
 		});
 		this.add(btnSubmit);
+		// Keeping previous Zoom State
+		for (int i = 0; i < mainFrame.getZoomState(); i++) {
+			for (Component c : this.getComponents())
+				mainFrame.zoomIn(c);
+		}
 
 	}
 
@@ -166,27 +172,27 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 	private void validateInput() throws Exception {
 		int countY = 0;
-			for (int columnId = 0; columnId < variableDefTable.getColumnCount(); columnId++) {
-						if(variableDefTable.getValueAt(0, columnId) == null) {
-							throw new Exception("Geben Sie alle x bzw. y-Variablen an.");
-						}
+		for (int columnId = 0; columnId < variableDefTable.getColumnCount(); columnId++) {
+			if (variableDefTable.getValueAt(0, columnId) == null) {
+				throw new Exception("Geben Sie alle x bzw. y-Variablen an.");
 			}
-			for (int columnId = 0; columnId < typeDefTable.getColumnCount(); columnId++) {
-				if(variableDefTable.getValueAt(0, columnId).toString().equals("Y")) {
-					countY += 1;
-					if(typeDefTable.getValueAt(0, columnId) == null) {
-						throw new Exception("Y-Variable benötigt einen Wert.");
-					}
+		}
+		for (int columnId = 0; columnId < typeDefTable.getColumnCount(); columnId++) {
+			if (variableDefTable.getValueAt(0, columnId).toString().equals("Y")) {
+				countY += 1;
+				if (typeDefTable.getValueAt(0, columnId) == null) {
+					throw new Exception("Y-Variable benötigt einen Wert.");
 				}
-	}
-			for (int columnId = 0; columnId < paramNegIndicesTable.getColumnCount(); columnId++) {
-				if(paramNegIndicesTable.getValueAt(0, columnId) == null) {
-					throw new Exception("Geben Sie den Wertebereich für jede Variable an.");
-				}
-	}
-			if(countY == 0) {
-				throw new Exception("Eingabe für Benders Algorithmus nicht geeignet. Y-Variable fehlt.");
 			}
+		}
+		for (int columnId = 0; columnId < paramNegIndicesTable.getColumnCount(); columnId++) {
+			if (paramNegIndicesTable.getValueAt(0, columnId) == null) {
+				throw new Exception("Geben Sie den Wertebereich für jede Variable an.");
+			}
+		}
+		if (countY == 0) {
+			throw new Exception("Eingabe für Benders Algorithmus nicht geeignet. Y-Variable fehlt.");
+		}
 	}
 
 	public void modifyFunctionTable() {
@@ -285,25 +291,24 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 	public void save(String path) throws Exception {
 		try {
 			validateInput();
-		path = path + Helper.Keyword.PATHBENDERS;
-		loadYvariableIndices();
-		loadBendersMasterCoefficientTypes();
-		loadParamNegIndices();
-		BendersSaveClass bs = new BendersSaveClass();
-		bs.setNumRestr(numRestr);
-		bs.setNumVar(numVar);
-		bs.setYVariableIndices(this.yVariables);
-		bs.setBendersMasterCoefficientTypes(this.bendersMasterCoefficientType);
-		bs.setParamNegIndices(this.parameterNegativeIndices);
-		bs.setArray(this.simplexTableau);
-		bs.setFunction(this.simplexTableau[this.simplexTableau.length - 1]);
-		bs.setMin(this.minProblem);
-		bs.setOPs(this.operators);
-		LinearOptFileHandler.save(path, bs);
+			path = path + Helper.Keyword.PATHBENDERS;
+			loadYvariableIndices();
+			loadBendersMasterCoefficientTypes();
+			loadParamNegIndices();
+			BendersSaveClass bs = new BendersSaveClass();
+			bs.setNumRestr(numRestr);
+			bs.setNumVar(numVar);
+			bs.setYVariableIndices(this.yVariables);
+			bs.setBendersMasterCoefficientTypes(this.bendersMasterCoefficientType);
+			bs.setParamNegIndices(this.parameterNegativeIndices);
+			bs.setArray(this.simplexTableau);
+			bs.setFunction(this.simplexTableau[this.simplexTableau.length - 1]);
+			bs.setMin(this.minProblem);
+			bs.setOPs(this.operators);
+			LinearOptFileHandler.save(path, bs);
 		} catch (Exception exept) {
 			throw new Exception("Geben Sie alle notwendigen Daten ein.");
 		}
-		
 
 	}
 
@@ -377,11 +382,11 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 	public void setMinProblem(boolean selected) {
 		this.minProblem = selected;
-		
+
 	}
 
 	public void setOPs(String[] ops) {
-		this.operators = ops;		
+		this.operators = ops;
 	}
 
 }

@@ -29,12 +29,14 @@ import javax.swing.table.JTableHeader;
 import FPP.LinearOptimization.Controller.IController;
 import FPP.LinearOptimization.Data.Algorithm;
 import FPP.LinearOptimization.View.Save.*;
+
 public class MainFrame {
 
 	private JFrame frame;
 	private JTabbedPane tabs;
 	private InputScreenMain inputScreen;
 	private JButton btnZoomIn, btnZoomOut;
+	private int zoomState = 0;
 	private JMenuBar menubar;
 	private JMenu projektmenu;
 	private JMenu tabsmenu;
@@ -127,23 +129,26 @@ public class MainFrame {
 
 		frame.add(tabs);
 		frame.setVisible(true);
-		//Whitespace in Menu
+		// Whitespace in Menu
 		menubar.add(new JMenu("                                      ")).setEnabled(false);
-		
+
 		// Zoom Buttons
 		btnZoomIn = new JButton();
 		btnZoomIn.setIcon(new ImageIcon(MainFrame.class.getResource("images/plus_small.png")));
-		//btnZoomIn.setLocation(5, 5);
-		//btnZoomIn.setSize(10, 10);
+		// btnZoomIn.setLocation(5, 5);
+		// btnZoomIn.setSize(10, 10);
 		menubar.add(btnZoomIn);
-		//Whitespace in Menu
+		// Whitespace in Menu
 		menubar.add(new JMenu("")).setEnabled(false);
-		//buttonPanel.add(btnZoomIn);
+		// buttonPanel.add(btnZoomIn);
 		btnZoomIn.setVisible(true);
 		btnZoomIn.setToolTipText("Zoom In");
 		btnZoomIn.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent e) {
+				if (zoomState == 7) {
+					return;
+				}
+				zoomState++;
 				for (Component c : getTabs().getComponents())
 					zoomIn(c);
 			}
@@ -151,15 +156,19 @@ public class MainFrame {
 
 		btnZoomOut = new JButton();
 		btnZoomOut.setIcon(new ImageIcon(MainFrame.class.getResource("images/minus_small.png")));
-		//btnZoomOut.setLocation(40, 5);
-		//btnZoomOut.setSize(10, 10);
-		//buttonPanel.add(btnZoomOut);
+		// btnZoomOut.setLocation(40, 5);
+		// btnZoomOut.setSize(10, 10);
+		// buttonPanel.add(btnZoomOut);
 		menubar.add(btnZoomOut);
 		btnZoomOut.setVisible(true);
 		btnZoomOut.setToolTipText("Zoom Out");
 		btnZoomOut.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				if (zoomState == 0) {
+					return;
+				}
+				zoomState--;
 				for (Component c : getTabs().getComponents())
 					zoomOut(c);
 			}
@@ -168,7 +177,7 @@ public class MainFrame {
 		inputScreen.revalidate();
 		inputScreen.repaint();
 
-		//Save and Load functionality
+		// Save and Load functionality
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -215,9 +224,9 @@ public class MainFrame {
 						try {
 							if (path.endsWith(Helper.Keyword.PATHBANDB)) {
 								loadBandB(path);
-							}else if (path.endsWith(Helper.Keyword.PATHBENDERS)) {
+							} else if (path.endsWith(Helper.Keyword.PATHBENDERS)) {
 								loadBenders(path);
-							}else if (path.endsWith(Helper.Keyword.PATHDANZIG)) {
+							} else if (path.endsWith(Helper.Keyword.PATHDANZIG)) {
 								loadDanzig(path);
 							}
 						} catch (Exception ex) {
@@ -233,7 +242,7 @@ public class MainFrame {
 			}
 
 		});
-		
+
 		closeCurrent.addActionListener(new ActionListener() {
 
 			@Override
@@ -243,7 +252,7 @@ public class MainFrame {
 				tabs.setSelectedIndex(current - 1);
 			}
 		});
-		
+
 		closeAll.addActionListener(new ActionListener() {
 
 			@Override
@@ -252,17 +261,18 @@ public class MainFrame {
 				for (int i = amountTabs - 1; i > 0; i--) {
 					tabs.remove(i);
 				}
-				tabs.setSelectedIndex(0);;
-				
+				tabs.setSelectedIndex(0);
+				;
+
 			}
-			
+
 		});
 	}
 
 	/**
 	 * Loading Benders projects.
 	 */
-	protected void loadBenders(String path)  {
+	protected void loadBenders(String path) {
 		try {
 			BendersSaveClass obj = (BendersSaveClass) LinearOptFileHandler.load(path);
 			InputScreenBenders inputBenders = new InputScreenBenders(getMainFrame());
@@ -276,29 +286,25 @@ public class MainFrame {
 			inputBenders.createView(obj);
 			tabs.addTab(Helper.Keyword.INPUTBENDERS, inputBenders);
 			tabs.setSelectedIndex(tabs.indexOfTab(Helper.Keyword.INPUTBENDERS));
-			
-			
+
 		} catch (ClassNotFoundException | IOException e) {
-			JOptionPane.showMessageDialog(frame,
-					"Datei konnte nicht geladen werden. " + e.getMessage(), "Fehler",
+			JOptionPane.showMessageDialog(frame, "Datei konnte nicht geladen werden. " + e.getMessage(), "Fehler",
 					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
 
 	protected void loadDanzig(String path) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	/**
 	 * Loading Branch and Bound projects.
 	 */
 	protected void loadBandB(String path) {
-		//Laden l = new Laden(path);
+		// Laden l = new Laden(path);
 		BranchAndBoundSpeicherKlasse objekt;
 		try {
 			objekt = (BranchAndBoundSpeicherKlasse) LinearOptFileHandler.load(path);
@@ -331,8 +337,7 @@ public class MainFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
 	/**
@@ -356,7 +361,7 @@ public class MainFrame {
 		}
 
 	}
-	
+
 	/**
 	 * Zooming out all currently displayed components.
 	 */
@@ -412,8 +417,17 @@ public class MainFrame {
 	public void setTabs(JTabbedPane tabs) {
 		this.tabs = tabs;
 	}
-	
+
 	public MainFrame getMainFrame() {
 		return this;
 	}
+
+	public int getZoomState() {
+		return zoomState;
+	}
+
+	public void setZoomState(int zoomState) {
+		this.zoomState = zoomState;
+	}
+
 }

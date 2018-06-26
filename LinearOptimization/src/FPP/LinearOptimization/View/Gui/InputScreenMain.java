@@ -1,5 +1,6 @@
 package FPP.LinearOptimization.View.Gui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -68,7 +69,7 @@ public class InputScreenMain extends JPanel {
 				if (!validateInput())
 					return;
 				reset();
-				
+
 				initializeInputComponents();
 				loadFunctionTable();
 				loadRadioBtn();
@@ -98,7 +99,7 @@ public class InputScreenMain extends JPanel {
 		inputBenders.modifyFunctionTable();
 		mainFrame.getTabs().addTab(Helper.Keyword.INPUTBENDERS, inputBenders);
 		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.INPUTBENDERS));
-		
+
 	}
 
 	/*
@@ -106,11 +107,11 @@ public class InputScreenMain extends JPanel {
 	 */
 	private String[] loadOPs() {
 		String[] ops = new String[restrictions];
-		for(int i = 0; i < restrictions; i++) {
+		for (int i = 0; i < restrictions; i++) {
 			ops[i] = (String) restrictionTable.getValueAt(i, xVariables);
 		}
 		return ops;
-		
+
 	}
 
 	/*
@@ -122,8 +123,8 @@ public class InputScreenMain extends JPanel {
 		setRestrictionTable(new JTable(restrictions, xVariables + 2));
 		getRestrictionTable().setBounds(446, 74, 435, 225);
 		getRestrictionTable().setVisible(true);
-		//+1 für Schlupfvariable
-		setFunctionTable(new JTable(1, xVariables+1));
+		// +1 für Schlupfvariable
+		setFunctionTable(new JTable(1, xVariables + 1));
 		getFunctionTable().setBounds(446, 374, 435, 225);
 		getFunctionTable().setVisible(true);
 
@@ -135,7 +136,7 @@ public class InputScreenMain extends JPanel {
 		// restriction
 		for (int i = 1; i <= xVariables; i++) {
 			TableColumn tc = restTcm.getColumn(i - 1);
-			tc.setHeaderValue("<html>x<sub>"+i+"</sub></html>");
+			tc.setHeaderValue("<html>x<sub>" + i + "</sub></html>");
 		}
 		TableColumn tc = restTcm.getColumn(xVariables);
 		tc.setHeaderValue("OP");
@@ -156,12 +157,12 @@ public class InputScreenMain extends JPanel {
 		TableColumnModel funcTcm = funcTh.getColumnModel();
 		for (int i = 1; i <= xVariables; i++) {
 			TableColumn funcTc = funcTcm.getColumn(i - 1);
-			funcTc.setHeaderValue("<html>x<sub>"+i+"</sub></html>");
+			funcTc.setHeaderValue("<html>x<sub>" + i + "</sub></html>");
 		}
 		TableColumn funcTc = funcTcm.getColumn(xVariables);
 		funcTc.setHeaderValue("Schlupfvariable");
-		//Zelle für Schlupfvariable initial 0
-		getFunctionTable().setValueAt(0, 0, getFunctionTable().getColumnCount()-1);
+		// Zelle für Schlupfvariable initial 0
+		getFunctionTable().setValueAt(0, 0, getFunctionTable().getColumnCount() - 1);
 		// Load Submit btn
 		btnSubmit = new JButton("Weiter");
 		btnSubmit.setBounds(1033, 527, 171, 41);
@@ -172,23 +173,22 @@ public class InputScreenMain extends JPanel {
 				if (!validateTableInput())
 					return;
 				createSimplexTableau();
-				if(mainFrame.getTabs().getTabCount() > 1)
+				if (mainFrame.getTabs().getTabCount() > 1)
 					mainFrame.getTabs().remove(1);
-				if(cbAlgorithm.getSelectedItem().toString().equals(Algorithm.BendersAlgorithm.getScreenName())) {
+				if (cbAlgorithm.getSelectedItem().toString().equals(Algorithm.BendersAlgorithm.getScreenName())) {
 					loadBendersScreen();
-				}
-				else if (cbAlgorithm.getSelectedItem().toString().equals(Algorithm.DantzigAlgorithm.getScreenName())) {
+				} else if (cbAlgorithm.getSelectedItem().toString()
+						.equals(Algorithm.DantzigAlgorithm.getScreenName())) {
 					loadDanzigScreen();
-				}
-				else if (cbAlgorithm.getSelectedItem().toString().equals(Algorithm.BranchBoundAlgorithm.getScreenName())) {
+				} else if (cbAlgorithm.getSelectedItem().toString()
+						.equals(Algorithm.BranchBoundAlgorithm.getScreenName())) {
 					loadBBScreen();
 				}
-				
+
 			}
 
 		});
 		this.add(btnSubmit);
-		
 	}
 
 	protected void loadBBScreen() {
@@ -213,7 +213,7 @@ public class InputScreenMain extends JPanel {
 		inputBB.initializeScreen();
 		mainFrame.getTabs().addTab(Helper.Keyword.INPUTBANDB, inputBB);
 		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.INPUTBANDB));
-		
+
 	}
 
 	protected void loadDanzigScreen() {
@@ -224,7 +224,7 @@ public class InputScreenMain extends JPanel {
 		inputDanzig.setSimplexTableau(simplexTableau);
 		mainFrame.getTabs().addTab(Helper.Keyword.INPUTDANTZIG, inputDanzig);
 		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.INPUTDANTZIG));
-		
+
 	}
 
 	private void initializeComponents() {
@@ -260,11 +260,11 @@ public class InputScreenMain extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				btnInput.doClick();
 			}
-			
+
 		});
 		jp_restrictions.add(tf_restrictions);
 		tf_restrictions.setColumns(10);
-		
+
 	}
 
 	/*
@@ -325,8 +325,8 @@ public class InputScreenMain extends JPanel {
 		cbAlgorithm = new JComboBox<String>();
 		panel_combo.add(cbAlgorithm);
 		cbAlgorithm.addItem(Algorithm.BendersAlgorithm.getScreenName());
-		//DantzigWolfe not implemented
-		//cbAlgorithm.addItem(Algorithm.DantzigAlgorithm.getScreenName());
+		// DantzigWolfe not implemented
+		// cbAlgorithm.addItem(Algorithm.DantzigAlgorithm.getScreenName());
 		cbAlgorithm.addItem(Algorithm.BranchBoundAlgorithm.getScreenName());
 		cbAlgorithm.setSelectedItem(null);
 		this.add(panel_combo);
@@ -375,7 +375,6 @@ public class InputScreenMain extends JPanel {
 					.parseDouble(String.valueOf(getFunctionTable().getValueAt(0, columnId)));
 		}
 
-
 		for (int rowId = 0; rowId < getRestrictionTable().getRowCount(); rowId++) {
 			String compAsString = String
 					.valueOf(getRestrictionTable().getValueAt(rowId, getRestrictionTable().getColumnCount() - 2));
@@ -418,7 +417,7 @@ public class InputScreenMain extends JPanel {
 
 		JLabel functionLabel = new JLabel("Zielfunktion");
 		functionPanel.add(functionLabel);
-		
+
 		scrollPaneFunction = new JScrollPane(getFunctionTable(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneFunction.setBounds(399, 128, 523, 60);
@@ -435,7 +434,7 @@ public class InputScreenMain extends JPanel {
 
 		JLabel problemLabel = new JLabel("Restriktionen");
 		problemPanel.add(problemLabel);
-		
+
 		scrollPaneRestrictions = new JScrollPane(getRestrictionTable(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneRestrictions.setBounds(399, 250, 523, 325);
@@ -461,16 +460,16 @@ public class InputScreenMain extends JPanel {
 					getRestrictionTable().setValueAt(objekt.getArray()[rowId][columnId], rowId, columnId);
 				} else {
 					getRestrictionTable().setValueAt("<=", rowId, columnId);
-					getRestrictionTable().setValueAt(objekt.getArray()[rowId][columnId], rowId, columnId+1);
+					getRestrictionTable().setValueAt(objekt.getArray()[rowId][columnId], rowId, columnId + 1);
 				}
 			}
 		}
 		for (int columnId = 0; columnId < objekt.getFunction().length; columnId++) {
-			getFunctionTable().setValueAt(objekt.getFunction()[columnId],0, columnId);
-			getFunctionTable().setValueAt(0, getFunctionTable().getRowCount()-1, getFunctionTable().getColumnCount()-1);
+			getFunctionTable().setValueAt(objekt.getFunction()[columnId], 0, columnId);
+			getFunctionTable().setValueAt(0, getFunctionTable().getRowCount() - 1,
+					getFunctionTable().getColumnCount() - 1);
 		}
-		
-		
+
 	}
 
 	public JTable getFunctionTable() {
@@ -491,28 +490,27 @@ public class InputScreenMain extends JPanel {
 
 	public void setAlgorithm(Algorithm branchboundalgorithm) {
 		cbAlgorithm.setSelectedItem(branchboundalgorithm.getScreenName());
-		
+
 	}
 
 	public void setOPs(String[] oPs) {
-		if(oPs != null) {
-			for(int i = 0; i < restrictions; i++) {
+		if (oPs != null) {
+			for (int i = 0; i < restrictions; i++) {
 				restrictionTable.setValueAt(oPs[i], i, xVariables);
 			}
 		}
 
-		
 	}
 
 	public void setMinProblem(boolean min) {
-		if(min) {
+		if (min) {
 			rdbtnMax.setSelected(false);
 			rdbtnMin.setSelected(true);
 		} else {
 			rdbtnMax.setSelected(true);
 			rdbtnMin.setSelected(false);
 		}
-		
+
 	}
 
 }

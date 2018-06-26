@@ -60,15 +60,14 @@ public class BendersSolutionScreen extends JPanel {
 		loadOptSolution();
 		JLabel solutionLabel = new JLabel("Optimale Lösung");
 		solutionPanel.add(solutionLabel);
-		
+
 		// Add Tables
-	//	solutionTable.setBounds(60, 250, 523, 60);
+		// solutionTable.setBounds(60, 250, 523, 60);
 		solutionTable.setOpaque(false);
 		((DefaultTableCellRenderer) solutionTable.getDefaultRenderer(Object.class)).setOpaque(false);
-		JScrollPane scrollPane= new  JScrollPane(solutionTable);
+		JScrollPane scrollPane = new JScrollPane(solutionTable);
 		scrollPane.setBounds(60, 90, 523, 60);
 		this.add(scrollPane);
-
 
 		// Addditional Info
 		if (bendersSolutionObject.getAddInfo() != null && bendersSolutionObject.getAddInfo().isEmpty()) {
@@ -113,6 +112,11 @@ public class BendersSolutionScreen extends JPanel {
 			Helper.addComponent(stepsPanel, gbl, stepsTextField, 0, 1, 1, 1, 1, 1);
 			Helper.addComponent(stepsPanel, gbl, stepsButton, 1, 1, 1, 1, 1, 1);
 
+			// Keeping previous Zoom State
+			for (int i = 0; i < mainFrame.getZoomState(); i++) {
+				for (Component c : this.getComponents())
+					mainFrame.zoomIn(c);
+			}
 		}
 	}
 
@@ -120,7 +124,8 @@ public class BendersSolutionScreen extends JPanel {
 		if (!Helper.isNumeric(String.valueOf(stepsTextField.getText()))) {
 			JOptionPane.showMessageDialog(null, "Bitte geben Sie nur numerische Werte ein.");
 			return false;
-		} else if ((Integer.parseInt(stepsTextField.getText()) <= 0) || (Integer.parseInt(stepsTextField.getText()) > steps.size())) {
+		} else if ((Integer.parseInt(stepsTextField.getText()) <= 0)
+				|| (Integer.parseInt(stepsTextField.getText()) > steps.size())) {
 			JOptionPane.showMessageDialog(null, "Bitte geben Sie einen gültigen Step ein.");
 			return false;
 		} else
@@ -129,12 +134,12 @@ public class BendersSolutionScreen extends JPanel {
 
 	protected void loadStepScreen() {
 		int step = Integer.parseInt(String.valueOf(stepsTextField.getText()));
-		solutionStepBenders = new BendersSolutionStepScreen(mainFrame,bendersSolutionObject);
+		solutionStepBenders = new BendersSolutionStepScreen(mainFrame, bendersSolutionObject);
 		solutionStepBenders.setVisible(true);
 		solutionStepBenders.setLayout(null);
 		solutionStepBenders.initializeScreen(step - 1);
-		mainFrame.getTabs().addTab(Helper.Keyword.STEPBENDERS+step, solutionStepBenders);
-		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.STEPBENDERS+step));
+		mainFrame.getTabs().addTab(Helper.Keyword.STEPBENDERS + step, solutionStepBenders);
+		mainFrame.getTabs().setSelectedIndex(mainFrame.getTabs().indexOfTab(Helper.Keyword.STEPBENDERS + step));
 	}
 
 	private void loadOptSolution() {
@@ -147,9 +152,9 @@ public class BendersSolutionScreen extends JPanel {
 		};
 		model.addRow(bendersSolutionObject.getOptSolution());
 		solutionTable.setModel(model);
-		//solutionTable.setTableHeader(null);
+		// solutionTable.setTableHeader(null);
 		loadTableHeader(solutionTable);
-		
+
 		// Align
 		for (int i = 0; i < solution.length - 1; i++) {
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -159,34 +164,33 @@ public class BendersSolutionScreen extends JPanel {
 	}
 
 	private void loadTableHeader(JTable table) {
-		int [] yIndices = bendersSolutionObject.getBendersOptimizationData().getYVariableIndices();
-		int xIndicesCount = table.getColumnCount()-1-yIndices.length;
+		int[] yIndices = bendersSolutionObject.getBendersOptimizationData().getYVariableIndices();
+		int xIndicesCount = table.getColumnCount() - 1 - yIndices.length;
 		Arrays.sort(yIndices);
 		JTableHeader th = table.getTableHeader();
 		TableColumnModel tcm = th.getColumnModel();
 		int yCount = 0;
-		//x indices
-		for (int i = 1; i <= xIndicesCount+ yIndices.length; i++) {
-			for(int j = 1; j <= yIndices.length; j++) {
-				if(yIndices[j-1] == i-1) {
+		// x indices
+		for (int i = 1; i <= xIndicesCount + yIndices.length; i++) {
+			for (int j = 1; j <= yIndices.length; j++) {
+				if (yIndices[j - 1] == i - 1) {
 					TableColumn tc = tcm.getColumn(i - 1);
-					tc.setHeaderValue("<html>y<sub>"+j+"</sub></html>");
+					tc.setHeaderValue("<html>y<sub>" + j + "</sub></html>");
 					yCount++;
 					break;
 				} else {
 					TableColumn tc = tcm.getColumn(i - 1);
-					tc.setHeaderValue("<html>x<sub>"+(i-yCount)+"</sub></html>");
+					tc.setHeaderValue("<html>x<sub>" + (i - yCount) + "</sub></html>");
 				}
 			}
-			
+
 		}
-		TableColumn tc = tcm.getColumn(table.getColumnCount()-1);
+		TableColumn tc = tcm.getColumn(table.getColumnCount() - 1);
 		tc.setHeaderValue("Lösung");
 	}
 
 	public void setFunctionTable(JTable functionTable) {
 		this.functionTable = functionTable;
 	}
-	
-	
+
 }

@@ -85,8 +85,8 @@ public class LoesungsPanel extends JPanel implements BranchAndBoundSteuerung {
 				weiter.setEnabled(false);
 				gesamtloesungZeigen.setEnabled(true);
 				add(buttonPanel, gbc);
-				//this.hauptFenster.getProblemPanel().getNeue().setEnabled(false);
-				//his.hauptFenster.getProblemPanel().getGo().setEnabled(false);
+				// this.hauptFenster.getProblemPanel().getNeue().setEnabled(false);
+				// his.hauptFenster.getProblemPanel().getGo().setEnabled(false);
 				revalidate();
 				repaint();
 			});
@@ -148,8 +148,8 @@ public class LoesungsPanel extends JPanel implements BranchAndBoundSteuerung {
 				add(loesungsLabel, gbc);
 				weiter.setEnabled(false);
 				gesamtloesungZeigen.setEnabled(false);
-				//this.hauptFenster.getProblemPanel().getNeue().setEnabled(true);
-				//this.hauptFenster.getProblemPanel().getGo().setEnabled(true);
+				// this.hauptFenster.getProblemPanel().getNeue().setEnabled(true);
+				// this.hauptFenster.getProblemPanel().getGo().setEnabled(true);
 				revalidate();
 			});
 		} catch (InvocationTargetException | InterruptedException e) {
@@ -166,7 +166,8 @@ public class LoesungsPanel extends JPanel implements BranchAndBoundSteuerung {
 			String zeileTemp = "";
 			for (int e = 0; e < temp.length; e++) {
 				if (e != temp.length - 1)
-					zeileTemp = zeileTemp + "x" + "<sub>"+(e + 1)+ "</sub>" + ": " + df.format(temp[e]) + "&nbsp; &nbsp; &nbsp; ";
+					zeileTemp = zeileTemp + "x" + "<sub>" + (e + 1) + "</sub>" + ": " + df.format(temp[e])
+							+ "&nbsp; &nbsp; &nbsp; ";
 				else
 					zeileTemp = zeileTemp + "Zielfunktion" + ": " + df.format(temp[e]) + " ";
 			}
