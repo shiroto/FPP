@@ -148,7 +148,7 @@ public class Helper {
 		static final String SOLUTIONBENDERS = "Ergebnis Benders";
 		static final String SOLUTIONDANTZIG = "Ergebnis Dantzig-Wolfe";
 		static final String SOLUTIONBANDB = "Ergebnis Branch & Bound";
-		static final String INPUTSIMPLEX = "Eingabe Normalform";
+		static final String INPUTSIMPLEX = "Eingabe Standardform";
 		static final String STEPBENDERS = "Benders Step: ";
 		
 		//Paths

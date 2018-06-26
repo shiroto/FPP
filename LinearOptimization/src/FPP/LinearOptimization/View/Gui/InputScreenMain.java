@@ -160,7 +160,7 @@ public class InputScreenMain extends JPanel {
 			funcTc.setHeaderValue("<html>x<sub>" + i + "</sub></html>");
 		}
 		TableColumn funcTc = funcTcm.getColumn(xVariables);
-		funcTc.setHeaderValue("Schlupfvariable");
+		funcTc.setHeaderValue("Konstante");
 		// Zelle für Schlupfvariable initial 0
 		getFunctionTable().setValueAt(0, 0, getFunctionTable().getColumnCount() - 1);
 		// Load Submit btn

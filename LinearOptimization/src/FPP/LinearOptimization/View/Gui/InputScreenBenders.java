@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,15 +67,17 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 	private void initializeScreen() {
 		JPanel bendersPanel = new JPanel();
-		bendersPanel.setBounds(-120, 40, 600, 20);
+		bendersPanel.setBounds(-80, 40, 600, 80);
 		this.add(bendersPanel);
 
-		JLabel bendersLabel = new JLabel("Definition von x, y-Variablen und deren Werten:");
+		JLabel bendersLabel = new JLabel("<html><body>Definition von x, y-Variablen:<br>"
+				+ "Y-Variablen sind Entscheidungsvariablen des Masterproblems<br>"
+				+ "X-Variablen sind Entscheidungsvariablen des Subproblems</body></html>");
 		bendersPanel.add(bendersLabel);
 
 		panel_defTable = new JPanel();
 		panel_defTable.setLayout(new GridBagLayout());
-		panel_defTable.setBounds(50, 80, 455, 80);
+		panel_defTable.setBounds(50, 120, 455, 80);
 		this.add(panel_defTable);
 
 		btnSubmit = new JButton("Berechnen");
@@ -225,10 +229,12 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		for (int i = 0; i < simplexTableau[0].length - 1; i++) {
 			TableColumn opColumn = paramNegIndicesTable.getColumnModel().getColumn(i);
 			JComboBox comboBox = new JComboBox();
-			comboBox.addItem("> 0");
+			comboBox.addItem(">= 0");
 			comboBox.addItem("<= 0");
 			opColumn.setCellEditor(new DefaultCellEditor(comboBox));
 		}
+		//paramNegIndicesTable.setVisible(false);
+		
 		// Function table not editable
 		functionTable.setEnabled(false);
 
@@ -340,7 +346,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		this.setSimplexTableau(obj.getArray());
 		modifyFunctionTable();
 		for (int j = 0; j < paramNegIndicesTable.getColumnCount(); j++) {
-			paramNegIndicesTable.setValueAt("> 0", 0, j);
+			paramNegIndicesTable.setValueAt(">= 0", 0, j);
 		}
 		for (int i = 0; i < obj.getParameterNegativeIndices().length; i++) {
 			paramNegIndicesTable.setValueAt("<= 0", 0, obj.getParameterNegativeIndices()[i]);
