@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -44,6 +45,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 	private JTable variableDefTable;
 	private JTable typeDefTable;
 	private JTable paramNegIndicesTable;
+	private JScrollPane scrollPane;
 	private JPanel panel_defTable;
 	private Double[][] simplexTableau;
 	private JButton btnSubmit;
@@ -58,7 +60,11 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 	private boolean minProblem;
 	private String[] operators;
 	private JFrame frame;
-
+	private List<JComboBox> xyBoxes;
+	private List<JComboBox> typeBoxes;
+	private JLabel variables;
+	private JLabel valueRange;
+	
 	public InputScreenBenders(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
 		initializeScreen();
@@ -66,8 +72,10 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 	}
 
 	private void initializeScreen() {
+		xyBoxes = new ArrayList<JComboBox>();
+		typeBoxes = new ArrayList<JComboBox>();
 		JPanel bendersPanel = new JPanel();
-		bendersPanel.setBounds(-80, 40, 600, 80);
+		bendersPanel.setBounds(40, 40, 600, 80);
 		this.add(bendersPanel);
 
 		JLabel bendersLabel = new JLabel("<html><body>Definition von x, y-Variablen:<br>"
@@ -77,8 +85,17 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 		panel_defTable = new JPanel();
 		panel_defTable.setLayout(new GridBagLayout());
-		panel_defTable.setBounds(50, 120, 455, 80);
-		this.add(panel_defTable);
+		scrollPane = new JScrollPane(panel_defTable, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBounds(160, 120, 600, 80);
+		this.add(scrollPane);
+		variables = new JLabel("Auswahl Variablenart:");
+		variables.setBounds(0, 140, 150, 20);
+		this.add(variables);
+		valueRange = new JLabel("Auswahl Wertebereich:");
+		valueRange.setBounds(0, 170, 150, 20);
+		this.add(valueRange);
+
+		
 
 		btnSubmit = new JButton("Berechnen");
 		btnSubmit.setBounds(1033, 527, 171, 41);
@@ -137,11 +154,11 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 
 	private void loadParamNegIndices() {
 		List<Integer> paramaterNegativeIndicesList = new ArrayList<Integer>();
-		for (int i = 0; i < paramNegIndicesTable.getColumnCount(); i++) {
+		/*for (int i = 0; i < paramNegIndicesTable.getColumnCount(); i++) {
 			if (paramNegIndicesTable.getValueAt(0, i).toString().equals("<= 0")) {
 				paramaterNegativeIndicesList.add(i);
 			}
-		}
+		}*/
 		parameterNegativeIndices = paramaterNegativeIndicesList.stream().mapToInt(i -> i).toArray();
 	}
 
@@ -189,11 +206,11 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 				}
 			}
 		}
-		for (int columnId = 0; columnId < paramNegIndicesTable.getColumnCount(); columnId++) {
+		/*for (int columnId = 0; columnId < paramNegIndicesTable.getColumnCount(); columnId++) {
 			if (paramNegIndicesTable.getValueAt(0, columnId) == null) {
 				throw new Exception("Geben Sie den Wertebereich für jede Variable an.");
 			}
-		}
+		}*/
 		if (countY == 0) {
 			throw new Exception("Eingabe für Benders Algorithmus nicht geeignet. Y-Variable fehlt.");
 		}
@@ -216,7 +233,35 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 			JComboBox comboBox = new JComboBox();
 			comboBox.addItem("Y");
 			comboBox.addItem("X");
+			//When variable X is selected, "R" is selected as type by default
+			comboBox.addItemListener(new ItemListener() {
+
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					String item = (String)e.getItem();
+					int step = xyBoxes.indexOf(e.getSource());
+					JComboBox typeBox = typeBoxes.get(step);
+					if (item.equals("X")) {
+						typeDefTable.setEnabled(false);
+						typeBox.setSelectedItem("R");
+						typeBox.setEnabled(false);
+						typeBox.setFocusable(false);
+						typeBox.setVisible(false);
+						typeDefTable.getModel().setValueAt("R", 0, step);
+						alignCells();
+					} else if (item.equals("Y")) {
+						typeDefTable.setEnabled(true);
+						typeBox.setEnabled(true);
+						typeBox.setVisible(true);
+						typeBox.setFocusable(true);
+						alignCells();
+					}
+
+				}
+				
+			});
 			opColumn.setCellEditor(new DefaultCellEditor(comboBox));
+			xyBoxes.add(comboBox);
 		}
 		for (int i = 0; i < simplexTableau[0].length - 1; i++) {
 			TableColumn opColumn = typeDefTable.getColumnModel().getColumn(i);
@@ -225,6 +270,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 			comboBox.addItem("I");
 			comboBox.addItem("B");
 			opColumn.setCellEditor(new DefaultCellEditor(comboBox));
+			typeBoxes.add(comboBox);
 		}
 		for (int i = 0; i < simplexTableau[0].length - 1; i++) {
 			TableColumn opColumn = paramNegIndicesTable.getColumnModel().getColumn(i);
@@ -233,12 +279,29 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 			comboBox.addItem("<= 0");
 			opColumn.setCellEditor(new DefaultCellEditor(comboBox));
 		}
-		//paramNegIndicesTable.setVisible(false);
 		
 		// Function table not editable
 		functionTable.setEnabled(false);
 
 		// Align cell
+		alignCells();
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;
+		c.weighty = 1;
+		c.gridx = 0;
+		c.gridy = 0;
+		panel_defTable.add(functionTable, c);
+		c.gridy = 1;
+		panel_defTable.add(variableDefTable, c);
+		c.gridy = 2;
+		panel_defTable.add(typeDefTable, c);
+		c.gridy = 3;
+		//panel_defTable.add(paramNegIndicesTable, c);
+	}
+
+	public void alignCells() {
 		for (int i = 0; i < simplexTableau[0].length - 1; i++) {
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 			centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -259,21 +322,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 			centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 			paramNegIndicesTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 0.5;
-		c.weighty = 1;
-		c.gridx = 0;
-		c.gridy = 0;
-		panel_defTable.add(functionTable, c);
-		c.gridy = 1;
-		panel_defTable.add(variableDefTable, c);
-		c.gridy = 2;
-		panel_defTable.add(typeDefTable, c);
-		c.gridy = 3;
-		panel_defTable.add(paramNegIndicesTable, c);
 	}
-
 	public LinearOptimizationData getInputObject() {
 		return inputObject;
 	}
@@ -345,12 +394,12 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		this.setNumVar(obj.getNumVar());
 		this.setSimplexTableau(obj.getArray());
 		modifyFunctionTable();
-		for (int j = 0; j < paramNegIndicesTable.getColumnCount(); j++) {
+		/*for (int j = 0; j < paramNegIndicesTable.getColumnCount(); j++) {
 			paramNegIndicesTable.setValueAt(">= 0", 0, j);
 		}
 		for (int i = 0; i < obj.getParameterNegativeIndices().length; i++) {
 			paramNegIndicesTable.setValueAt("<= 0", 0, obj.getParameterNegativeIndices()[i]);
-		}
+		}*/
 
 		for (int i = 0; i < variableDefTable.getColumnCount(); i++) {
 			variableDefTable.setValueAt("X", 0, i);

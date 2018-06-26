@@ -396,10 +396,6 @@ public class InputScreenMain extends JPanel {
 				simplexTableau[restrictions][entry] = simplexTableau[restrictions][entry] * (-1);
 			}
 		}
-		System.out.println("SimplexTableau fertiggestellt");
-		System.out.println(Arrays.deepToString(simplexTableau));
-		System.out.println("");
-
 	}
 
 	protected boolean validateInput() {
