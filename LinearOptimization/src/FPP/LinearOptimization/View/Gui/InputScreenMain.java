@@ -49,6 +49,7 @@ public class InputScreenMain extends JPanel {
 	private InputScreenDantzig inputDanzig;
 	public InputScreenBB inputBB;
 	private JButton btnInput;
+	private JLabel greaterThanHint;
 
 	public InputScreenMain(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -189,6 +190,9 @@ public class InputScreenMain extends JPanel {
 
 		});
 		this.add(btnSubmit);
+		greaterThanHint = new JLabel("Für alle Entscheidungsvariablen gilt: x, y >= 0");
+		greaterThanHint.setBounds(1000, 250, 400, 30);
+		this.add(greaterThanHint);
 	}
 
 	protected void loadBBScreen() {
@@ -352,6 +356,7 @@ public class InputScreenMain extends JPanel {
 		panel.revalidate();
 		this.add(panel);
 		this.revalidate();
+
 	}
 
 	/*
@@ -433,9 +438,11 @@ public class InputScreenMain extends JPanel {
 
 		scrollPaneRestrictions = new JScrollPane(getRestrictionTable(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneRestrictions.setBounds(399, 250, 523, 325);
+		scrollPaneRestrictions.setBounds(399, 250, 523, 200);
 		this.add(scrollPaneRestrictions);
 		getRestrictionTable().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		scrollPaneRestrictions.setBorder(null);
+		scrollPaneRestrictions.repaint();
 	}
 
 	public LinearOptimizationData getInputObject() {
