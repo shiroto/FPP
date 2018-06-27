@@ -64,6 +64,7 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 	private List<JComboBox> typeBoxes;
 	private JLabel variables;
 	private JLabel valueRange;
+	private JLabel greaterThanHint;
 	
 	public InputScreenBenders(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -94,6 +95,9 @@ public class InputScreenBenders extends JPanel implements InputScreenIF {
 		valueRange = new JLabel("Auswahl Wertebereich:");
 		valueRange.setBounds(0, 170, 150, 20);
 		this.add(valueRange);
+		greaterThanHint = new JLabel("Für alle Entscheidungsvariablen gilt: x, y >= 0");
+		greaterThanHint.setBounds(160, 200, 400, 30);
+		this.add(greaterThanHint);
 
 		
 

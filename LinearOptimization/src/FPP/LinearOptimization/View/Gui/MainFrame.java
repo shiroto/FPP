@@ -206,7 +206,11 @@ public class MainFrame {
 		fresh.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				newWindow();
+				int reply = JOptionPane.showConfirmDialog(null, "Wollen Sie ein neues Projekt beginnen?", "Neues Projekt", JOptionPane.YES_NO_OPTION);
+		        if (reply == JOptionPane.YES_OPTION) {
+		          newWindow();
+		          frame.dispose();
+		        }
 			}
 
 		});
