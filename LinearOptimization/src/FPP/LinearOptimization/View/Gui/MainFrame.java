@@ -83,7 +83,7 @@ public class MainFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.setTitle("Linear Optimization Tool");
-		frame.setIconImage(new ImageIcon(MainFrame.class.getResource("images/logov2.png")).getImage());
+		frame.setIconImage(new ImageIcon(MainFrame.class.getResource("logov2.png")).getImage());
 
 		// Menu
 		menubar = new JMenuBar();
@@ -134,7 +134,7 @@ public class MainFrame {
 
 		// Zoom Buttons
 		btnZoomIn = new JButton();
-		btnZoomIn.setIcon(new ImageIcon(MainFrame.class.getResource("images/plus_small.png")));
+		btnZoomIn.setIcon(new ImageIcon(MainFrame.class.getResource("plus_small.png")));
 		// btnZoomIn.setLocation(5, 5);
 		// btnZoomIn.setSize(10, 10);
 		menubar.add(btnZoomIn);
@@ -155,7 +155,7 @@ public class MainFrame {
 		});
 
 		btnZoomOut = new JButton();
-		btnZoomOut.setIcon(new ImageIcon(MainFrame.class.getResource("images/minus_small.png")));
+		btnZoomOut.setIcon(new ImageIcon(MainFrame.class.getResource("minus_small.png")));
 		// btnZoomOut.setLocation(40, 5);
 		// btnZoomOut.setSize(10, 10);
 		// buttonPanel.add(btnZoomOut);

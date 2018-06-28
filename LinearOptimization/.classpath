@@ -6,6 +6,7 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="lib" path="lib/org.abego.treelayout.core-1.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/JarBandBV5.jar"/>
 	<classpathentry kind="lib" path="lib/SimplexV3.jar"/>
